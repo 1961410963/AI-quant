@@ -619,7 +619,15 @@ klineChart.setOption({{
                 '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div></div>';
         }}
     }},
-    grid: {{ left: '6%', right: '3%', top: '8%', bottom: '15%' }},
+    legend: {{
+        data: ['MA5', 'MA10', 'MA20', 'MA60'],
+        textStyle: {{ color: '#6b7280', fontSize: 12 }},
+        top: 5,
+        itemWidth: 20,
+        itemHeight: 10,
+        icon: 'roundRect'
+    }},
+    grid: {{ left: '6%', right: '3%', top: '12%', bottom: '15%' }},
     xAxis: commonXAxis,
     yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
