@@ -101,7 +101,7 @@ def generate_html_report(csv_path, output_dir='output'):
     avg_price = round(df['close'].mean(), 2)
     avg_volume = round(df['vol'].mean(), 0)
     avg_amount = round(df['amount'].mean(), 0)
-    avg_amount_yi = avg_amount / 10000  # 转换为亿元
+    avg_amount_yi = avg_amount / 100000  # 千元→亿元，正确换算
     up_days = len(df[df['close'] > df['open']])
     down_days = len(df[df['close'] < df['open']])
     flat_days = len(df[df['close'] == df['open']])
