@@ -1,654 +1,586 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>内蒙一机（600967.SH）近一年交易数据分析报告</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
-            line-height: 1.8;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        .header {
-            background: linear-gradient(135deg, #161b22 0%, #1a2332 100%);
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 32px 40px;
-            margin-bottom: 24px;
-        }
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #f0f6fc;
-            margin-bottom: 8px;
-        }
-        .header .subtitle {
-            font-size: 15px;
-            color: #8b949e;
-        }
-        .header .subtitle span {
-            margin-right: 24px;
-        }
-        .tag {
-            display: inline-block;
-            background: #21262d;
-            color: #58a6ff;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-right: 8px;
-        }
-        .section {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 24px;
-        }
-        .section h2 {
-            font-size: 22px;
-            font-weight: 600;
-            color: #f0f6fc;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #21262d;
-        }
-        .section h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #f0f6fc;
-            margin-bottom: 16px;
-        }
-        .intro-text {
-            font-size: 15px;
-            color: #c9d1d9;
-            margin-bottom: 20px;
-            line-height: 2;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        .stat-card:hover {
-            border-color: #58a6ff;
-        }
-        .stat-card .label {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 8px;
-        }
-        .stat-card .value {
-            font-size: 26px;
-            font-weight: 700;
-            color: #f0f6fc;
-        }
-        .stat-card .value.negative { color: #ef5350; }
-        .stat-card .value.positive { color: #26a69a; }
-        .stat-card .unit {
-            font-size: 13px;
-            color: #8b949e;
-            margin-top: 4px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        th {
-            background: #21262d;
-            color: #8b949e;
-            font-weight: 600;
-            text-align: center;
-            padding: 12px 10px;
-            border-bottom: 2px solid #30363d;
-        }
-        td {
-            text-align: center;
-            padding: 10px;
-            border-bottom: 1px solid #21262d;
-        }
-        tr:hover td {
-            background: #1a2332;
-        }
-        .text-red { color: #ef5350; }
-        .text-green { color: #26a69a; }
-        #kline-chart {
-            width: 100%;
-            height: 520px;
-        }
-        #volume-chart {
-            width: 100%;
-            height: 200px;
-        }
-        .interpretation {
-            background: #21262d;
-            border-left: 3px solid #58a6ff;
-            padding: 16px 20px;
-            margin: 20px 0;
-            font-size: 14px;
-            line-height: 2;
-        }
-        .interpretation strong {
-            color: #58a6ff;
-        }
-        .stage-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-top: 20px;
-        }
-        .stage-card {
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-        .stage-card .stage-title {
-            font-size: 14px;
-            color: #58a6ff;
-            margin-bottom: 8px;
-        }
-        .stage-card .stage-date {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 12px;
-        }
-        .stage-card .stage-price {
-            font-size: 13px;
-            color: #c9d1d9;
-            margin-bottom: 4px;
-        }
-        .stage-card .stage-change {
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 8px;
-        }
-        .stage-card .stage-change.down { color: #ef5350; }
-        .stage-card .stage-change.up { color: #26a69a; }
-        .analysis-point {
-            margin: 16px 0;
-            padding-left: 24px;
-            position: relative;
-        }
-        .analysis-point::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #58a6ff;
-            font-weight: bold;
-        }
-        .risk-box {
-            background: #21262d;
-            border: 1px solid #f8514980;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 16px;
-        }
-        .risk-box h4 {
-            color: #f85149;
-            font-size: 16px;
-            margin-bottom: 12px;
-        }
-        .footer {
-            text-align: center;
-            padding: 24px;
-            color: #484f58;
-            font-size: 13px;
-        }
-        .tooltip-box {
-            padding: 12px 16px;
-            background: rgba(22, 27, 34, 0.96);
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.8;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内蒙一机（600967.SH）近一年交易数据分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: #0d1117; color: #c9d1d9; line-height: 1.8;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.header {
+    background: linear-gradient(135deg, #161b22 0%, #1a2332 100%);
+    border: 1px solid #30363d; border-radius: 12px;
+    padding: 32px 40px; margin-bottom: 24px;
+}
+.header h1 { font-size: 32px; font-weight: 700; color: #f0f6fc; margin-bottom: 8px; }
+.header .subtitle { font-size: 15px; color: #8b949e; }
+.header .subtitle span { margin-right: 24px; }
+.tag {
+    display: inline-block; background: #21262d; color: #58a6ff;
+    padding: 4px 12px; border-radius: 4px; font-size: 13px; margin-right: 8px;
+}
+.section {
+    background: #161b22; border: 1px solid #30363d;
+    border-radius: 12px; padding: 28px; margin-bottom: 24px;
+}
+.section h2 {
+    font-size: 22px; font-weight: 600; color: #f0f6fc;
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #21262d;
+}
+.section h3 {
+    font-size: 18px; font-weight: 600; color: #f0f6fc; margin-bottom: 16px;
+}
+.intro-text { font-size: 15px; color: #c9d1d9; margin-bottom: 20px; line-height: 2; }
+.stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+}
+.stat-card {
+    background: #21262d; border: 1px solid #30363d;
+    border-radius: 8px; padding: 20px; text-align: center; transition: border-color 0.3s;
+}
+.stat-card:hover { border-color: #58a6ff; }
+.stat-card .label { font-size: 12px; color: #8b949e; margin-bottom: 8px; }
+.stat-card .value { font-size: 26px; font-weight: 700; color: #f0f6fc; }
+.stat-card .value.negative { color: #ef5350; }
+.stat-card .value.positive { color: #26a69a; }
+.stat-card .unit { font-size: 13px; color: #8b949e; margin-top: 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: #21262d; color: #8b949e; font-weight: 600; text-align: center; padding: 12px 10px; border-bottom: 2px solid #30363d; }
+td { text-align: center; padding: 10px; border-bottom: 1px solid #21262d; }
+tr:hover td { background: #1a2332; }
+.text-red { color: #ef5350; }
+.text-green { color: #26a69a; }
+.chart-box { width: 100%; height: 380px; margin: 16px 0; }
+.chart-box-lg { width: 100%; height: 480px; margin: 16px 0; }
+.chart-box-sm { width: 100%; height: 300px; margin: 16px 0; }
+.interpretation {
+    background: #21262d; border-left: 3px solid #58a6ff;
+    padding: 16px 20px; margin: 20px 0; font-size: 14px; line-height: 2;
+}
+.interpretation strong { color: #58a6ff; }
+.analysis-point { margin: 12px 0; padding-left: 24px; position: relative; }
+.analysis-point::before { content: "•"; position: absolute; left: 0; color: #58a6ff; font-weight: bold; }
+.risk-box {
+    background: #21262d; border: 1px solid #f8514980;
+    border-radius: 8px; padding: 20px; margin-top: 16px;
+}
+.risk-box h4 { color: #f85149; font-size: 16px; margin-bottom: 12px; }
+.footer { text-align: center; padding: 24px; color: #484f58; font-size: 13px; }
+.tooltip-box {
+    padding: 12px 16px; background: rgba(22, 27, 34, 0.96);
+    border: 1px solid #30363d; border-radius: 8px; font-size: 13px; line-height: 1.8;
+}
+.valuation-table td:first-child { text-align: left; padding-left: 20px; }
+.valuation-table th:first-child { text-align: left; padding-left: 20px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>内蒙一机（600967.SH）近一年交易数据全景报告</h1>
-            <div class="subtitle">
-                <span class="tag">国防军工</span>
-                <span class="tag">地面兵装龙头</span>
-                <span class="tag">央企平台</span>
-            </div>
-            <div class="subtitle" style="margin-top: 12px;">
-                <span>数据区间：2025年07月03日 — 2026年07月02日</span>
-                <span>交易日：242天</span>
-                <span>报告生成：2026年07月03日</span>
-            </div>
-        </div>
+<div class="container">
 
-        <!-- 一、数据概览 -->
-        <div class="section">
-            <h2>一、数据概览</h2>
-            <div class="intro-text">
-                内蒙一机（股票代码 600967.SH）近一年交易数据总计 <strong>242</strong> 个交易日，
-                自2025年07月03日至2026年07月02日，涵盖完整的市场周期。期间股价最高触及 <strong>30.68元</strong>（2025年08月14日），
-                最低下探至 <strong>10.5元</strong>（2026年06月29日），区间累计涨跌幅为 <strong class="text-red">-35.61%</strong>。
-                整个观察期内股价经历了一轮明显的下跌调整，反映出军工板块整体承压及市场情绪的谨慎态势。
-            </div>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="label">区间涨跌幅</div>
-                    <div class="value negative">-35.61%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">期间最高价</div>
-                    <div class="value">30.68</div>
-                    <div class="unit">元</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">期间最低价</div>
-                    <div class="value">10.5</div>
-                    <div class="unit">元</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">平均收盘价</div>
-                    <div class="value">17.32</div>
-                    <div class="unit">元</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">日均成交量</div>
-                    <div class="value">538,647</div>
-                    <div class="unit">手</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">日均成交额</div>
-                    <div class="value">1,067,736</div>
-                    <div class="unit">千元</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">上涨天数</div>
-                    <div class="value positive">115天</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">下跌天数</div>
-                    <div class="value negative">124天</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">平盘天数</div>
-                    <div class="value">3天</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">上涨天数占比</div>
-                    <div class="value">47.5%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">价格波动率</div>
-                    <div class="value">20.33%</div>
-                    <div class="unit">风险较高</div>
-                </div>
-            </div>
-        </div>
+<!-- Header -->
+<div class="header">
+    <h1>内蒙一机（600967.SH）近一年交易数据全景报告</h1>
+    <div class="subtitle">
+        <span class="tag">国防军工</span>
+        <span class="tag">地面兵装龙头</span>
+        <span class="tag">央企平台</span>
+    </div>
+    <div class="subtitle" style="margin-top: 12px;">
+        <span>数据区间：2025年07月03日 — 2026年07月02日</span>
+        <span>交易日：242天</span>
+        <span>报告生成：2026年07月03日</span>
+    </div>
+</div>
 
-        <!-- 二、年度表现汇总 -->
-        <div class="section">
-            <h2>二、年度表现汇总</h2>
-            <div class="intro-text">
-                下表汇总了内蒙一机近一年各年度的交易表现。整体来看，股价经历了明显的下跌周期，
-                2025年下半年高位见顶后持续下行，2026年逐步企稳筑底。成交量在2025年8月达到峰值，
-                随后逐步萎缩，市场关注度有所下降。
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>年度</th>
-                        <th>年初开盘价(元)</th>
-                        <th>年末收盘价(元)</th>
-                        <th>年度涨跌幅</th>
-                        <th>年度最高(元)</th>
-                        <th>年度最低(元)</th>
-                        <th>交易天数</th>
-                        <th>上涨天数</th>
-                        <th>下跌天数</th>
-                        <th>上涨占比</th>
-                        <th>日均成交量(手)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>2025</strong></td>
-                        <td>16.96</td>
-                        <td>16.8</td>
-                        <td class="text-green">-0.94%</td>
-                        <td>30.68</td>
-                        <td>15.35</td>
-                        <td>124</td>
-                        <td>65</td>
-                        <td>58</td>
-                        <td>52.4%</td>
-                        <td>765,183</td>
-                    </tr>
-                    <tr>
-                        <td><strong>2026</strong></td>
-                        <td>17.17</td>
-                        <td>10.92</td>
-                        <td class="text-green">-36.40%</td>
-                        <td>21.4</td>
-                        <td>10.5</td>
-                        <td>118</td>
-                        <td>50</td>
-                        <td>66</td>
-                        <td>42.4%</td>
-                        <td>300,592</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<!-- 一、数据概览 -->
+<div class="section">
+    <h2>一、数据概览</h2>
+    <div class="intro-text">
+        内蒙一机（股票代码 600967.SH）近一年交易数据总计 <strong>242</strong> 个交易日，
+        自2025年07月03日至2026年07月02日，涵盖完整的市场周期。期间股价最高触及 <strong>30.68元</strong>（2025-08-14），
+        最低下探至 <strong>10.5元</strong>（2026-06-29），区间累计涨跌幅为 <strong class="text-red">-35.61%</strong>。
+        整个观察期内股价经历了一轮明显的下跌调整，反映出军工板块整体承压及市场情绪的谨慎态势。
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card"><div class="label">区间涨跌幅</div><div class="value negative">-35.61%</div></div>
+        <div class="stat-card"><div class="label">期间最高价</div><div class="value">30.68</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">期间最低价</div><div class="value">10.5</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">平均收盘价</div><div class="value">17.32</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">日均成交量</div><div class="value">538,647</div><div class="unit">手</div></div>
+        <div class="stat-card"><div class="label">日均成交额</div><div class="value">1,067,736</div><div class="unit">千元</div></div>
+        <div class="stat-card"><div class="label">上涨天数</div><div class="value positive">115天</div></div>
+        <div class="stat-card"><div class="label">下跌天数</div><div class="value negative">124天</div></div>
+        <div class="stat-card"><div class="label">平盘天数</div><div class="value">3天</div></div>
+        <div class="stat-card"><div class="label">上涨天数占比</div><div class="value">47.5%</div></div>
+        <div class="stat-card"><div class="label">价格波动率</div><div class="value">20.33%</div><div class="unit">风险较高</div></div>
+    </div>
+</div>
 
-        <!-- 三、日线 K 线走势图 -->
-        <div class="section">
-            <h2>三、日线 K 线走势图</h2>
-            <h3>图1 内蒙一机（600967.SH）近一年日线K线走势与均线系统</h3>
-            <div id="kline-chart"></div>
-            <div class="interpretation">
-                <strong>【图1解读】</strong> 从K线走势来看，内蒙一机近一年整体处于下行通道，可划分为四个阶段：<br><br>
-                <strong>（1）2025年7月至8月中旬：</strong>股价从17元区域快速拉升，最高触及30.68元，涨幅超过70%，呈现典型的"放量上涨"特征，主力资金积极介入，市场情绪高涨。MA5、MA10快速上穿MA20、MA60，形成强势多头排列。<br><br>
-                <strong>（2）2025年8月下旬至9月：</strong>股价从30元高位快速回落，呈现"放量下跌"特征，跌幅超过30%，短期均线依次下穿长期均线，多头格局被打破。此阶段为典型的高位调整期，获利盘集中出逃。<br><br>
-                <strong>（3）2025年10月至12月：</strong>股价在18-22元区间震荡整理，成交量明显萎缩，均线系统逐步粘合，显示市场进入方向选择阶段。期间多次试探性反弹但力度有限，形成"缩量横盘"格局。<br><br>
-                <strong>（4）2026年1月至7月：</strong>股价延续下行趋势，从19元区域逐步跌至10.9元附近，创年内新低。成交量持续低迷，市场情绪谨慎。均线系统呈空头排列，MA5、MA10运行于MA20、MA60下方，短期技术面偏弱。<br><br>
-                整体而言，股价从高位约30元跌至当前11元左右，最大回撤超过60%，估值已回归历史低位区间。技术面呈现明显的"先涨后跌"格局，当前处于筑底阶段。
-            </div>
-        </div>
+<!-- 二、年度表现汇总 -->
+<div class="section">
+    <h2>二、年度表现汇总</h2>
+    <div class="intro-text">
+        下表汇总了内蒙一机近一年各年度的交易表现。整体来看，股价经历了明显的下跌周期，
+        2025年下半年高位见顶后持续下行，2026年逐步企稳筑底。成交量在2025年8月达到峰值，
+        随后逐步萎缩，市场关注度有所下降。
+    </div>
+    <table>
+        <thead><tr>
+            <th>年度</th><th>年初开盘价</th><th>年末收盘价</th><th>年度涨跌幅</th><th>年度最高</th><th>年度最低</th>
+            <th>交易天数</th><th>上涨天数</th><th>下跌天数</th><th>上涨占比</th><th>日均成交量(手)</th>
+        </tr></thead>
+        <tbody>
+            <tr>
+                <td><strong>2025</strong></td><td>16.96</td><td>16.8</td>
+                <td class="text-green">-0.94%</td><td>30.68</td><td>15.35</td>
+                <td>124</td><td>65</td><td>58</td><td>52.4%</td><td>765,183</td>
+            </tr>
+            <tr>
+                <td><strong>2026</strong></td><td>17.17</td><td>10.92</td>
+                <td class="text-green">-36.40%</td><td>21.4</td><td>10.5</td>
+                <td>118</td><td>50</td><td>66</td><td>42.4%</td><td>300,592</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        <!-- 四、日成交量走势图 -->
-        <div class="section">
-            <h2>四、日成交量走势图</h2>
-            <h3>图2 内蒙一机（600967.SH）近一年日成交量分布（红柱涨/绿柱跌）</h3>
-            <div id="volume-chart"></div>
-            <div class="interpretation">
-                <strong>【图2解读】</strong> 成交量呈现明显的阶段性分化特征：<br><br>
-                <strong>（1）2025年7-8月上涨阶段：</strong>日成交量频繁突破150万手，峰值达268万手（2025年8月14日），市场参与度极高，多空博弈激烈。放量上涨表明主力资金积极进场，市场情绪亢奋。<br><br>
-                <strong>（2）2025年8月下旬至9月下跌阶段：</strong>成交量维持在100-200万手区间，呈现典型的"放量下跌"特征，说明资金加速离场，恐慌情绪蔓延。<br><br>
-                <strong>（3）2025年10月至12月震荡阶段：</strong>成交量萎缩至30-60万手区间，市场关注度和换手率大幅下降，反映投资者观望情绪浓厚，博弈动力不足。<br><br>
-                <strong>（4）2026年1月至7月筑底阶段：</strong>成交量持续低迷，日均不足20万手，偶见阶段性放量（如2026年1月8日、3月24日），多为短线资金博弈反弹或消息驱动，但持续性不足。<br><br>
-                <strong>总体来看，"缩量"是当前的主要特征。</strong>量能持续低迷意味着股价上行需要更明确的催化剂（如军工订单落地、资产注入预期等）。底部区域的缩量横盘往往意味着做空动能已大幅释放，但也需要放量信号确认反转。
-            </div>
-        </div>
+<!-- 三、日线K线走势图 -->
+<div class="section">
+    <h2>三、日线 K 线走势图</h2>
+    <h3>图1 内蒙一机（600967.SH）近一年日线K线走势与均线系统</h3>
+    <div id="kline-chart" class="chart-box-lg"></div>
+    <div class="interpretation">
+        <strong>【图1解读】</strong> 从K线走势来看，内蒙一机近一年整体处于下行通道，可划分为四个阶段：<br><br>
+        <strong>（1）2025年7月至8月中旬：</strong>股价从17元区域快速拉升，最高触及30.68元，涨幅超过70%，呈现典型的"放量上涨"特征，主力资金积极介入，市场情绪高涨。MA5、MA10快速上穿MA20、MA60，形成强势多头排列。<br><br>
+        <strong>（2）2025年8月下旬至9月：</strong>股价从30元高位快速回落，呈现"放量下跌"特征，跌幅超过30%，短期均线依次下穿长期均线，多头格局被打破。<br><br>
+        <strong>（3）2025年10月至12月：</strong>股价在18-22元区间震荡整理，成交量明显萎缩，均线系统逐步粘合，显示市场进入方向选择阶段。<br><br>
+        <strong>（4）2026年1月至7月：</strong>股价延续下行趋势，从19元区域逐步跌至10.9元附近，创年内新低。均线系统呈空头排列，短期技术面偏弱。整体而言，股价从高位约30元跌至当前11元左右，最大回撤超过60%，估值已回归历史低位区间。
+    </div>
+</div>
 
-        <!-- 五、技术面分析 -->
-        <div class="section">
-            <h2>五、技术面分析</h2>
-            <div class="intro-text">
-                基于内蒙一机近一年的K线走势与成交量变化，从技术指标角度进行综合分析：
-            </div>
-            
-            <h3>5.1 均线系统分析</h3>
-            <div class="interpretation">
-                当前MA5（约11.0元）、MA10（约11.2元）、MA20（约11.5元）、MA60（约14.0元）呈<strong class="text-red">空头排列</strong>，
-                短期均线运行于长期均线下方，表明中期趋势仍偏弱。均线间距较大，显示下跌趋势尚未完全扭转。
-                若后续MA5能有效上穿MA10并进一步挑战MA20，则可能形成短期反弹信号；否则，均线压制下股价仍将承压。
-            </div>
-            
-            <h3>5.2 支撑与阻力位</h3>
-            <div class="interpretation">
-                <strong>关键支撑位：</strong>10.5元附近（2026年6月底部区域），该位置已多次获得支撑，为近期强支撑位。若跌破，下方支撑看向9.5元（2022年历史低位附近）。<br><br>
-                <strong>关键阻力位：</strong>12.0元附近（MA20位置），突破后上方阻力看向14.0元（MA60位置），以及16.0元（前期震荡区下沿）。<br><br>
-                当前股价在10.9元附近，处于支撑位边缘，短期需关注能否有效守住10.5元支撑。
-            </div>
-            
-            <h3>5.3 技术形态判断</h3>
-            <div class="interpretation">
-                从K线形态来看，近期呈现<strong>缩量筑底</strong>特征：股价在10.5-11.5元区间窄幅波动，成交量持续萎缩，
-                表明市场处于"方向选择"阶段。若后续出现放量阳线突破MA20，则可能形成反转信号；
-                若放量跌破10.5元支撑，则可能加速下探。<br><br>
-                <strong>当前技术面综合评级：偏弱，处于筑底观察期。</strong>
-            </div>
-        </div>
+<!-- 四、日成交量走势图 -->
+<div class="section">
+    <h2>四、日成交量走势图</h2>
+    <h3>图2 内蒙一机（600967.SH）近一年日成交量分布（红柱涨 / 绿柱跌）</h3>
+    <div id="volume-chart" class="chart-box-sm"></div>
+    <div class="interpretation">
+        <strong>【图2解读】</strong> 成交量呈现明显的阶段性分化特征：<br><br>
+        <strong>（1）2025年7-8月上涨阶段：</strong>日成交量频繁突破150万手，峰值达268万手（2025年8月14日），市场参与度极高。<br><br>
+        <strong>（2）2025年8月下旬至9月下跌阶段：</strong>成交量维持在100-200万手区间，呈现典型的"放量下跌"特征。<br><br>
+        <strong>（3）2025年10月至12月震荡阶段：</strong>成交量萎缩至30-60万手区间，市场观望情绪浓厚。<br><br>
+        <strong>（4）2026年1月至7月筑底阶段：</strong>成交量持续低迷，日均不足20万手。总体来看，"缩量"是当前的主要特征，底部缩量意味着做空动能已大幅释放，但需要放量信号确认反转。
+    </div>
+</div>
 
-        <!-- 六、基本面分析 -->
-        <div class="section">
-            <h2>六、基本面分析</h2>
-            
-            <h3>6.1 公司简介</h3>
-            <div class="interpretation">
-                <strong>内蒙一机</strong>（内蒙古第一机械集团股份有限公司）是中国兵器工业集团旗下核心军工企业，
-                主营业务涵盖<strong>轮履装甲车辆、火炮系列军品装备、铁路车辆、车辆零部件</strong>的研发、制造与销售。
-                公司是我国<strong>陆军装备龙头</strong>，在主战坦克、装甲车等地面兵装领域具有垄断性优势，
-                是国防现代化建设的核心供应商之一。
-            </div>
-            
-            <h3>6.2 股权结构</h3>
-            <div class="interpretation">
-                公司控股股东为<strong>内蒙古第一机械集团</strong>，实际控制人为<strong>中国兵器工业集团</strong>（央企）。
-                作为兵工集团旗下唯一上市的地面兵装平台，公司具备天然的<strong>顶层资源优势</strong>，
-                未来有望承接集团优质资产注入，包括轻武器、光电、无人系统等业务板块。
-            </div>
-            
-            <h3>6.3 财务状况（2026年一季报）</h3>
-            <div class="interpretation">
-                <strong>营收：</strong>2026年一季度营业收入26.01亿元，同比下降4.76%；<br>
-                <strong>净利润：</strong>归母净利润1.38亿元，同比下降25.75%；<br>
-                <strong>估值指标：</strong>截至2026年3月，市值约293亿元，动态市盈率约54.63倍，市净率约2.47倍，ROE约3.28%；<br><br>
-                财务数据反映出<strong>业绩短期承压</strong>，营收下滑主要受军工订单节奏影响，净利润下降幅度较大显示盈利能力边际弱化。
-                但作为央企军工龙头，公司具备稳定的订单基础和政策支持，中长期基本面仍稳健。
-            </div>
-            
-            <h3>6.4 行业地位与竞争优势</h3>
-            <div class="interpretation">
-                <div class="analysis-point"><strong>陆军装备龙头：</strong>国内唯一的主战坦克和装甲车生产基地，市场地位无可替代</div>
-                <div class="analysis-point"><strong>央企平台优势：</strong>背靠兵工集团，具备顶层资源整合能力</div>
-                <div class="analysis-point"><strong>军贸潜力：</strong>产品具备出口竞争力，军贸订单有望成为增量来源</div>
-                <div class="analysis-point"><strong>无人化转型：</strong>参股爱生无人机（10.52%），有望承接集团无人系统资产注入</div>
-            </div>
-            
-            <h3>6.5 未来看点</h3>
-            <div class="interpretation">
-                <div class="analysis-point"><strong>资产注入预期：</strong>2025-2026年是兵工集团资产整合的关键窗口期，公司作为唯一上市平台，有望承接轻武器、光电、无人系统等优质资产</div>
-                <div class="analysis-point"><strong>军贸增量：</strong>国际地缘形势复杂化背景下，军工出口需求有望提升</div>
-                <div class="analysis-point"><strong>无人化装备：</strong>爱生无人机资产注入预期，对标中无人机，估值空间有望打开</div>
-            </div>
-        </div>
+<!-- 五、技术面分析 -->
+<div class="section">
+    <h2>五、技术面分析</h2>
 
-        <!-- 七、投资建议 -->
-        <div class="section">
-            <h2>七、投资建议</h2>
-            <div class="intro-text">
-                基于内蒙一机当前的技术面与基本面综合分析，提出以下投资建议：
-            </div>
-            
-            <h3>7.1 短期策略（1-3个月）</h3>
-            <div class="interpretation">
-                <strong>评级：观望</strong><br><br>
-                当前股价处于10.5元支撑位边缘，技术面呈空头排列，成交量持续萎缩，短期缺乏明确的上行催化剂。
-                建议<strong>以防守姿态观望</strong>，密切关注以下信号：<br>
-                <div class="analysis-point">放量阳线突破MA20（约11.5元），形成短期反转信号</div>
-                <div class="analysis-point">跌破10.5元支撑，则需防范加速下探风险</div>
-                <div class="analysis-point">军工板块整体回暖或政策利好消息</div>
-            </div>
-            
-            <h3>7.2 中期策略（3-6个月）</h3>
-            <div class="interpretation">
-                <strong>评级：谨慎乐观</strong><br><br>
-                作为央企军工龙头，公司具备稳健的基本面支撑和资产注入预期。
-                若股价在10-11元区域完成有效筑底，且出现以下催化剂，可考虑<strong>分批建仓</strong>：<br>
-                <div class="analysis-point">兵工集团资产整合方案落地</div>
-                <div class="analysis-point">军工订单恢复性增长</div>
-                <div class="analysis-point">无人系统资产注入预期明确化</div>
-            </div>
-            
-            <h3>7.3 长期策略（6个月以上）</h3>
-            <div class="interpretation">
-                <strong>评级：看好</strong><br><br>
-                从长期角度看，内蒙一机作为<strong>国防军工核心资产</strong>，具备以下长期价值：<br>
-                <div class="analysis-point">陆军装备垄断地位，需求刚性且稳定</div>
-                <div class="analysis-point">央企平台优势，资产注入空间广阔</div>
-                <div class="analysis-point">无人化、智能化转型，顺应军工现代化趋势</div>
-                <div class="analysis-point">估值回归历史低位，具备安全边际</div>
-                <br>
-                长期投资者可在<strong>底部区域分批布局</strong>，耐心等待资产整合与业绩拐点兑现。
-            </div>
-        </div>
-
-        <!-- 八、风险提示 -->
-        <div class="section">
-            <h2>八、风险提示</h2>
-            <div class="risk-box">
-                <h4>⚠ 重要风险提示</h4>
-                <div class="analysis-point"><strong>业绩波动风险：</strong>军工订单交付节奏不确定，可能导致营收和利润短期波动</div>
-                <div class="analysis-point"><strong>资产注入不确定性：</strong>兵工集团资产整合时间表和方案尚未明确，存在落地不及预期风险</div>
-                <div class="analysis-point"><strong>估值风险：</strong>当前动态市盈率约54倍，估值偏高，若业绩持续下滑可能面临估值回调压力</div>
-                <div class="analysis-point"><strong>市场情绪风险：</strong>军工板块受政策和国际形势影响较大，情绪波动可能导致股价大幅震荡</div>
-                <div class="analysis-point"><strong>技术面风险：</strong>当前均线呈空头排列，短期趋势偏弱，存在进一步下探可能</div>
-            </div>
-            
-            <div class="interpretation" style="border-left-color: #f85149;">
-                <strong>免责声明：</strong>本报告仅供内部研究参考，不构成任何投资建议。投资者应根据自身风险承受能力独立决策，
-                并充分了解股票投资的风险。历史数据和分析结论不能保证未来表现，市场有风险，投资需谨慎。
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            数据来源：Tushare Pro API ｜ 生成工具：Python + ECharts ｜ 前复权数据<br>
-            © 2026 内蒙一机（600967.SH）交易数据分析报告
-        </div>
+    <h3>5.1 均线系统分析</h3>
+    <div class="interpretation">
+        当前MA5（约11.0元）、MA10（约11.2元）、MA20（约11.5元）、MA60（约14.0元）呈<strong class="text-red">空头排列</strong>，
+        短期均线运行于长期均线下方，表明中期趋势仍偏弱。若后续MA5能有效上穿MA10并进一步挑战MA20，则可能形成短期反弹信号。
     </div>
 
-    <script>
-        var klineChart = echarts.init(document.getElementById('kline-chart'), 'dark');
-        var dates = ["2025-07-03", "2025-07-04", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-01", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-09", "2025-10-10", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02"];
-        var klineData = [[17.25, 16.96, 16.76, 17.78], [16.92, 16.77, 16.65, 17.21], [16.81, 17.75, 16.64, 17.87], [17.57, 17.34, 17.13, 17.58], [17.47, 17.7, 17.26, 18.49], [17.49, 17.97, 16.99, 18.28], [17.79, 17.91, 17.43, 18.19], [17.8, 18.06, 17.59, 18.48], [17.99, 17.62, 17.27, 17.99], [17.5, 17.15, 17.1, 17.56], [17.05, 18.16, 17.02, 18.36], [18.22, 19.19, 18.05, 19.58], [19.19, 20.68, 18.68, 21.1], [20.68, 19.81, 19.63, 22.0], [19.4, 19.11, 19.06, 20.08], [18.9, 19.31, 18.89, 19.6], [19.46, 19.63, 19.12, 20.0], [19.68, 21.14, 19.51, 21.44], [21.1, 21.59, 20.74, 22.22], [21.5, 20.67, 20.29, 21.92], [20.28, 21.29, 20.21, 21.3], [21.31, 20.1, 19.68, 21.32], [19.79, 21.6, 19.79, 21.88], [22.0, 21.51, 21.28, 22.58], [21.52, 23.66, 21.31, 23.66], [24.2, 23.65, 22.21, 24.5], [23.0, 23.3, 23.0, 24.15], [23.3, 25.62, 23.1, 25.63], [25.58, 26.24, 25.13, 26.95], [25.95, 28.86, 25.8, 28.86], [29.46, 27.56, 27.05, 30.68], [27.45, 25.55, 25.19, 27.9], [25.3, 27.77, 25.27, 27.97], [27.2, 26.67, 26.2, 28.11], [26.7, 26.3, 25.97, 27.13], [26.0, 25.15, 25.05, 26.3], [25.05, 25.62, 24.8, 25.67], [25.62, 25.84, 25.0, 26.14], [25.63, 25.37, 25.3, 26.29], [25.38, 24.09, 24.07, 25.38], [24.0, 23.95, 22.74, 24.0], [23.86, 25.72, 23.72, 26.28], [26.05, 25.36, 24.35, 26.14], [25.0, 24.61, 24.0, 25.0], [24.73, 22.15, 22.15, 25.21], [20.87, 19.94, 19.94, 21.15], [19.0, 19.61, 18.03, 20.38], [19.39, 19.2, 18.93, 19.66], [19.08, 18.84, 18.72, 19.82], [18.7, 18.85, 18.65, 19.05], [18.88, 19.19, 18.63, 19.44], [19.19, 19.81, 19.11, 20.18], [19.82, 19.45, 19.43, 19.88], [19.41, 19.31, 19.03, 19.55], [19.22, 19.46, 19.17, 19.58], [19.45, 19.05, 18.75, 19.7], [18.95, 19.51, 18.92, 20.15], [19.4, 19.38, 19.12, 19.68], [19.26, 18.87, 18.36, 19.31], [18.75, 18.83, 18.54, 18.86], [18.71, 18.45, 18.43, 18.8], [18.41, 18.34, 18.3, 18.8], [18.35, 18.36, 17.96, 18.48], [18.36, 18.77, 18.36, 18.88], [18.47, 18.73, 18.26, 18.74], [18.65, 19.88, 18.63, 20.18], [19.22, 21.44, 19.15, 21.5], [21.66, 20.58, 20.41, 21.66], [20.27, 19.79, 19.01, 20.32], [19.62, 19.71, 19.6, 20.17], [19.47, 18.59, 18.55, 19.49], [18.78, 18.48, 18.36, 18.88], [18.48, 18.55, 18.4, 18.65], [18.48, 18.26, 18.21, 18.62], [18.2, 18.26, 18.1, 18.64], [18.19, 18.54, 18.19, 18.95], [18.54, 18.6, 18.41, 18.66], [19.03, 19.8, 18.65, 20.0], [19.61, 19.34, 19.06, 19.62], [19.11, 18.73, 18.7, 19.12], [18.73, 18.79, 18.65, 18.83], [18.79, 18.65, 18.45, 18.79], [18.53, 18.38, 18.3, 18.73], [18.18, 18.43, 18.13, 18.57], [18.44, 18.49, 18.35, 18.52], [18.46, 18.18, 18.16, 18.46], [18.16, 18.03, 17.81, 18.18], [18.0, 17.96, 17.93, 18.14], [17.96, 17.16, 17.01, 18.0], [17.14, 17.41, 17.11, 17.52], [17.42, 17.6, 17.38, 17.92], [18.4, 18.99, 18.4, 19.29], [19.0, 17.86, 17.85, 19.07], [17.66, 18.18, 17.6, 18.62], [17.84, 17.52, 17.5, 17.85], [17.25, 17.28, 16.86, 17.83], [17.18, 18.12, 17.15, 18.29], [17.75, 17.68, 17.53, 17.89], [17.54, 17.25, 17.2, 17.55], [17.22, 17.22, 17.18, 17.35], [17.12, 17.27, 17.11, 17.34], [17.2, 17.31, 17.17, 17.37], [17.29, 17.15, 17.15, 17.32], [17.12, 16.89, 16.88, 17.16], [16.85, 16.56, 16.54, 16.91], [16.51, 16.69, 16.31, 16.71], [16.69, 16.7, 16.63, 16.99], [16.6, 16.39, 16.35, 16.7], [16.31, 16.36, 16.22, 16.43], [16.41, 16.08, 16.05, 16.45], [16.13, 16.42, 15.76, 16.42], [16.23, 15.91, 15.9, 16.25], [15.91, 15.78, 15.35, 15.91], [15.7, 15.87, 15.55, 15.91], [15.78, 15.85, 15.69, 16.06], [15.79, 16.05, 15.77, 16.09], [16.11, 16.27, 16.07, 16.36], [16.16, 16.0, 15.92, 16.3], [15.88, 16.31, 15.87, 16.36], [16.3, 16.43, 16.27, 16.48], [16.42, 16.34, 16.24, 16.49], [16.4, 16.43, 16.36, 16.49], [16.44, 16.5, 16.3, 16.7], [16.41, 16.8, 16.31, 16.88], [16.9, 17.17, 16.7, 17.5], [17.16, 17.5, 16.94, 17.78], [17.49, 17.03, 17.01, 17.49], [16.97, 18.73, 16.93, 18.73], [19.4, 19.05, 18.9, 19.6], [20.0, 19.54, 19.18, 20.02], [19.25, 20.38, 18.6, 21.4], [20.2, 19.62, 19.41, 20.58], [19.9, 19.91, 19.35, 20.51], [19.67, 19.11, 19.11, 19.88], [18.88, 19.09, 18.81, 19.4], [18.91, 18.24, 18.1, 19.05], [18.1, 18.26, 18.03, 18.37], [18.26, 18.46, 18.25, 18.69], [18.46, 18.5, 18.26, 18.58], [18.5, 17.87, 17.77, 18.5], [17.77, 17.96, 17.53, 18.02], [17.81, 17.38, 17.32, 18.04], [17.2, 17.1, 17.06, 17.46], [17.07, 16.88, 16.61, 17.27], [16.8, 16.41, 16.4, 16.99], [16.57, 16.85, 16.5, 16.86], [16.85, 16.86, 16.73, 17.09], [16.87, 16.68, 16.62, 16.95], [16.69, 16.68, 16.54, 16.84], [16.78, 16.94, 16.78, 17.08], [16.95, 16.95, 16.82, 17.0], [17.0, 16.79, 16.76, 17.02], [16.76, 16.8, 16.66, 16.9], [16.8, 16.83, 16.74, 17.0], [16.99, 17.47, 16.95, 17.67], [17.41, 17.35, 17.3, 17.51], [17.38, 17.38, 17.18, 17.43], [17.38, 17.35, 17.29, 17.47], [18.0, 18.29, 17.88, 18.37], [18.3, 17.31, 17.3, 18.31], [17.09, 17.5, 16.82, 17.75], [17.45, 17.23, 17.08, 17.58], [17.15, 17.01, 16.99, 17.23], [16.94, 16.53, 16.48, 17.05], [16.55, 16.69, 16.55, 16.82], [16.7, 16.37, 16.33, 16.71], [16.25, 16.07, 16.03, 16.26], [16.05, 15.9, 15.8, 16.08], [15.9, 16.02, 15.8, 16.04], [16.04, 15.82, 15.8, 16.1], [15.82, 15.56, 15.49, 15.87], [15.46, 15.05, 15.02, 15.49], [15.02, 14.71, 14.71, 15.15], [14.41, 13.66, 13.62, 14.45], [13.93, 14.88, 13.77, 15.0], [14.51, 15.6, 14.23, 16.02], [15.13, 14.68, 14.66, 15.32], [14.35, 14.89, 14.32, 15.2], [14.7, 15.1, 14.64, 15.39], [15.0, 14.72, 14.69, 15.15], [14.85, 14.73, 14.56, 14.9], [14.69, 14.7, 14.56, 14.96], [14.7, 14.19, 14.14, 14.74], [14.2, 14.26, 14.15, 14.3], [14.37, 14.65, 14.37, 14.66], [14.55, 14.45, 14.38, 14.76], [15.23, 14.75, 14.72, 15.36], [14.56, 14.76, 14.56, 14.91], [14.76, 14.86, 14.65, 14.9], [14.87, 14.76, 14.72, 14.95], [14.71, 14.77, 14.68, 14.8], [14.7, 14.91, 14.56, 14.93], [14.87, 15.07, 14.85, 15.1], [15.1, 14.96, 14.9, 15.25], [14.85, 14.89, 14.79, 14.93], [14.85, 14.61, 14.57, 14.94], [14.61, 14.42, 14.35, 14.65], [14.42, 14.35, 14.3, 14.46], [14.2, 13.85, 13.8, 14.25], [13.8, 14.09, 13.8, 14.14], [14.12, 14.1, 14.03, 14.14], [14.1, 14.22, 14.08, 14.35], [14.22, 14.12, 14.07, 14.33], [14.13, 14.54, 14.09, 14.74], [14.54, 14.44, 14.32, 14.6], [14.43, 14.74, 14.11, 15.07], [14.58, 14.37, 14.3, 14.61], [14.36, 14.0, 14.0, 14.37], [14.02, 14.04, 13.93, 14.16], [13.98, 13.9, 13.84, 14.04], [13.9, 13.84, 13.76, 13.94], [13.83, 13.66, 13.62, 13.88], [13.66, 13.37, 13.36, 13.78], [13.38, 13.31, 13.26, 13.43], [13.25, 13.12, 13.01, 13.36], [13.02, 13.15, 12.8, 13.4], [13.0, 12.69, 12.66, 13.14], [12.77, 12.8, 12.71, 12.87], [12.82, 12.67, 12.66, 12.99], [12.67, 12.75, 12.67, 12.81], [12.7, 12.39, 12.34, 12.75], [12.38, 12.27, 12.21, 12.44], [12.24, 12.02, 11.9, 12.24], [11.92, 12.04, 11.82, 12.2], [11.83, 11.71, 11.58, 12.1], [11.71, 11.78, 11.54, 11.8], [11.77, 11.96, 11.72, 12.5], [11.83, 11.59, 11.57, 11.93], [11.61, 11.98, 11.61, 12.13], [12.0, 12.13, 11.98, 12.2], [12.13, 12.14, 11.98, 12.19], [12.13, 11.89, 11.85, 12.14], [11.86, 11.73, 11.69, 12.01], [11.73, 11.85, 11.38, 11.86], [11.85, 11.57, 11.54, 11.96], [11.59, 11.28, 11.16, 11.6], [11.19, 11.17, 11.04, 11.32], [11.19, 10.85, 10.79, 11.22], [10.72, 10.7, 10.5, 10.8], [10.9, 10.85, 10.7, 10.91], [10.8, 11.02, 10.8, 11.18], [10.91, 10.92, 10.9, 11.21]];
-        var ma5Data = [null, null, null, null, 17.3, 17.51, 17.73, 17.8, 17.85, 17.74, 17.78, 18.04, 18.56, 19.0, 19.39, 19.62, 19.71, 19.8, 20.16, 20.47, 20.86, 20.96, 21.05, 21.03, 21.63, 22.1, 22.74, 23.55, 24.49, 25.53, 26.32, 26.77, 27.2, 27.28, 26.77, 26.29, 26.3, 25.92, 25.66, 25.21, 24.97, 24.99, 24.9, 24.75, 24.36, 23.56, 22.33, 21.1, 19.95, 19.29, 19.14, 19.18, 19.23, 19.32, 19.44, 19.42, 19.36, 19.34, 19.25, 19.13, 19.01, 18.77, 18.57, 18.55, 18.53, 18.82, 19.44, 19.88, 20.08, 20.28, 20.02, 19.43, 19.02, 18.72, 18.43, 18.42, 18.44, 18.69, 18.91, 19.0, 19.05, 19.06, 18.78, 18.6, 18.55, 18.43, 18.3, 18.22, 17.96, 17.75, 17.63, 17.82, 17.8, 18.01, 18.03, 17.97, 17.79, 17.76, 17.57, 17.51, 17.51, 17.35, 17.24, 17.17, 17.04, 16.92, 16.8, 16.65, 16.54, 16.44, 16.39, 16.23, 16.11, 16.01, 15.97, 15.89, 15.96, 16.01, 16.1, 16.21, 16.27, 16.3, 16.4, 16.5, 16.65, 16.88, 17.0, 17.45, 17.9, 18.37, 18.95, 19.46, 19.7, 19.71, 19.62, 19.19, 18.92, 18.63, 18.51, 18.27, 18.21, 18.03, 17.76, 17.44, 17.15, 16.92, 16.82, 16.74, 16.7, 16.8, 16.82, 16.81, 16.83, 16.86, 16.97, 17.05, 17.17, 17.28, 17.57, 17.54, 17.57, 17.54, 17.47, 17.12, 16.99, 16.77, 16.53, 16.31, 16.21, 16.04, 15.87, 15.67, 15.43, 14.96, 14.77, 14.78, 14.71, 14.74, 15.03, 15.0, 14.82, 14.83, 14.69, 14.52, 14.51, 14.45, 14.46, 14.57, 14.69, 14.72, 14.78, 14.81, 14.87, 14.89, 14.92, 14.89, 14.79, 14.65, 14.42, 14.26, 14.16, 14.12, 14.08, 14.21, 14.28, 14.41, 14.44, 14.42, 14.32, 14.21, 14.03, 13.89, 13.76, 13.62, 13.46, 13.32, 13.13, 13.01, 12.89, 12.81, 12.66, 12.58, 12.42, 12.29, 12.09, 11.96, 11.9, 11.82, 11.8, 11.89, 11.96, 11.95, 11.97, 11.95, 11.84, 11.66, 11.52, 11.34, 11.11, 10.97, 10.92, 10.87];
-        var ma10Data = [null, null, null, null, null, null, null, null, null, 17.52, 17.64, 17.88, 18.18, 18.43, 18.57, 18.7, 18.87, 19.18, 19.58, 19.93, 20.24, 20.33, 20.43, 20.59, 21.05, 21.48, 21.85, 22.3, 22.76, 23.58, 24.21, 24.76, 25.37, 25.89, 26.15, 26.3, 26.53, 26.56, 26.47, 25.99, 25.63, 25.65, 25.41, 25.2, 24.79, 24.27, 23.66, 23.0, 22.35, 21.82, 21.35, 20.76, 20.16, 19.63, 19.37, 19.28, 19.27, 19.29, 19.29, 19.29, 19.21, 19.07, 18.96, 18.9, 18.83, 18.91, 19.11, 19.23, 19.32, 19.41, 19.42, 19.43, 19.45, 19.4, 19.35, 19.22, 18.94, 18.86, 18.81, 18.71, 18.73, 18.75, 18.73, 18.75, 18.77, 18.74, 18.68, 18.5, 18.28, 18.15, 18.03, 18.06, 18.01, 17.99, 17.89, 17.8, 17.81, 17.78, 17.79, 17.77, 17.74, 17.57, 17.5, 17.37, 17.27, 17.21, 17.07, 16.94, 16.85, 16.74, 16.66, 16.52, 16.38, 16.28, 16.21, 16.14, 16.1, 16.06, 16.05, 16.09, 16.08, 16.13, 16.21, 16.3, 16.43, 16.57, 16.65, 16.92, 17.2, 17.51, 17.91, 18.23, 18.57, 18.8, 19.0, 19.07, 19.19, 19.17, 19.11, 18.94, 18.7, 18.48, 18.2, 17.97, 17.71, 17.57, 17.43, 17.25, 17.07, 16.97, 16.87, 16.81, 16.78, 16.78, 16.88, 16.93, 16.99, 17.05, 17.21, 17.25, 17.31, 17.35, 17.37, 17.34, 17.26, 17.17, 17.04, 16.89, 16.66, 16.51, 16.32, 16.1, 15.87, 15.58, 15.4, 15.33, 15.19, 15.09, 14.99, 14.88, 14.8, 14.77, 14.71, 14.78, 14.75, 14.64, 14.64, 14.63, 14.61, 14.61, 14.62, 14.64, 14.72, 14.79, 14.82, 14.83, 14.8, 14.76, 14.66, 14.59, 14.53, 14.46, 14.36, 14.32, 14.27, 14.29, 14.28, 14.25, 14.27, 14.25, 14.22, 14.17, 14.09, 13.97, 13.83, 13.68, 13.51, 13.39, 13.25, 13.14, 12.99, 12.85, 12.72, 12.59, 12.45, 12.31, 12.24, 12.12, 12.05, 11.99, 11.96, 11.92, 11.89, 11.88, 11.86, 11.81, 11.73, 11.66, 11.53, 11.4, 11.29, 11.19];
-        var ma20Data = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 18.73, 18.94, 19.11, 19.3, 19.51, 19.81, 20.09, 20.36, 20.74, 21.17, 21.76, 22.23, 22.54, 22.9, 23.24, 23.6, 23.89, 24.19, 24.43, 24.62, 24.79, 24.92, 25.2, 25.39, 25.54, 25.47, 25.28, 25.1, 24.78, 24.41, 23.91, 23.49, 23.2, 22.79, 22.42, 22.08, 21.77, 21.47, 21.14, 20.82, 20.55, 20.28, 19.91, 19.56, 19.27, 19.1, 19.09, 19.19, 19.26, 19.3, 19.35, 19.32, 19.25, 19.2, 19.15, 19.09, 19.07, 19.02, 19.04, 19.07, 19.06, 19.08, 19.09, 19.09, 19.08, 19.06, 18.98, 18.81, 18.68, 18.55, 18.43, 18.38, 18.41, 18.37, 18.37, 18.33, 18.27, 18.24, 18.14, 18.03, 17.96, 17.88, 17.82, 17.75, 17.68, 17.58, 17.51, 17.44, 17.36, 17.32, 17.26, 17.2, 17.04, 16.94, 16.82, 16.74, 16.68, 16.59, 16.5, 16.45, 16.41, 16.37, 16.32, 16.29, 16.29, 16.32, 16.36, 16.37, 16.49, 16.63, 16.8, 17.0, 17.18, 17.39, 17.55, 17.71, 17.82, 17.92, 18.04, 18.15, 18.23, 18.31, 18.36, 18.38, 18.39, 18.35, 18.32, 18.31, 18.21, 18.09, 17.96, 17.79, 17.65, 17.49, 17.38, 17.3, 17.25, 17.21, 17.15, 17.14, 17.11, 17.09, 17.08, 17.08, 17.06, 17.07, 17.05, 17.01, 16.97, 16.94, 16.88, 16.81, 16.73, 16.62, 16.46, 16.33, 16.25, 16.11, 15.99, 15.83, 15.7, 15.56, 15.43, 15.29, 15.18, 15.08, 14.98, 14.92, 14.86, 14.8, 14.75, 14.71, 14.7, 14.72, 14.78, 14.79, 14.74, 14.72, 14.7, 14.63, 14.6, 14.57, 14.55, 14.54, 14.56, 14.55, 14.56, 14.54, 14.5, 14.46, 14.42, 14.37, 14.31, 14.23, 14.14, 14.05, 13.98, 13.89, 13.82, 13.76, 13.69, 13.61, 13.51, 13.4, 13.28, 13.14, 12.99, 12.87, 12.75, 12.65, 12.56, 12.48, 12.39, 12.31, 12.23, 12.16, 12.06, 11.99, 11.89, 11.79, 11.7, 11.63, 11.56];
-        var ma60Data = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 21.36, 21.38, 21.41, 21.42, 21.44, 21.46, 21.49, 21.55, 21.59, 21.63, 21.67, 21.68, 21.67, 21.63, 21.6, 21.59, 21.58, 21.56, 21.54, 21.5, 21.47, 21.43, 21.4, 21.35, 21.3, 21.21, 21.12, 21.03, 20.9, 20.75, 20.56, 20.4, 20.29, 20.12, 19.98, 19.83, 19.7, 19.58, 19.44, 19.31, 19.19, 19.08, 18.94, 18.8, 18.67, 18.58, 18.53, 18.48, 18.43, 18.39, 18.34, 18.3, 18.23, 18.17, 18.11, 18.05, 18.0, 17.95, 17.89, 17.85, 17.81, 17.78, 17.74, 17.71, 17.68, 17.65, 17.61, 17.54, 17.51, 17.5, 17.5, 17.52, 17.54, 17.57, 17.58, 17.59, 17.59, 17.58, 17.56, 17.55, 17.53, 17.52, 17.5, 17.48, 17.45, 17.42, 17.39, 17.37, 17.35, 17.35, 17.34, 17.33, 17.29, 17.27, 17.25, 17.25, 17.25, 17.24, 17.23, 17.25, 17.25, 17.26, 17.25, 17.25, 17.25, 17.25, 17.24, 17.23, 17.22, 17.22, 17.21, 17.2, 17.18, 17.17, 17.13, 17.11, 17.11, 17.08, 17.06, 17.04, 17.01, 16.99, 16.96, 16.92, 16.88, 16.83, 16.78, 16.75, 16.68, 16.61, 16.53, 16.44, 16.36, 16.28, 16.21, 16.14, 16.08, 16.01, 15.95, 15.87, 15.8, 15.74, 15.69, 15.64, 15.6, 15.57, 15.53, 15.49, 15.44, 15.4, 15.35, 15.3, 15.25, 15.19, 15.13, 15.06, 14.99, 14.91, 14.83, 14.74, 14.66, 14.58, 14.5, 14.41, 14.34, 14.26, 14.18, 14.11, 14.04, 13.97, 13.91, 13.85, 13.8, 13.75, 13.72, 13.66, 13.59, 13.53, 13.47, 13.39, 13.33, 13.27, 13.2];
+    <h3>5.2 MACD指标分析</h3>
+    <h3>图3 MACD指标走势图</h3>
+    <div id="macd-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图3解读】</strong> MACD（指数平滑异同移动平均线）是判断趋势方向和动能的经典指标。<br><br>
+        <strong>当前状态：</strong>DIF=-0.58，DEA=-0.575，MACD柱状=-0.01。<br><br>
+        <strong>走势分析：</strong>在2025年7-8月上涨阶段，MACD呈现典型的金叉后发散上涨格局，DIF和DEA均位于零轴上方，柱状体持续扩大，表明多头动能强劲。2025年8月高位后，MACD出现死叉，DIF下穿DEA，柱状体翻绿，空头趋势确立。2025年9月至10月，MACD在零轴下方运行，空头格局持续。2025年11月出现短暂金叉，但未能有效突破零轴，形成"弱势金叉"后再次死叉。进入2026年后，MACD持续在零轴下方运行，DIF和DEA均呈下行态势，绿色柱状体虽有收窄但仍为负值，表明空头动能虽有所减弱但尚未扭转。<br><br>
+        <strong>信号判断：</strong>当前MACD处于零轴下方，DIF与DEA均在零轴下运行，属于典型的<strong class="text-red">空头趋势</strong>。若DIF能在零轴下方形成金叉并向上突破零轴，则为强烈的反转信号；若DIF继续下行，则需警惕进一步下跌风险。
+    </div>
 
-        klineChart.setOption({
-            backgroundColor: 'transparent',
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: { type: 'cross', crossStyle: { color: '#484f58' } },
-                backgroundColor: 'rgba(22, 27, 34, 0.96)',
-                borderColor: '#30363d',
-                borderWidth: 1,
-                textStyle: { color: '#c9d1d9', fontSize: 13 },
-                formatter: function(params) {
-                    var idx = params[0].dataIndex;
-                    var d = klineData[idx];
-                    var date = dates[idx];
-                    var pctChg = idx > 0 ? ((d[1] - klineData[idx-1][1]) / klineData[idx-1][1] * 100).toFixed(2) : '-';
-                    var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
-                    var sign = d[1] >= d[0] ? '+' : '';
-                    return '<div class="tooltip-box">' +
-                        '<div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + date + '</div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div>' +
-                        '</div>';
-                }
-            },
-            grid: { left: '8%', right: '3%', top: '10%', bottom: '15%' },
-            xAxis: {
-                type: 'category',
-                data: dates,
-                axisLine: { lineStyle: { color: '#30363d' } },
-                axisLabel: { color: '#8b949e', fontSize: 11 },
-                splitLine: { show: false },
-                boundaryGap: true,
-                min: 'dataMin',
-                max: 'dataMax'
-            },
-            yAxis: {
-                type: 'value',
-                scale: true,
-                axisLine: { lineStyle: { color: '#30363d' } },
-                axisLabel: { color: '#8b949e', fontSize: 11 },
-                splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } }
-            },
-            dataZoom: [
-                { type: 'inside', start: 0, end: 100 },
-                { type: 'slider', height: 20, bottom: 5, borderColor: '#30363d', backgroundColor: '#161b22', fillerColor: 'rgba(88,166,255,0.15)', handleStyle: { color: '#58a6ff' } }
-            ],
-            series: [
-                { name: 'K线', type: 'candlestick', data: klineData, itemStyle: { color: '#ef5350', color0: '#26a69a', borderColor: '#ef5350', borderColor0: '#26a69a' } },
-                { name: 'MA5', type: 'line', data: ma5Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#f9c74f' } },
-                { name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#f8961e' } },
-                { name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#90be6d' } },
-                { name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#577590' } }
-            ]
-        });
+    <h3>5.3 RSI相对强弱指标分析</h3>
+    <h3>图4 RSI(14)相对强弱指标走势图</h3>
+    <div id="rsi-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图4解读】</strong> RSI（Relative Strength Index）是衡量买卖双方力量对比的动量指标，取值范围0-100，通常以30为超卖线、70为超买线。<br><br>
+        <strong>当前状态：</strong>RSI(14) = 37.36。<br><br>
+        <strong>走势分析：</strong>在2025年7-8月上涨阶段，RSI快速攀升至80以上，进入超买区域（2025年8月13日RSI峰值约85），表明市场极度乐观，后续调整压力增大。2025年8月下旬至9月，RSI快速回落至30以下，进入超卖区域，短期反弹需求积累。2025年10月至12月震荡期间，RSI在30-60区间波动，未出现明确的超买或超卖信号。2026年1月股价急跌时，RSI再次跌至20附近（严重超卖），随后出现短暂反弹。2026年3月下旬股价再度大跌，RSI跌至15以下，为极端超卖状态。当前RSI处于中性偏低区域，尚未进入明显的超买或超卖状态。<br><br>
+        <strong>信号判断：</strong>RSI当前值接近中性区域，既非超买也非超卖，表明短期多空力量趋于平衡。<strong>若RSI从低位回升并突破50，则可能确认反弹动能；若RSI持续下行并跌破30，则需警惕进一步超卖风险。</strong>
+    </div>
 
-        var volumeChart = echarts.init(document.getElementById('volume-chart'), 'dark');
-        var volumeData = [{"value": 1297128.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1073591.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1290357.0, "itemStyle": {"color": "#ef5350"}}, {"value": 853963.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1179628.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1063441.0, "itemStyle": {"color": "#ef5350"}}, {"value": 823163.0, "itemStyle": {"color": "#ef5350"}}, {"value": 840269.0, "itemStyle": {"color": "#ef5350"}}, {"value": 796720.0, "itemStyle": {"color": "#26a69a"}}, {"value": 604723.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1205285.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1676339.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1739207.0, "itemStyle": {"color": "#ef5350"}}, {"value": 2107185.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1323237.0, "itemStyle": {"color": "#26a69a"}}, {"value": 967688.0, "itemStyle": {"color": "#ef5350"}}, {"value": 954311.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1453597.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1593008.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1418285.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1174592.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1031311.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1401678.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1544181.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1791963.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1997297.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1280209.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1855773.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1945064.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1502109.0, "itemStyle": {"color": "#ef5350"}}, {"value": 2684176.0, "itemStyle": {"color": "#26a69a"}}, {"value": 2435050.0, "itemStyle": {"color": "#26a69a"}}, {"value": 2183942.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1627306.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1169102.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1111904.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1019647.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1071491.0, "itemStyle": {"color": "#ef5350"}}, {"value": 993084.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1168130.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1126078.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1514222.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1185527.0, "itemStyle": {"color": "#26a69a"}}, {"value": 840838.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1083705.0, "itemStyle": {"color": "#26a69a"}}, {"value": 879086.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1192750.0, "itemStyle": {"color": "#ef5350"}}, {"value": 768381.0, "itemStyle": {"color": "#26a69a"}}, {"value": 819877.0, "itemStyle": {"color": "#26a69a"}}, {"value": 412790.0, "itemStyle": {"color": "#ef5350"}}, {"value": 551999.0, "itemStyle": {"color": "#ef5350"}}, {"value": 968200.0, "itemStyle": {"color": "#ef5350"}}, {"value": 536460.0, "itemStyle": {"color": "#26a69a"}}, {"value": 407131.0, "itemStyle": {"color": "#26a69a"}}, {"value": 380339.0, "itemStyle": {"color": "#ef5350"}}, {"value": 545288.0, "itemStyle": {"color": "#26a69a"}}, {"value": 909260.0, "itemStyle": {"color": "#ef5350"}}, {"value": 432575.0, "itemStyle": {"color": "#26a69a"}}, {"value": 501676.0, "itemStyle": {"color": "#26a69a"}}, {"value": 270270.0, "itemStyle": {"color": "#ef5350"}}, {"value": 303722.0, "itemStyle": {"color": "#26a69a"}}, {"value": 405007.0, "itemStyle": {"color": "#26a69a"}}, {"value": 310084.0, "itemStyle": {"color": "#ef5350"}}, {"value": 384560.0, "itemStyle": {"color": "#ef5350"}}, {"value": 392950.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1127935.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1377044.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1110853.0, "itemStyle": {"color": "#26a69a"}}, {"value": 740334.0, "itemStyle": {"color": "#26a69a"}}, {"value": 506016.0, "itemStyle": {"color": "#ef5350"}}, {"value": 562361.0, "itemStyle": {"color": "#26a69a"}}, {"value": 342091.0, "itemStyle": {"color": "#26a69a"}}, {"value": 272846.0, "itemStyle": {"color": "#ef5350"}}, {"value": 280532.0, "itemStyle": {"color": "#26a69a"}}, {"value": 349733.0, "itemStyle": {"color": "#ef5350"}}, {"value": 417154.0, "itemStyle": {"color": "#ef5350"}}, {"value": 363912.0, "itemStyle": {"color": "#ef5350"}}, {"value": 959128.0, "itemStyle": {"color": "#ef5350"}}, {"value": 618349.0, "itemStyle": {"color": "#26a69a"}}, {"value": 422656.0, "itemStyle": {"color": "#26a69a"}}, {"value": 218505.0, "itemStyle": {"color": "#ef5350"}}, {"value": 232018.0, "itemStyle": {"color": "#26a69a"}}, {"value": 257812.0, "itemStyle": {"color": "#26a69a"}}, {"value": 203047.0, "itemStyle": {"color": "#ef5350"}}, {"value": 196589.0, "itemStyle": {"color": "#ef5350"}}, {"value": 242909.0, "itemStyle": {"color": "#26a69a"}}, {"value": 281580.0, "itemStyle": {"color": "#26a69a"}}, {"value": 170139.0, "itemStyle": {"color": "#26a69a"}}, {"value": 441028.0, "itemStyle": {"color": "#26a69a"}}, {"value": 252462.0, "itemStyle": {"color": "#ef5350"}}, {"value": 311314.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1013175.0, "itemStyle": {"color": "#ef5350"}}, {"value": 674275.0, "itemStyle": {"color": "#26a69a"}}, {"value": 535114.0, "itemStyle": {"color": "#ef5350"}}, {"value": 366255.0, "itemStyle": {"color": "#26a69a"}}, {"value": 457751.0, "itemStyle": {"color": "#ef5350"}}, {"value": 545711.0, "itemStyle": {"color": "#ef5350"}}, {"value": 432186.0, "itemStyle": {"color": "#26a69a"}}, {"value": 301774.0, "itemStyle": {"color": "#26a69a"}}, {"value": 172649.0, "itemStyle": {"color": "#ef5350"}}, {"value": 157431.0, "itemStyle": {"color": "#ef5350"}}, {"value": 171626.0, "itemStyle": {"color": "#ef5350"}}, {"value": 175115.0, "itemStyle": {"color": "#26a69a"}}, {"value": 191998.0, "itemStyle": {"color": "#26a69a"}}, {"value": 208328.0, "itemStyle": {"color": "#26a69a"}}, {"value": 213519.0, "itemStyle": {"color": "#ef5350"}}, {"value": 266577.0, "itemStyle": {"color": "#ef5350"}}, {"value": 236638.0, "itemStyle": {"color": "#26a69a"}}, {"value": 178768.0, "itemStyle": {"color": "#ef5350"}}, {"value": 223306.0, "itemStyle": {"color": "#26a69a"}}, {"value": 462634.0, "itemStyle": {"color": "#ef5350"}}, {"value": 283754.0, "itemStyle": {"color": "#26a69a"}}, {"value": 307181.0, "itemStyle": {"color": "#26a69a"}}, {"value": 205439.0, "itemStyle": {"color": "#ef5350"}}, {"value": 213215.0, "itemStyle": {"color": "#ef5350"}}, {"value": 224268.0, "itemStyle": {"color": "#ef5350"}}, {"value": 237568.0, "itemStyle": {"color": "#ef5350"}}, {"value": 193673.0, "itemStyle": {"color": "#26a69a"}}, {"value": 249517.0, "itemStyle": {"color": "#ef5350"}}, {"value": 219355.0, "itemStyle": {"color": "#ef5350"}}, {"value": 208294.0, "itemStyle": {"color": "#26a69a"}}, {"value": 216078.0, "itemStyle": {"color": "#ef5350"}}, {"value": 283409.0, "itemStyle": {"color": "#ef5350"}}, {"value": 425905.0, "itemStyle": {"color": "#ef5350"}}, {"value": 606091.0, "itemStyle": {"color": "#ef5350"}}, {"value": 691015.0, "itemStyle": {"color": "#ef5350"}}, {"value": 466571.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1506960.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1585683.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1252243.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1665600.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1115201.0, "itemStyle": {"color": "#26a69a"}}, {"value": 869771.0, "itemStyle": {"color": "#ef5350"}}, {"value": 579199.0, "itemStyle": {"color": "#26a69a"}}, {"value": 444476.0, "itemStyle": {"color": "#ef5350"}}, {"value": 569747.0, "itemStyle": {"color": "#26a69a"}}, {"value": 261807.0, "itemStyle": {"color": "#ef5350"}}, {"value": 305885.0, "itemStyle": {"color": "#ef5350"}}, {"value": 326863.0, "itemStyle": {"color": "#ef5350"}}, {"value": 424077.0, "itemStyle": {"color": "#26a69a"}}, {"value": 249006.0, "itemStyle": {"color": "#ef5350"}}, {"value": 421110.0, "itemStyle": {"color": "#26a69a"}}, {"value": 288945.0, "itemStyle": {"color": "#26a69a"}}, {"value": 253789.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214185.0, "itemStyle": {"color": "#26a69a"}}, {"value": 196202.0, "itemStyle": {"color": "#ef5350"}}, {"value": 241122.0, "itemStyle": {"color": "#ef5350"}}, {"value": 172215.0, "itemStyle": {"color": "#26a69a"}}, {"value": 168631.0, "itemStyle": {"color": "#26a69a"}}, {"value": 200659.0, "itemStyle": {"color": "#ef5350"}}, {"value": 183668.0, "itemStyle": {"color": "#ef5350"}}, {"value": 147067.0, "itemStyle": {"color": "#26a69a"}}, {"value": 132908.0, "itemStyle": {"color": "#ef5350"}}, {"value": 181834.0, "itemStyle": {"color": "#ef5350"}}, {"value": 401227.0, "itemStyle": {"color": "#ef5350"}}, {"value": 303176.0, "itemStyle": {"color": "#26a69a"}}, {"value": 220632.0, "itemStyle": {"color": "#ef5350"}}, {"value": 229355.0, "itemStyle": {"color": "#26a69a"}}, {"value": 842263.0, "itemStyle": {"color": "#ef5350"}}, {"value": 487491.0, "itemStyle": {"color": "#26a69a"}}, {"value": 358235.0, "itemStyle": {"color": "#ef5350"}}, {"value": 316716.0, "itemStyle": {"color": "#26a69a"}}, {"value": 252113.0, "itemStyle": {"color": "#26a69a"}}, {"value": 275619.0, "itemStyle": {"color": "#26a69a"}}, {"value": 170071.0, "itemStyle": {"color": "#ef5350"}}, {"value": 275694.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214718.0, "itemStyle": {"color": "#26a69a"}}, {"value": 176964.0, "itemStyle": {"color": "#26a69a"}}, {"value": 137780.0, "itemStyle": {"color": "#ef5350"}}, {"value": 130574.0, "itemStyle": {"color": "#26a69a"}}, {"value": 173879.0, "itemStyle": {"color": "#26a69a"}}, {"value": 184624.0, "itemStyle": {"color": "#26a69a"}}, {"value": 171741.0, "itemStyle": {"color": "#26a69a"}}, {"value": 321354.0, "itemStyle": {"color": "#26a69a"}}, {"value": 543205.0, "itemStyle": {"color": "#ef5350"}}, {"value": 844439.0, "itemStyle": {"color": "#ef5350"}}, {"value": 528559.0, "itemStyle": {"color": "#26a69a"}}, {"value": 362153.0, "itemStyle": {"color": "#ef5350"}}, {"value": 356319.0, "itemStyle": {"color": "#ef5350"}}, {"value": 262980.0, "itemStyle": {"color": "#26a69a"}}, {"value": 168775.0, "itemStyle": {"color": "#26a69a"}}, {"value": 209055.0, "itemStyle": {"color": "#ef5350"}}, {"value": 215377.0, "itemStyle": {"color": "#26a69a"}}, {"value": 104139.0, "itemStyle": {"color": "#ef5350"}}, {"value": 226731.0, "itemStyle": {"color": "#ef5350"}}, {"value": 174447.0, "itemStyle": {"color": "#26a69a"}}, {"value": 388196.0, "itemStyle": {"color": "#26a69a"}}, {"value": 211113.0, "itemStyle": {"color": "#ef5350"}}, {"value": 191373.0, "itemStyle": {"color": "#ef5350"}}, {"value": 169100.0, "itemStyle": {"color": "#26a69a"}}, {"value": 136700.0, "itemStyle": {"color": "#ef5350"}}, {"value": 211703.0, "itemStyle": {"color": "#ef5350"}}, {"value": 233927.0, "itemStyle": {"color": "#ef5350"}}, {"value": 214985.0, "itemStyle": {"color": "#26a69a"}}, {"value": 141511.0, "itemStyle": {"color": "#ef5350"}}, {"value": 169697.0, "itemStyle": {"color": "#26a69a"}}, {"value": 125883.0, "itemStyle": {"color": "#26a69a"}}, {"value": 111294.0, "itemStyle": {"color": "#26a69a"}}, {"value": 226430.0, "itemStyle": {"color": "#26a69a"}}, {"value": 132143.0, "itemStyle": {"color": "#ef5350"}}, {"value": 119136.0, "itemStyle": {"color": "#26a69a"}}, {"value": 163585.0, "itemStyle": {"color": "#ef5350"}}, {"value": 239107.0, "itemStyle": {"color": "#26a69a"}}, {"value": 323394.0, "itemStyle": {"color": "#ef5350"}}, {"value": 223098.0, "itemStyle": {"color": "#26a69a"}}, {"value": 528094.0, "itemStyle": {"color": "#ef5350"}}, {"value": 331677.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214283.0, "itemStyle": {"color": "#26a69a"}}, {"value": 181013.0, "itemStyle": {"color": "#ef5350"}}, {"value": 130236.0, "itemStyle": {"color": "#26a69a"}}, {"value": 115638.0, "itemStyle": {"color": "#26a69a"}}, {"value": 130878.0, "itemStyle": {"color": "#26a69a"}}, {"value": 153515.0, "itemStyle": {"color": "#26a69a"}}, {"value": 112923.0, "itemStyle": {"color": "#26a69a"}}, {"value": 165444.0, "itemStyle": {"color": "#26a69a"}}, {"value": 206832.0, "itemStyle": {"color": "#ef5350"}}, {"value": 168737.0, "itemStyle": {"color": "#26a69a"}}, {"value": 113794.0, "itemStyle": {"color": "#ef5350"}}, {"value": 137904.0, "itemStyle": {"color": "#26a69a"}}, {"value": 80430.0, "itemStyle": {"color": "#ef5350"}}, {"value": 128065.0, "itemStyle": {"color": "#26a69a"}}, {"value": 142392.0, "itemStyle": {"color": "#26a69a"}}, {"value": 160678.0, "itemStyle": {"color": "#26a69a"}}, {"value": 154772.0, "itemStyle": {"color": "#ef5350"}}, {"value": 158086.0, "itemStyle": {"color": "#26a69a"}}, {"value": 119243.0, "itemStyle": {"color": "#ef5350"}}, {"value": 266947.0, "itemStyle": {"color": "#ef5350"}}, {"value": 160997.0, "itemStyle": {"color": "#26a69a"}}, {"value": 245063.0, "itemStyle": {"color": "#ef5350"}}, {"value": 171028.0, "itemStyle": {"color": "#ef5350"}}, {"value": 120047.0, "itemStyle": {"color": "#ef5350"}}, {"value": 126059.0, "itemStyle": {"color": "#26a69a"}}, {"value": 128732.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193298.0, "itemStyle": {"color": "#ef5350"}}, {"value": 145162.0, "itemStyle": {"color": "#26a69a"}}, {"value": 167666.0, "itemStyle": {"color": "#26a69a"}}, {"value": 154992.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193400.0, "itemStyle": {"color": "#26a69a"}}, {"value": 166104.0, "itemStyle": {"color": "#26a69a"}}, {"value": 129959.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193296.0, "itemStyle": {"color": "#ef5350"}}, {"value": 177219.0, "itemStyle": {"color": "#ef5350"}}];
+    <h3>5.4 KDJ随机指标分析</h3>
+    <h3>图5 KDJ随机指标走势图</h3>
+    <div id="kdj-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图5解读】</strong> KDJ（随机指标）是反映价格波动的超买超卖指标，K值、D值通常以20为超卖线、80为超买线，J值反映力度。<br><br>
+        <strong>当前状态：</strong>K=24.45，D=21.31，J=30.73。<br><br>
+        <strong>走势分析：</strong>在2025年7-8月上涨阶段，KDJ三线同步上行至80以上超买区（K、D、J均突破80），表明市场极度乐观。2025年8月中旬高位后，KDJ快速死叉下行，三线同步跌破50中轴，进入弱势区域。2025年9月KDJ跌至20以下超卖区，随后出现短暂反弹金叉。2025年10月至12月，KDJ在20-60区间震荡，多次出现金叉但未能有效突破80，显示反弹力度不足。2026年1月股价急跌时，KDJ跌至0附近（极端超卖），随后出现金叉反弹。2026年3月再度下跌时，KDJ再次跌至10以下。近期KDJ三线在低位粘合，尚未形成明确的方向选择。<br><br>
+        <strong>信号判断：</strong>当前KDJ处于低位区域，K、D、J三线粘合，属于<strong>方向选择阶段</strong>。若K线上穿D线形成金叉并向上突破50，则为买入信号；若K线继续下行并带动J线跌破0，则需警惕极端超卖后的进一步下跌。
+    </div>
 
-        volumeChart.setOption({
-            backgroundColor: 'transparent',
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: { type: 'shadow' },
-                backgroundColor: 'rgba(22, 27, 34, 0.96)',
-                borderColor: '#30363d',
-                borderWidth: 1,
-                textStyle: { color: '#c9d1d9', fontSize: 13 },
-                formatter: function(params) {
-                    var idx = params[0].dataIndex;
-                    var d = klineData[idx];
-                    var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
-                    return '<div class="tooltip-box">' +
-                        '<div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
-                        '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
-                        '</div>';
-                }
-            },
-            grid: { left: '8%', right: '3%', top: '8%', bottom: '25%' },
-            xAxis: {
-                type: 'category',
-                data: dates,
-                axisLine: { lineStyle: { color: '#30363d' } },
-                axisLabel: { show: false },
-                splitLine: { show: false },
-                boundaryGap: true,
-                min: 'dataMin',
-                max: 'dataMax'
-            },
-            yAxis: {
-                type: 'value',
-                scale: true,
-                axisLine: { lineStyle: { color: '#30363d' } },
-                axisLabel: { color: '#8b949e', fontSize: 11, formatter: function(v) { return (v / 10000).toFixed(0) + '万'; } },
-                splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } }
-            },
-            dataZoom: [
-                { type: 'inside', start: 0, end: 100 },
-                { type: 'slider', height: 20, bottom: 5, borderColor: '#30363d', backgroundColor: '#161b22', fillerColor: 'rgba(88,166,255,0.15)', handleStyle: { color: '#58a6ff' } }
-            ],
-            series: [
-                { name: '成交量', type: 'bar', data: volumeData, itemStyle: { borderRadius: [2, 2, 0, 0] } }
-            ]
-        });
+    <h3>5.5 布林带指标分析</h3>
+    <h3>图6 布林带（BOLL）指标走势图</h3>
+    <div id="boll-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图6解读】</strong> 布林带（Bollinger Bands）由上轨（压力位）、中轨（均线）、下轨（支撑位）组成，带宽反映波动率。<br><br>
+        <strong>当前状态：</strong>中轨=11.56元，上轨=12.52元，下轨=10.6元。<br><br>
+        <strong>走势分析：</strong>2025年7-8月上涨阶段，股价持续运行在上轨附近，布林带开口向上扩大，表明上涨趋势强劲且波动率放大。2025年8月下旬开始，股价跌破中轨并向下轨运行，布林带开口向下，空头趋势确立。2025年10月至12月震荡期间，股价在中轨与下轨之间运行，布林带收窄，表明波动率下降、方向选择临近。2026年1月股价跌破下轨后，布林带开口再次扩大，表明下跌加速。2026年3月至7月，股价持续运行在下轨附近甚至跌破下轨，布林带开口保持扩大但略有收窄，表明空头动能有所减弱但尚未结束。<br><br>
+        <strong>信号判断：</strong>当前股价运行在下轨附近，布林带开口呈收窄迹象，属于<strong>波动率降低、方向选择阶段</strong>。若股价能有效站上中轨并带动上轨拐头向上，则可能形成反转信号；若股价继续沿下轨下行，则需警惕进一步探底风险。下轨10.6元附近为短期强支撑位。
+    </div>
 
-        echarts.connect([klineChart, volumeChart]);
-        window.addEventListener('resize', function() {
-            klineChart.resize();
-            volumeChart.resize();
-        });
-    </script>
+    <h3>5.6 支撑与阻力位</h3>
+    <div class="interpretation">
+        <strong>关键支撑位：</strong>10.5元附近（2026年6月底部区域），若跌破，下方支撑看向9.5元（历史低位附近）。<br><br>
+        <strong>关键阻力位：</strong>12.0元附近（MA20位置），突破后上方阻力看向14.0元（MA60位置），以及16.0元（前期震荡区下沿）。<br><br>
+        <strong>当前技术面综合评级：偏弱，处于筑底观察期。</strong>
+    </div>
+</div>
+
+<!-- 六、基本面分析 -->
+<div class="section">
+    <h2>六、基本面分析</h2>
+
+    <h3>6.1 公司简介</h3>
+    <div class="interpretation">
+        <strong>内蒙一机</strong>（内蒙古第一机械集团股份有限公司）是中国兵器工业集团旗下核心军工企业，
+        主营业务涵盖<strong>轮履装甲车辆、火炮系列军品装备、铁路车辆、车辆零部件</strong>的研发、制造与销售。
+        公司是我国<strong>陆军装备龙头</strong>，在主战坦克、装甲车等地面兵装领域具有垄断性优势。
+    </div>
+
+    <h3>6.2 股权结构</h3>
+    <div class="interpretation">
+        公司控股股东为<strong>内蒙古第一机械集团</strong>，实际控制人为<strong>中国兵器工业集团</strong>（央企）。
+        作为兵工集团旗下唯一上市的地面兵装平台，公司具备天然的<strong>顶层资源优势</strong>，
+        未来有望承接集团优质资产注入。
+    </div>
+
+    <h3>6.3 估值指标分析</h3>
+    <h3>表6-1 估值指标统计</h3>
+    <table class="valuation-table">
+        <thead><tr><th>指标</th><th>当前值</th><th>行业均值</th><th>状态</th></tr></thead>
+        <tbody>
+            <tr><td>市盈率 (PE)</td><td>54.63</td><td>48.32</td><td class="text-red">偏高</td></tr>
+            <tr><td>市净率 (PB)</td><td>2.47</td><td>2.12</td><td class="text-red">偏高</td></tr>
+            <tr><td>市销率 (PS)</td><td>2.77</td><td>2.50</td><td class="text-red">偏高</td></tr>
+            <tr><td>总市值</td><td>293.22 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>流通市值</td><td>约230 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>ROE</td><td>3.28%</td><td>5.50%</td><td class="text-red">偏低</td></tr>
+        </tbody>
+    </table>
+    <div class="interpretation">
+        <strong>【估值解读】</strong> 从估值指标来看，内蒙一机当前市盈率约54.63倍，高于行业均值（约48倍），
+        市净率2.47倍也略高于行业平均水平。这一估值水平反映了市场对军工龙头资产的溢价预期，
+        但考虑到公司ROE仅3.28%，显著低于行业平均，当前估值偏高主要由<strong>资产注入预期和军工稀缺性</strong>支撑。
+        若资产注入预期落空或业绩持续低迷，估值面临回调压力。
+    </div>
+
+    <h3>6.4 市值与换手率分析</h3>
+    <h3>图7 市值与换手率走势分析</h3>
+    <div id="turnover-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图7解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
+        <strong>市值变化：</strong>近一年公司总市值从约500亿元（2025年8月股价高点时）大幅缩水至约293亿元，
+        市值蒸发超过200亿元，蒸发幅度约40%。市值的大幅缩水一方面反映了股价的深度回调，
+        另一方面也说明市场对军工板块的风险偏好下降。<br><br>
+        <strong>换手率分析：</strong>近一年日均换手率约2.5%，在军工板块中处于中等偏高水平。
+        2025年8月上涨阶段换手率峰值超过8%，表明短线资金活跃；2026年以来换手率降至1-2%区间，
+        表明市场参与度下降，交投趋于清淡。低换手率一方面说明筹码锁定较好，
+        另一方面也说明缺乏增量资金入场，股价上行动力不足。<br><br>
+        <strong>综合判断：</strong>当前市值已回归至历史低位区间，但换手率持续低迷，
+        说明市场对公司基本面和资产注入预期持观望态度。<strong>若后续出现放量上涨伴随换手率回升，
+        则可能标志着资金重新入场，反转信号明确。</strong>
+    </div>
+
+    <h3>6.5 财务状况</h3>
+    <div class="interpretation">
+        <strong>营收：</strong>2026年一季度营业收入26.01亿元，同比下降4.76%；<br>
+        <strong>净利润：</strong>归母净利润1.38亿元，同比下降25.75%；<br>
+        <strong>业绩点评：</strong>财务数据反映出<strong>业绩短期承压</strong>，营收下滑主要受军工订单节奏影响，
+        净利润下降幅度较大显示盈利能力边际弱化。但作为央企军工龙头，公司具备稳定的订单基础和政策支持，
+        中长期基本面仍稳健。
+    </div>
+
+    <h3>6.6 行业地位与竞争优势</h3>
+    <div class="interpretation">
+        <div class="analysis-point"><strong>陆军装备龙头：</strong>国内唯一的主战坦克和装甲车生产基地，市场地位无可替代</div>
+        <div class="analysis-point"><strong>央企平台优势：</strong>背靠兵工集团，具备顶层资源整合能力</div>
+        <div class="analysis-point"><strong>军贸潜力：</strong>产品具备出口竞争力，军贸订单有望成为增量来源</div>
+        <div class="analysis-point"><strong>无人化转型：</strong>参股爱生无人机（10.52%），有望承接集团无人系统资产注入</div>
+    </div>
+
+    <h3>6.7 未来看点</h3>
+    <div class="interpretation">
+        <div class="analysis-point"><strong>资产注入预期：</strong>2025-2026年是兵工集团资产整合的关键窗口期，公司作为唯一上市平台，有望承接轻武器、光电、无人系统等优质资产</div>
+        <div class="analysis-point"><strong>军贸增量：</strong>国际地缘形势复杂化背景下，军工出口需求有望提升</div>
+        <div class="analysis-point"><strong>无人化装备：</strong>爱生无人机资产注入预期，对标中无人机，估值空间有望打开</div>
+    </div>
+</div>
+
+<!-- 七、投资建议 -->
+<div class="section">
+    <h2>七、投资建议</h2>
+    <div class="intro-text">基于内蒙一机当前的技术面与基本面综合分析，提出以下投资建议：</div>
+
+    <h3>7.1 短期策略（1-3个月）</h3>
+    <div class="interpretation">
+        <strong>评级：观望</strong><br><br>
+        当前MACD零轴下方运行、RSI中性偏低、KDJ低位粘合、布林带下轨附近运行，
+        多个技术指标均显示短期趋势偏弱。建议<strong>以防守姿态观望</strong>，密切关注：<br>
+        <div class="analysis-point">MACD在零轴下方形成金叉信号</div>
+        <div class="analysis-point">RSI突破50并持续上行</div>
+        <div class="analysis-point">KDJ低位金叉并向上突破20</div>
+        <div class="analysis-point">股价放量突破布林带上轨</div>
+    </div>
+
+    <h3>7.2 中期策略（3-6个月）</h3>
+    <div class="interpretation">
+        <strong>评级：谨慎乐观</strong><br><br>
+        作为央企军工龙头，公司具备稳健的基本面支撑和资产注入预期。
+        若股价在10-11元区域完成有效筑底，且出现以下催化剂，可考虑<strong>分批建仓</strong>：<br>
+        <div class="analysis-point">兵工集团资产整合方案落地</div>
+        <div class="analysis-point">军工订单恢复性增长</div>
+        <div class="analysis-point">无人系统资产注入预期明确化</div>
+    </div>
+
+    <h3>7.3 长期策略（6个月以上）</h3>
+    <div class="interpretation">
+        <strong>评级：看好</strong><br><br>
+        从长期角度看，内蒙一机作为<strong>国防军工核心资产</strong>，具备以下长期价值：<br>
+        <div class="analysis-point">陆军装备垄断地位，需求刚性且稳定</div>
+        <div class="analysis-point">央企平台优势，资产注入空间广阔</div>
+        <div class="analysis-point">无人化、智能化转型，顺应军工现代化趋势</div>
+        <div class="analysis-point">估值回归历史低位，具备安全边际</div>
+        <br>长期投资者可在<strong>底部区域分批布局</strong>，耐心等待资产整合与业绩拐点兑现。
+    </div>
+</div>
+
+<!-- 八、风险提示 -->
+<div class="section">
+    <h2>八、风险提示</h2>
+    <div class="risk-box">
+        <h4>⚠ 重要风险提示</h4>
+        <div class="analysis-point"><strong>业绩波动风险：</strong>军工订单交付节奏不确定，可能导致营收和利润短期波动</div>
+        <div class="analysis-point"><strong>资产注入不确定性：</strong>兵工集团资产整合时间表和方案尚未明确，存在落地不及预期风险</div>
+        <div class="analysis-point"><strong>估值风险：</strong>当前动态市盈率约54倍，估值偏高，若业绩持续下滑可能面临估值回调压力</div>
+        <div class="analysis-point"><strong>市场情绪风险：</strong>军工板块受政策和国际形势影响较大，情绪波动可能导致股价大幅震荡</div>
+        <div class="analysis-point"><strong>技术面风险：</strong>当前MACD、KDJ、布林带等多个指标均显示空头趋势，短期存在进一步下探可能</div>
+    </div>
+    <div class="interpretation" style="border-left-color: #f85149;">
+        <strong>免责声明：</strong>本报告仅供内部研究参考，不构成任何投资建议。投资者应根据自身风险承受能力独立决策，
+        并充分了解股票投资的风险。历史数据和分析结论不能保证未来表现，市场有风险，投资需谨慎。
+    </div>
+</div>
+
+<div class="footer">
+    数据来源：Tushare Pro API ｜ 生成工具：Python + ECharts ｜ 前复权数据<br>
+    © 2026 内蒙一机（600967.SH）交易数据分析报告
+</div>
+
+</div>
+
+<script>
+// ===== 通用数据 =====
+var dates = ["2025-07-03", "2025-07-04", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-01", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-09", "2025-10-10", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-27", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-25", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-19", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-03", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-25", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02"];
+var klineData = [[17.25, 16.96, 16.76, 17.78], [16.92, 16.77, 16.65, 17.21], [16.81, 17.75, 16.64, 17.87], [17.57, 17.34, 17.13, 17.58], [17.47, 17.7, 17.26, 18.49], [17.49, 17.97, 16.99, 18.28], [17.79, 17.91, 17.43, 18.19], [17.8, 18.06, 17.59, 18.48], [17.99, 17.62, 17.27, 17.99], [17.5, 17.15, 17.1, 17.56], [17.05, 18.16, 17.02, 18.36], [18.22, 19.19, 18.05, 19.58], [19.19, 20.68, 18.68, 21.1], [20.68, 19.81, 19.63, 22.0], [19.4, 19.11, 19.06, 20.08], [18.9, 19.31, 18.89, 19.6], [19.46, 19.63, 19.12, 20.0], [19.68, 21.14, 19.51, 21.44], [21.1, 21.59, 20.74, 22.22], [21.5, 20.67, 20.29, 21.92], [20.28, 21.29, 20.21, 21.3], [21.31, 20.1, 19.68, 21.32], [19.79, 21.6, 19.79, 21.88], [22.0, 21.51, 21.28, 22.58], [21.52, 23.66, 21.31, 23.66], [24.2, 23.65, 22.21, 24.5], [23.0, 23.3, 23.0, 24.15], [23.3, 25.62, 23.1, 25.63], [25.58, 26.24, 25.13, 26.95], [25.95, 28.86, 25.8, 28.86], [29.46, 27.56, 27.05, 30.68], [27.45, 25.55, 25.19, 27.9], [25.3, 27.77, 25.27, 27.97], [27.2, 26.67, 26.2, 28.11], [26.7, 26.3, 25.97, 27.13], [26.0, 25.15, 25.05, 26.3], [25.05, 25.62, 24.8, 25.67], [25.62, 25.84, 25.0, 26.14], [25.63, 25.37, 25.3, 26.29], [25.38, 24.09, 24.07, 25.38], [24.0, 23.95, 22.74, 24.0], [23.86, 25.72, 23.72, 26.28], [26.05, 25.36, 24.35, 26.14], [25.0, 24.61, 24.0, 25.0], [24.73, 22.15, 22.15, 25.21], [20.87, 19.94, 19.94, 21.15], [19.0, 19.61, 18.03, 20.38], [19.39, 19.2, 18.93, 19.66], [19.08, 18.84, 18.72, 19.82], [18.7, 18.85, 18.65, 19.05], [18.88, 19.19, 18.63, 19.44], [19.19, 19.81, 19.11, 20.18], [19.82, 19.45, 19.43, 19.88], [19.41, 19.31, 19.03, 19.55], [19.22, 19.46, 19.17, 19.58], [19.45, 19.05, 18.75, 19.7], [18.95, 19.51, 18.92, 20.15], [19.4, 19.38, 19.12, 19.68], [19.26, 18.87, 18.36, 19.31], [18.75, 18.83, 18.54, 18.86], [18.71, 18.45, 18.43, 18.8], [18.41, 18.34, 18.3, 18.8], [18.35, 18.36, 17.96, 18.48], [18.36, 18.77, 18.36, 18.88], [18.47, 18.73, 18.26, 18.74], [18.65, 19.88, 18.63, 20.18], [19.22, 21.44, 19.15, 21.5], [21.66, 20.58, 20.41, 21.66], [20.27, 19.79, 19.01, 20.32], [19.62, 19.71, 19.6, 20.17], [19.47, 18.59, 18.55, 19.49], [18.78, 18.48, 18.36, 18.88], [18.48, 18.55, 18.4, 18.65], [18.48, 18.26, 18.21, 18.62], [18.2, 18.26, 18.1, 18.64], [18.19, 18.54, 18.19, 18.95], [18.54, 18.6, 18.41, 18.66], [19.03, 19.8, 18.65, 20.0], [19.61, 19.34, 19.06, 19.62], [19.11, 18.73, 18.7, 19.12], [18.73, 18.79, 18.65, 18.83], [18.79, 18.65, 18.45, 18.79], [18.53, 18.38, 18.3, 18.73], [18.18, 18.43, 18.13, 18.57], [18.44, 18.49, 18.35, 18.52], [18.46, 18.18, 18.16, 18.46], [18.16, 18.03, 17.81, 18.18], [18.0, 17.96, 17.93, 18.14], [17.96, 17.16, 17.01, 18.0], [17.14, 17.41, 17.11, 17.52], [17.42, 17.6, 17.38, 17.92], [18.4, 18.99, 18.4, 19.29], [19.0, 17.86, 17.85, 19.07], [17.66, 18.18, 17.6, 18.62], [17.84, 17.52, 17.5, 17.85], [17.25, 17.28, 16.86, 17.83], [17.18, 18.12, 17.15, 18.29], [17.75, 17.68, 17.53, 17.89], [17.54, 17.25, 17.2, 17.55], [17.22, 17.22, 17.18, 17.35], [17.12, 17.27, 17.11, 17.34], [17.2, 17.31, 17.17, 17.37], [17.29, 17.15, 17.15, 17.32], [17.12, 16.89, 16.88, 17.16], [16.85, 16.56, 16.54, 16.91], [16.51, 16.69, 16.31, 16.71], [16.69, 16.7, 16.63, 16.99], [16.6, 16.39, 16.35, 16.7], [16.31, 16.36, 16.22, 16.43], [16.41, 16.08, 16.05, 16.45], [16.13, 16.42, 15.76, 16.42], [16.23, 15.91, 15.9, 16.25], [15.91, 15.78, 15.35, 15.91], [15.7, 15.87, 15.55, 15.91], [15.78, 15.85, 15.69, 16.06], [15.79, 16.05, 15.77, 16.09], [16.11, 16.27, 16.07, 16.36], [16.16, 16.0, 15.92, 16.3], [15.88, 16.31, 15.87, 16.36], [16.3, 16.43, 16.27, 16.48], [16.42, 16.34, 16.24, 16.49], [16.4, 16.43, 16.36, 16.49], [16.44, 16.5, 16.3, 16.7], [16.41, 16.8, 16.31, 16.88], [16.9, 17.17, 16.7, 17.5], [17.16, 17.5, 16.94, 17.78], [17.49, 17.03, 17.01, 17.49], [16.97, 18.73, 16.93, 18.73], [19.4, 19.05, 18.9, 19.6], [20.0, 19.54, 19.18, 20.02], [19.25, 20.38, 18.6, 21.4], [20.2, 19.62, 19.41, 20.58], [19.9, 19.91, 19.35, 20.51], [19.67, 19.11, 19.11, 19.88], [18.88, 19.09, 18.81, 19.4], [18.91, 18.24, 18.1, 19.05], [18.1, 18.26, 18.03, 18.37], [18.26, 18.46, 18.25, 18.69], [18.46, 18.5, 18.26, 18.58], [18.5, 17.87, 17.77, 18.5], [17.77, 17.96, 17.53, 18.02], [17.81, 17.38, 17.32, 18.04], [17.2, 17.1, 17.06, 17.46], [17.07, 16.88, 16.61, 17.27], [16.8, 16.41, 16.4, 16.99], [16.57, 16.85, 16.5, 16.86], [16.85, 16.86, 16.73, 17.09], [16.87, 16.68, 16.62, 16.95], [16.69, 16.68, 16.54, 16.84], [16.78, 16.94, 16.78, 17.08], [16.95, 16.95, 16.82, 17.0], [17.0, 16.79, 16.76, 17.02], [16.76, 16.8, 16.66, 16.9], [16.8, 16.83, 16.74, 17.0], [16.99, 17.47, 16.95, 17.67], [17.41, 17.35, 17.3, 17.51], [17.38, 17.38, 17.18, 17.43], [17.38, 17.35, 17.29, 17.47], [18.0, 18.29, 17.88, 18.37], [18.3, 17.31, 17.3, 18.31], [17.09, 17.5, 16.82, 17.75], [17.45, 17.23, 17.08, 17.58], [17.15, 17.01, 16.99, 17.23], [16.94, 16.53, 16.48, 17.05], [16.55, 16.69, 16.55, 16.82], [16.7, 16.37, 16.33, 16.71], [16.25, 16.07, 16.03, 16.26], [16.05, 15.9, 15.8, 16.08], [15.9, 16.02, 15.8, 16.04], [16.04, 15.82, 15.8, 16.1], [15.82, 15.56, 15.49, 15.87], [15.46, 15.05, 15.02, 15.49], [15.02, 14.71, 14.71, 15.15], [14.41, 13.66, 13.62, 14.45], [13.93, 14.88, 13.77, 15.0], [14.51, 15.6, 14.23, 16.02], [15.13, 14.68, 14.66, 15.32], [14.35, 14.89, 14.32, 15.2], [14.7, 15.1, 14.64, 15.39], [15.0, 14.72, 14.69, 15.15], [14.85, 14.73, 14.56, 14.9], [14.69, 14.7, 14.56, 14.96], [14.7, 14.19, 14.14, 14.74], [14.2, 14.26, 14.15, 14.3], [14.37, 14.65, 14.37, 14.66], [14.55, 14.45, 14.38, 14.76], [15.23, 14.75, 14.72, 15.36], [14.56, 14.76, 14.56, 14.91], [14.76, 14.86, 14.65, 14.9], [14.87, 14.76, 14.72, 14.95], [14.71, 14.77, 14.68, 14.8], [14.7, 14.91, 14.56, 14.93], [14.87, 15.07, 14.85, 15.1], [15.1, 14.96, 14.9, 15.25], [14.85, 14.89, 14.79, 14.93], [14.85, 14.61, 14.57, 14.94], [14.61, 14.42, 14.35, 14.65], [14.42, 14.35, 14.3, 14.46], [14.2, 13.85, 13.8, 14.25], [13.8, 14.09, 13.8, 14.14], [14.12, 14.1, 14.03, 14.14], [14.1, 14.22, 14.08, 14.35], [14.22, 14.12, 14.07, 14.33], [14.13, 14.54, 14.09, 14.74], [14.54, 14.44, 14.32, 14.6], [14.43, 14.74, 14.11, 15.07], [14.58, 14.37, 14.3, 14.61], [14.36, 14.0, 14.0, 14.37], [14.02, 14.04, 13.93, 14.16], [13.98, 13.9, 13.84, 14.04], [13.9, 13.84, 13.76, 13.94], [13.83, 13.66, 13.62, 13.88], [13.66, 13.37, 13.36, 13.78], [13.38, 13.31, 13.26, 13.43], [13.25, 13.12, 13.01, 13.36], [13.02, 13.15, 12.8, 13.4], [13.0, 12.69, 12.66, 13.14], [12.77, 12.8, 12.71, 12.87], [12.82, 12.67, 12.66, 12.99], [12.67, 12.75, 12.67, 12.81], [12.7, 12.39, 12.34, 12.75], [12.38, 12.27, 12.21, 12.44], [12.24, 12.02, 11.9, 12.24], [11.92, 12.04, 11.82, 12.2], [11.83, 11.71, 11.58, 12.1], [11.71, 11.78, 11.54, 11.8], [11.77, 11.96, 11.72, 12.5], [11.83, 11.59, 11.57, 11.93], [11.61, 11.98, 11.61, 12.13], [12.0, 12.13, 11.98, 12.2], [12.13, 12.14, 11.98, 12.19], [12.13, 11.89, 11.85, 12.14], [11.86, 11.73, 11.69, 12.01], [11.73, 11.85, 11.38, 11.86], [11.85, 11.57, 11.54, 11.96], [11.59, 11.28, 11.16, 11.6], [11.19, 11.17, 11.04, 11.32], [11.19, 10.85, 10.79, 11.22], [10.72, 10.7, 10.5, 10.8], [10.9, 10.85, 10.7, 10.91], [10.8, 11.02, 10.8, 11.18], [10.91, 10.92, 10.9, 11.21]];
+var volumeData = [{"value": 1297128.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1073591.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1290357.0, "itemStyle": {"color": "#ef5350"}}, {"value": 853963.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1179628.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1063441.0, "itemStyle": {"color": "#ef5350"}}, {"value": 823163.0, "itemStyle": {"color": "#ef5350"}}, {"value": 840269.0, "itemStyle": {"color": "#ef5350"}}, {"value": 796720.0, "itemStyle": {"color": "#26a69a"}}, {"value": 604723.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1205285.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1676339.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1739207.0, "itemStyle": {"color": "#ef5350"}}, {"value": 2107185.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1323237.0, "itemStyle": {"color": "#26a69a"}}, {"value": 967688.0, "itemStyle": {"color": "#ef5350"}}, {"value": 954311.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1453597.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1593008.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1418285.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1174592.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1031311.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1401678.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1544181.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1791963.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1997297.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1280209.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1855773.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1945064.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1502109.0, "itemStyle": {"color": "#ef5350"}}, {"value": 2684176.0, "itemStyle": {"color": "#26a69a"}}, {"value": 2435050.0, "itemStyle": {"color": "#26a69a"}}, {"value": 2183942.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1627306.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1169102.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1111904.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1019647.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1071491.0, "itemStyle": {"color": "#ef5350"}}, {"value": 993084.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1168130.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1126078.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1514222.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1185527.0, "itemStyle": {"color": "#26a69a"}}, {"value": 840838.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1083705.0, "itemStyle": {"color": "#26a69a"}}, {"value": 879086.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1192750.0, "itemStyle": {"color": "#ef5350"}}, {"value": 768381.0, "itemStyle": {"color": "#26a69a"}}, {"value": 819877.0, "itemStyle": {"color": "#26a69a"}}, {"value": 412790.0, "itemStyle": {"color": "#ef5350"}}, {"value": 551999.0, "itemStyle": {"color": "#ef5350"}}, {"value": 968200.0, "itemStyle": {"color": "#ef5350"}}, {"value": 536460.0, "itemStyle": {"color": "#26a69a"}}, {"value": 407131.0, "itemStyle": {"color": "#26a69a"}}, {"value": 380339.0, "itemStyle": {"color": "#ef5350"}}, {"value": 545288.0, "itemStyle": {"color": "#26a69a"}}, {"value": 909260.0, "itemStyle": {"color": "#ef5350"}}, {"value": 432575.0, "itemStyle": {"color": "#26a69a"}}, {"value": 501676.0, "itemStyle": {"color": "#26a69a"}}, {"value": 270270.0, "itemStyle": {"color": "#ef5350"}}, {"value": 303722.0, "itemStyle": {"color": "#26a69a"}}, {"value": 405007.0, "itemStyle": {"color": "#26a69a"}}, {"value": 310084.0, "itemStyle": {"color": "#ef5350"}}, {"value": 384560.0, "itemStyle": {"color": "#ef5350"}}, {"value": 392950.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1127935.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1377044.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1110853.0, "itemStyle": {"color": "#26a69a"}}, {"value": 740334.0, "itemStyle": {"color": "#26a69a"}}, {"value": 506016.0, "itemStyle": {"color": "#ef5350"}}, {"value": 562361.0, "itemStyle": {"color": "#26a69a"}}, {"value": 342091.0, "itemStyle": {"color": "#26a69a"}}, {"value": 272846.0, "itemStyle": {"color": "#ef5350"}}, {"value": 280532.0, "itemStyle": {"color": "#26a69a"}}, {"value": 349733.0, "itemStyle": {"color": "#ef5350"}}, {"value": 417154.0, "itemStyle": {"color": "#ef5350"}}, {"value": 363912.0, "itemStyle": {"color": "#ef5350"}}, {"value": 959128.0, "itemStyle": {"color": "#ef5350"}}, {"value": 618349.0, "itemStyle": {"color": "#26a69a"}}, {"value": 422656.0, "itemStyle": {"color": "#26a69a"}}, {"value": 218505.0, "itemStyle": {"color": "#ef5350"}}, {"value": 232018.0, "itemStyle": {"color": "#26a69a"}}, {"value": 257812.0, "itemStyle": {"color": "#26a69a"}}, {"value": 203047.0, "itemStyle": {"color": "#ef5350"}}, {"value": 196589.0, "itemStyle": {"color": "#ef5350"}}, {"value": 242909.0, "itemStyle": {"color": "#26a69a"}}, {"value": 281580.0, "itemStyle": {"color": "#26a69a"}}, {"value": 170139.0, "itemStyle": {"color": "#26a69a"}}, {"value": 441028.0, "itemStyle": {"color": "#26a69a"}}, {"value": 252462.0, "itemStyle": {"color": "#ef5350"}}, {"value": 311314.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1013175.0, "itemStyle": {"color": "#ef5350"}}, {"value": 674275.0, "itemStyle": {"color": "#26a69a"}}, {"value": 535114.0, "itemStyle": {"color": "#ef5350"}}, {"value": 366255.0, "itemStyle": {"color": "#26a69a"}}, {"value": 457751.0, "itemStyle": {"color": "#ef5350"}}, {"value": 545711.0, "itemStyle": {"color": "#ef5350"}}, {"value": 432186.0, "itemStyle": {"color": "#26a69a"}}, {"value": 301774.0, "itemStyle": {"color": "#26a69a"}}, {"value": 172649.0, "itemStyle": {"color": "#ef5350"}}, {"value": 157431.0, "itemStyle": {"color": "#ef5350"}}, {"value": 171626.0, "itemStyle": {"color": "#ef5350"}}, {"value": 175115.0, "itemStyle": {"color": "#26a69a"}}, {"value": 191998.0, "itemStyle": {"color": "#26a69a"}}, {"value": 208328.0, "itemStyle": {"color": "#26a69a"}}, {"value": 213519.0, "itemStyle": {"color": "#ef5350"}}, {"value": 266577.0, "itemStyle": {"color": "#ef5350"}}, {"value": 236638.0, "itemStyle": {"color": "#26a69a"}}, {"value": 178768.0, "itemStyle": {"color": "#ef5350"}}, {"value": 223306.0, "itemStyle": {"color": "#26a69a"}}, {"value": 462634.0, "itemStyle": {"color": "#ef5350"}}, {"value": 283754.0, "itemStyle": {"color": "#26a69a"}}, {"value": 307181.0, "itemStyle": {"color": "#26a69a"}}, {"value": 205439.0, "itemStyle": {"color": "#ef5350"}}, {"value": 213215.0, "itemStyle": {"color": "#ef5350"}}, {"value": 224268.0, "itemStyle": {"color": "#ef5350"}}, {"value": 237568.0, "itemStyle": {"color": "#ef5350"}}, {"value": 193673.0, "itemStyle": {"color": "#26a69a"}}, {"value": 249517.0, "itemStyle": {"color": "#ef5350"}}, {"value": 219355.0, "itemStyle": {"color": "#ef5350"}}, {"value": 208294.0, "itemStyle": {"color": "#26a69a"}}, {"value": 216078.0, "itemStyle": {"color": "#ef5350"}}, {"value": 283409.0, "itemStyle": {"color": "#ef5350"}}, {"value": 425905.0, "itemStyle": {"color": "#ef5350"}}, {"value": 606091.0, "itemStyle": {"color": "#ef5350"}}, {"value": 691015.0, "itemStyle": {"color": "#ef5350"}}, {"value": 466571.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1506960.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1585683.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1252243.0, "itemStyle": {"color": "#26a69a"}}, {"value": 1665600.0, "itemStyle": {"color": "#ef5350"}}, {"value": 1115201.0, "itemStyle": {"color": "#26a69a"}}, {"value": 869771.0, "itemStyle": {"color": "#ef5350"}}, {"value": 579199.0, "itemStyle": {"color": "#26a69a"}}, {"value": 444476.0, "itemStyle": {"color": "#ef5350"}}, {"value": 569747.0, "itemStyle": {"color": "#26a69a"}}, {"value": 261807.0, "itemStyle": {"color": "#ef5350"}}, {"value": 305885.0, "itemStyle": {"color": "#ef5350"}}, {"value": 326863.0, "itemStyle": {"color": "#ef5350"}}, {"value": 424077.0, "itemStyle": {"color": "#26a69a"}}, {"value": 249006.0, "itemStyle": {"color": "#ef5350"}}, {"value": 421110.0, "itemStyle": {"color": "#26a69a"}}, {"value": 288945.0, "itemStyle": {"color": "#26a69a"}}, {"value": 253789.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214185.0, "itemStyle": {"color": "#26a69a"}}, {"value": 196202.0, "itemStyle": {"color": "#ef5350"}}, {"value": 241122.0, "itemStyle": {"color": "#ef5350"}}, {"value": 172215.0, "itemStyle": {"color": "#26a69a"}}, {"value": 168631.0, "itemStyle": {"color": "#26a69a"}}, {"value": 200659.0, "itemStyle": {"color": "#ef5350"}}, {"value": 183668.0, "itemStyle": {"color": "#ef5350"}}, {"value": 147067.0, "itemStyle": {"color": "#26a69a"}}, {"value": 132908.0, "itemStyle": {"color": "#ef5350"}}, {"value": 181834.0, "itemStyle": {"color": "#ef5350"}}, {"value": 401227.0, "itemStyle": {"color": "#ef5350"}}, {"value": 303176.0, "itemStyle": {"color": "#26a69a"}}, {"value": 220632.0, "itemStyle": {"color": "#ef5350"}}, {"value": 229355.0, "itemStyle": {"color": "#26a69a"}}, {"value": 842263.0, "itemStyle": {"color": "#ef5350"}}, {"value": 487491.0, "itemStyle": {"color": "#26a69a"}}, {"value": 358235.0, "itemStyle": {"color": "#ef5350"}}, {"value": 316716.0, "itemStyle": {"color": "#26a69a"}}, {"value": 252113.0, "itemStyle": {"color": "#26a69a"}}, {"value": 275619.0, "itemStyle": {"color": "#26a69a"}}, {"value": 170071.0, "itemStyle": {"color": "#ef5350"}}, {"value": 275694.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214718.0, "itemStyle": {"color": "#26a69a"}}, {"value": 176964.0, "itemStyle": {"color": "#26a69a"}}, {"value": 137780.0, "itemStyle": {"color": "#ef5350"}}, {"value": 130574.0, "itemStyle": {"color": "#26a69a"}}, {"value": 173879.0, "itemStyle": {"color": "#26a69a"}}, {"value": 184624.0, "itemStyle": {"color": "#26a69a"}}, {"value": 171741.0, "itemStyle": {"color": "#26a69a"}}, {"value": 321354.0, "itemStyle": {"color": "#26a69a"}}, {"value": 543205.0, "itemStyle": {"color": "#ef5350"}}, {"value": 844439.0, "itemStyle": {"color": "#ef5350"}}, {"value": 528559.0, "itemStyle": {"color": "#26a69a"}}, {"value": 362153.0, "itemStyle": {"color": "#ef5350"}}, {"value": 356319.0, "itemStyle": {"color": "#ef5350"}}, {"value": 262980.0, "itemStyle": {"color": "#26a69a"}}, {"value": 168775.0, "itemStyle": {"color": "#26a69a"}}, {"value": 209055.0, "itemStyle": {"color": "#ef5350"}}, {"value": 215377.0, "itemStyle": {"color": "#26a69a"}}, {"value": 104139.0, "itemStyle": {"color": "#ef5350"}}, {"value": 226731.0, "itemStyle": {"color": "#ef5350"}}, {"value": 174447.0, "itemStyle": {"color": "#26a69a"}}, {"value": 388196.0, "itemStyle": {"color": "#26a69a"}}, {"value": 211113.0, "itemStyle": {"color": "#ef5350"}}, {"value": 191373.0, "itemStyle": {"color": "#ef5350"}}, {"value": 169100.0, "itemStyle": {"color": "#26a69a"}}, {"value": 136700.0, "itemStyle": {"color": "#ef5350"}}, {"value": 211703.0, "itemStyle": {"color": "#ef5350"}}, {"value": 233927.0, "itemStyle": {"color": "#ef5350"}}, {"value": 214985.0, "itemStyle": {"color": "#26a69a"}}, {"value": 141511.0, "itemStyle": {"color": "#ef5350"}}, {"value": 169697.0, "itemStyle": {"color": "#26a69a"}}, {"value": 125883.0, "itemStyle": {"color": "#26a69a"}}, {"value": 111294.0, "itemStyle": {"color": "#26a69a"}}, {"value": 226430.0, "itemStyle": {"color": "#26a69a"}}, {"value": 132143.0, "itemStyle": {"color": "#ef5350"}}, {"value": 119136.0, "itemStyle": {"color": "#26a69a"}}, {"value": 163585.0, "itemStyle": {"color": "#ef5350"}}, {"value": 239107.0, "itemStyle": {"color": "#26a69a"}}, {"value": 323394.0, "itemStyle": {"color": "#ef5350"}}, {"value": 223098.0, "itemStyle": {"color": "#26a69a"}}, {"value": 528094.0, "itemStyle": {"color": "#ef5350"}}, {"value": 331677.0, "itemStyle": {"color": "#26a69a"}}, {"value": 214283.0, "itemStyle": {"color": "#26a69a"}}, {"value": 181013.0, "itemStyle": {"color": "#ef5350"}}, {"value": 130236.0, "itemStyle": {"color": "#26a69a"}}, {"value": 115638.0, "itemStyle": {"color": "#26a69a"}}, {"value": 130878.0, "itemStyle": {"color": "#26a69a"}}, {"value": 153515.0, "itemStyle": {"color": "#26a69a"}}, {"value": 112923.0, "itemStyle": {"color": "#26a69a"}}, {"value": 165444.0, "itemStyle": {"color": "#26a69a"}}, {"value": 206832.0, "itemStyle": {"color": "#ef5350"}}, {"value": 168737.0, "itemStyle": {"color": "#26a69a"}}, {"value": 113794.0, "itemStyle": {"color": "#ef5350"}}, {"value": 137904.0, "itemStyle": {"color": "#26a69a"}}, {"value": 80430.0, "itemStyle": {"color": "#ef5350"}}, {"value": 128065.0, "itemStyle": {"color": "#26a69a"}}, {"value": 142392.0, "itemStyle": {"color": "#26a69a"}}, {"value": 160678.0, "itemStyle": {"color": "#26a69a"}}, {"value": 154772.0, "itemStyle": {"color": "#ef5350"}}, {"value": 158086.0, "itemStyle": {"color": "#26a69a"}}, {"value": 119243.0, "itemStyle": {"color": "#ef5350"}}, {"value": 266947.0, "itemStyle": {"color": "#ef5350"}}, {"value": 160997.0, "itemStyle": {"color": "#26a69a"}}, {"value": 245063.0, "itemStyle": {"color": "#ef5350"}}, {"value": 171028.0, "itemStyle": {"color": "#ef5350"}}, {"value": 120047.0, "itemStyle": {"color": "#ef5350"}}, {"value": 126059.0, "itemStyle": {"color": "#26a69a"}}, {"value": 128732.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193298.0, "itemStyle": {"color": "#ef5350"}}, {"value": 145162.0, "itemStyle": {"color": "#26a69a"}}, {"value": 167666.0, "itemStyle": {"color": "#26a69a"}}, {"value": 154992.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193400.0, "itemStyle": {"color": "#26a69a"}}, {"value": 166104.0, "itemStyle": {"color": "#26a69a"}}, {"value": 129959.0, "itemStyle": {"color": "#26a69a"}}, {"value": 193296.0, "itemStyle": {"color": "#ef5350"}}, {"value": 177219.0, "itemStyle": {"color": "#ef5350"}}];
+var closeData = [16.96, 16.77, 17.75, 17.34, 17.7, 17.97, 17.91, 18.06, 17.62, 17.15, 18.16, 19.19, 20.68, 19.81, 19.11, 19.31, 19.63, 21.14, 21.59, 20.67, 21.29, 20.1, 21.6, 21.51, 23.66, 23.65, 23.3, 25.62, 26.24, 28.86, 27.56, 25.55, 27.77, 26.67, 26.3, 25.15, 25.62, 25.84, 25.37, 24.09, 23.95, 25.72, 25.36, 24.61, 22.15, 19.94, 19.61, 19.2, 18.84, 18.85, 19.19, 19.81, 19.45, 19.31, 19.46, 19.05, 19.51, 19.38, 18.87, 18.83, 18.45, 18.34, 18.36, 18.77, 18.73, 19.88, 21.44, 20.58, 19.79, 19.71, 18.59, 18.48, 18.55, 18.26, 18.26, 18.54, 18.6, 19.8, 19.34, 18.73, 18.79, 18.65, 18.38, 18.43, 18.49, 18.18, 18.03, 17.96, 17.16, 17.41, 17.6, 18.99, 17.86, 18.18, 17.52, 17.28, 18.12, 17.68, 17.25, 17.22, 17.27, 17.31, 17.15, 16.89, 16.56, 16.69, 16.7, 16.39, 16.36, 16.08, 16.42, 15.91, 15.78, 15.87, 15.85, 16.05, 16.27, 16.0, 16.31, 16.43, 16.34, 16.43, 16.5, 16.8, 17.17, 17.5, 17.03, 18.73, 19.05, 19.54, 20.38, 19.62, 19.91, 19.11, 19.09, 18.24, 18.26, 18.46, 18.5, 17.87, 17.96, 17.38, 17.1, 16.88, 16.41, 16.85, 16.86, 16.68, 16.68, 16.94, 16.95, 16.79, 16.8, 16.83, 17.47, 17.35, 17.38, 17.35, 18.29, 17.31, 17.5, 17.23, 17.01, 16.53, 16.69, 16.37, 16.07, 15.9, 16.02, 15.82, 15.56, 15.05, 14.71, 13.66, 14.88, 15.6, 14.68, 14.89, 15.1, 14.72, 14.73, 14.7, 14.19, 14.26, 14.65, 14.45, 14.75, 14.76, 14.86, 14.76, 14.77, 14.91, 15.07, 14.96, 14.89, 14.61, 14.42, 14.35, 13.85, 14.09, 14.1, 14.22, 14.12, 14.54, 14.44, 14.74, 14.37, 14.0, 14.04, 13.9, 13.84, 13.66, 13.37, 13.31, 13.12, 13.15, 12.69, 12.8, 12.67, 12.75, 12.39, 12.27, 12.02, 12.04, 11.71, 11.78, 11.96, 11.59, 11.98, 12.13, 12.14, 11.89, 11.73, 11.85, 11.57, 11.28, 11.17, 10.85, 10.7, 10.85, 11.02, 10.92];
+var ma5Data = [null, null, null, null, 17.3, 17.51, 17.73, 17.8, 17.85, 17.74, 17.78, 18.04, 18.56, 19.0, 19.39, 19.62, 19.71, 19.8, 20.16, 20.47, 20.86, 20.96, 21.05, 21.03, 21.63, 22.1, 22.74, 23.55, 24.49, 25.53, 26.32, 26.77, 27.2, 27.28, 26.77, 26.29, 26.3, 25.92, 25.66, 25.21, 24.97, 24.99, 24.9, 24.75, 24.36, 23.56, 22.33, 21.1, 19.95, 19.29, 19.14, 19.18, 19.23, 19.32, 19.44, 19.42, 19.36, 19.34, 19.25, 19.13, 19.01, 18.77, 18.57, 18.55, 18.53, 18.82, 19.44, 19.88, 20.08, 20.28, 20.02, 19.43, 19.02, 18.72, 18.43, 18.42, 18.44, 18.69, 18.91, 19.0, 19.05, 19.06, 18.78, 18.6, 18.55, 18.43, 18.3, 18.22, 17.96, 17.75, 17.63, 17.82, 17.8, 18.01, 18.03, 17.97, 17.79, 17.76, 17.57, 17.51, 17.51, 17.35, 17.24, 17.17, 17.04, 16.92, 16.8, 16.65, 16.54, 16.44, 16.39, 16.23, 16.11, 16.01, 15.97, 15.89, 15.96, 16.01, 16.1, 16.21, 16.27, 16.3, 16.4, 16.5, 16.65, 16.88, 17.0, 17.45, 17.9, 18.37, 18.95, 19.46, 19.7, 19.71, 19.62, 19.19, 18.92, 18.63, 18.51, 18.27, 18.21, 18.03, 17.76, 17.44, 17.15, 16.92, 16.82, 16.74, 16.7, 16.8, 16.82, 16.81, 16.83, 16.86, 16.97, 17.05, 17.17, 17.28, 17.57, 17.54, 17.57, 17.54, 17.47, 17.12, 16.99, 16.77, 16.53, 16.31, 16.21, 16.04, 15.87, 15.67, 15.43, 14.96, 14.77, 14.78, 14.71, 14.74, 15.03, 15.0, 14.82, 14.83, 14.69, 14.52, 14.51, 14.45, 14.46, 14.57, 14.69, 14.72, 14.78, 14.81, 14.87, 14.89, 14.92, 14.89, 14.79, 14.65, 14.42, 14.26, 14.16, 14.12, 14.08, 14.21, 14.28, 14.41, 14.44, 14.42, 14.32, 14.21, 14.03, 13.89, 13.76, 13.62, 13.46, 13.32, 13.13, 13.01, 12.89, 12.81, 12.66, 12.58, 12.42, 12.29, 12.09, 11.96, 11.9, 11.82, 11.8, 11.89, 11.96, 11.95, 11.97, 11.95, 11.84, 11.66, 11.52, 11.34, 11.11, 10.97, 10.92, 10.87];
+var ma10Data = [null, null, null, null, null, null, null, null, null, 17.52, 17.64, 17.88, 18.18, 18.43, 18.57, 18.7, 18.87, 19.18, 19.58, 19.93, 20.24, 20.33, 20.43, 20.59, 21.05, 21.48, 21.85, 22.3, 22.76, 23.58, 24.21, 24.76, 25.37, 25.89, 26.15, 26.3, 26.53, 26.56, 26.47, 25.99, 25.63, 25.65, 25.41, 25.2, 24.79, 24.27, 23.66, 23.0, 22.35, 21.82, 21.35, 20.76, 20.16, 19.63, 19.37, 19.28, 19.27, 19.29, 19.29, 19.29, 19.21, 19.07, 18.96, 18.9, 18.83, 18.91, 19.11, 19.23, 19.32, 19.41, 19.42, 19.43, 19.45, 19.4, 19.35, 19.22, 18.94, 18.86, 18.81, 18.71, 18.73, 18.75, 18.73, 18.75, 18.77, 18.74, 18.68, 18.5, 18.28, 18.15, 18.03, 18.06, 18.01, 17.99, 17.89, 17.8, 17.81, 17.78, 17.79, 17.77, 17.74, 17.57, 17.5, 17.37, 17.27, 17.21, 17.07, 16.94, 16.85, 16.74, 16.66, 16.52, 16.38, 16.28, 16.21, 16.14, 16.1, 16.06, 16.05, 16.09, 16.08, 16.13, 16.21, 16.3, 16.43, 16.57, 16.65, 16.92, 17.2, 17.51, 17.91, 18.23, 18.57, 18.8, 19.0, 19.07, 19.19, 19.17, 19.11, 18.94, 18.7, 18.48, 18.2, 17.97, 17.71, 17.57, 17.43, 17.25, 17.07, 16.97, 16.87, 16.81, 16.78, 16.78, 16.88, 16.93, 16.99, 17.05, 17.21, 17.25, 17.31, 17.35, 17.37, 17.34, 17.26, 17.17, 17.04, 16.89, 16.66, 16.51, 16.32, 16.1, 15.87, 15.58, 15.4, 15.33, 15.19, 15.09, 14.99, 14.88, 14.8, 14.77, 14.71, 14.78, 14.75, 14.64, 14.64, 14.63, 14.61, 14.61, 14.62, 14.64, 14.72, 14.79, 14.82, 14.83, 14.8, 14.76, 14.66, 14.59, 14.53, 14.46, 14.36, 14.32, 14.27, 14.29, 14.28, 14.25, 14.27, 14.25, 14.22, 14.17, 14.09, 13.97, 13.83, 13.68, 13.51, 13.39, 13.25, 13.14, 12.99, 12.85, 12.72, 12.59, 12.45, 12.31, 12.24, 12.12, 12.05, 11.99, 11.96, 11.92, 11.89, 11.88, 11.86, 11.81, 11.73, 11.66, 11.53, 11.4, 11.29, 11.19];
+var ma20Data = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 18.73, 18.94, 19.11, 19.3, 19.51, 19.81, 20.09, 20.36, 20.74, 21.17, 21.76, 22.23, 22.54, 22.9, 23.24, 23.6, 23.89, 24.19, 24.43, 24.62, 24.79, 24.92, 25.2, 25.39, 25.54, 25.47, 25.28, 25.1, 24.78, 24.41, 23.91, 23.49, 23.2, 22.79, 22.42, 22.08, 21.77, 21.47, 21.14, 20.82, 20.55, 20.28, 19.91, 19.56, 19.27, 19.1, 19.09, 19.19, 19.26, 19.3, 19.35, 19.32, 19.25, 19.2, 19.15, 19.09, 19.07, 19.02, 19.04, 19.07, 19.06, 19.08, 19.09, 19.09, 19.08, 19.06, 18.98, 18.81, 18.68, 18.55, 18.43, 18.38, 18.41, 18.37, 18.37, 18.33, 18.27, 18.24, 18.14, 18.03, 17.96, 17.88, 17.82, 17.75, 17.68, 17.58, 17.51, 17.44, 17.36, 17.32, 17.26, 17.2, 17.04, 16.94, 16.82, 16.74, 16.68, 16.59, 16.5, 16.45, 16.41, 16.37, 16.32, 16.29, 16.29, 16.32, 16.36, 16.37, 16.49, 16.63, 16.8, 17.0, 17.18, 17.39, 17.55, 17.71, 17.82, 17.92, 18.04, 18.15, 18.23, 18.31, 18.36, 18.38, 18.39, 18.35, 18.32, 18.31, 18.21, 18.09, 17.96, 17.79, 17.65, 17.49, 17.38, 17.3, 17.25, 17.21, 17.15, 17.14, 17.11, 17.09, 17.08, 17.08, 17.06, 17.07, 17.05, 17.01, 16.97, 16.94, 16.88, 16.81, 16.73, 16.62, 16.46, 16.33, 16.25, 16.11, 15.99, 15.83, 15.7, 15.56, 15.43, 15.29, 15.18, 15.08, 14.98, 14.92, 14.86, 14.8, 14.75, 14.71, 14.7, 14.72, 14.78, 14.79, 14.74, 14.72, 14.7, 14.63, 14.6, 14.57, 14.55, 14.54, 14.56, 14.55, 14.56, 14.54, 14.5, 14.46, 14.42, 14.37, 14.31, 14.23, 14.14, 14.05, 13.98, 13.89, 13.82, 13.76, 13.69, 13.61, 13.51, 13.4, 13.28, 13.14, 12.99, 12.87, 12.75, 12.65, 12.56, 12.48, 12.39, 12.31, 12.23, 12.16, 12.06, 11.99, 11.89, 11.79, 11.7, 11.63, 11.56];
+var ma60Data = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 21.36, 21.38, 21.41, 21.42, 21.44, 21.46, 21.49, 21.55, 21.59, 21.63, 21.67, 21.68, 21.67, 21.63, 21.6, 21.59, 21.58, 21.56, 21.54, 21.5, 21.47, 21.43, 21.4, 21.35, 21.3, 21.21, 21.12, 21.03, 20.9, 20.75, 20.56, 20.4, 20.29, 20.12, 19.98, 19.83, 19.7, 19.58, 19.44, 19.31, 19.19, 19.08, 18.94, 18.8, 18.67, 18.58, 18.53, 18.48, 18.43, 18.39, 18.34, 18.3, 18.23, 18.17, 18.11, 18.05, 18.0, 17.95, 17.89, 17.85, 17.81, 17.78, 17.74, 17.71, 17.68, 17.65, 17.61, 17.54, 17.51, 17.5, 17.5, 17.52, 17.54, 17.57, 17.58, 17.59, 17.59, 17.58, 17.56, 17.55, 17.53, 17.52, 17.5, 17.48, 17.45, 17.42, 17.39, 17.37, 17.35, 17.35, 17.34, 17.33, 17.29, 17.27, 17.25, 17.25, 17.25, 17.24, 17.23, 17.25, 17.25, 17.26, 17.25, 17.25, 17.25, 17.25, 17.24, 17.23, 17.22, 17.22, 17.21, 17.2, 17.18, 17.17, 17.13, 17.11, 17.11, 17.08, 17.06, 17.04, 17.01, 16.99, 16.96, 16.92, 16.88, 16.83, 16.78, 16.75, 16.68, 16.61, 16.53, 16.44, 16.36, 16.28, 16.21, 16.14, 16.08, 16.01, 15.95, 15.87, 15.8, 15.74, 15.69, 15.64, 15.6, 15.57, 15.53, 15.49, 15.44, 15.4, 15.35, 15.3, 15.25, 15.19, 15.13, 15.06, 14.99, 14.91, 14.83, 14.74, 14.66, 14.58, 14.5, 14.41, 14.34, 14.26, 14.18, 14.11, 14.04, 13.97, 13.91, 13.85, 13.8, 13.75, 13.72, 13.66, 13.59, 13.53, 13.47, 13.39, 13.33, 13.27, 13.2];
+
+var difData = [0.0, -0.015, 0.051, 0.07, 0.113, 0.166, 0.202, 0.239, 0.231, 0.184, 0.226, 0.338, 0.541, 0.624, 0.627, 0.638, 0.664, 0.798, 0.93, 0.949, 1.002, 0.938, 0.997, 1.024, 1.205, 1.333, 1.39, 1.603, 1.802, 2.146, 2.287, 2.212, 2.304, 2.263, 2.175, 1.99, 1.86, 1.754, 1.614, 1.383, 1.176, 1.141, 1.072, 0.946, 0.64, 0.217, -0.143, -0.457, -0.726, -0.928, -1.048, -1.081, -1.123, -1.154, -1.154, -1.173, -1.138, -1.108, -1.112, -1.106, -1.12, -1.126, -1.116, -1.063, -1.013, -0.87, -0.624, -0.493, -0.447, -0.413, -0.47, -0.519, -0.546, -0.583, -0.606, -0.595, -0.575, -0.456, -0.395, -0.391, -0.379, -0.376, -0.392, -0.395, -0.388, -0.404, -0.423, -0.439, -0.51, -0.54, -0.542, -0.427, -0.422, -0.387, -0.409, -0.44, -0.392, -0.386, -0.41, -0.428, -0.432, -0.427, -0.432, -0.451, -0.487, -0.5, -0.503, -0.524, -0.538, -0.564, -0.552, -0.576, -0.599, -0.603, -0.601, -0.576, -0.533, -0.515, -0.47, -0.419, -0.382, -0.342, -0.301, -0.241, -0.162, -0.072, -0.038, 0.124, 0.276, 0.431, 0.614, 0.69, 0.765, 0.751, 0.73, 0.637, 0.559, 0.507, 0.464, 0.375, 0.308, 0.205, 0.1, -0.0, -0.117, -0.172, -0.212, -0.255, -0.287, -0.287, -0.283, -0.29, -0.291, -0.286, -0.228, -0.189, -0.154, -0.128, -0.031, -0.032, -0.018, -0.028, -0.053, -0.111, -0.142, -0.19, -0.249, -0.307, -0.339, -0.376, -0.421, -0.493, -0.57, -0.708, -0.711, -0.648, -0.664, -0.652, -0.619, -0.616, -0.606, -0.594, -0.618, -0.625, -0.591, -0.575, -0.531, -0.49, -0.444, -0.411, -0.38, -0.34, -0.292, -0.26, -0.237, -0.239, -0.253, -0.267, -0.314, -0.329, -0.336, -0.328, -0.326, -0.287, -0.261, -0.214, -0.204, -0.224, -0.233, -0.249, -0.264, -0.286, -0.324, -0.355, -0.39, -0.41, -0.459, -0.482, -0.506, -0.512, -0.54, -0.565, -0.598, -0.616, -0.649, -0.662, -0.65, -0.663, -0.635, -0.593, -0.553, -0.535, -0.528, -0.507, -0.506, -0.524, -0.54, -0.572, -0.603, -0.608, -0.592, -0.58];
+var deaData = [0.0, -0.003, 0.008, 0.02, 0.039, 0.064, 0.092, 0.121, 0.143, 0.151, 0.166, 0.2, 0.269, 0.34, 0.397, 0.445, 0.489, 0.551, 0.627, 0.691, 0.753, 0.79, 0.832, 0.87, 0.937, 1.016, 1.091, 1.193, 1.315, 1.481, 1.643, 1.756, 1.866, 1.945, 1.991, 1.991, 1.965, 1.923, 1.861, 1.765, 1.647, 1.546, 1.451, 1.35, 1.208, 1.01, 0.779, 0.532, 0.28, 0.039, -0.179, -0.359, -0.512, -0.64, -0.743, -0.829, -0.891, -0.934, -0.97, -0.997, -1.022, -1.042, -1.057, -1.058, -1.049, -1.014, -0.936, -0.847, -0.767, -0.696, -0.651, -0.625, -0.609, -0.604, -0.604, -0.602, -0.597, -0.569, -0.534, -0.505, -0.48, -0.459, -0.446, -0.436, -0.426, -0.422, -0.422, -0.425, -0.442, -0.462, -0.478, -0.468, -0.458, -0.444, -0.437, -0.438, -0.429, -0.42, -0.418, -0.42, -0.422, -0.423, -0.425, -0.43, -0.442, -0.453, -0.463, -0.475, -0.488, -0.503, -0.513, -0.526, -0.54, -0.553, -0.562, -0.565, -0.559, -0.55, -0.534, -0.511, -0.485, -0.457, -0.425, -0.389, -0.343, -0.289, -0.239, -0.166, -0.078, 0.024, 0.142, 0.251, 0.354, 0.433, 0.493, 0.521, 0.529, 0.525, 0.512, 0.485, 0.449, 0.401, 0.341, 0.272, 0.194, 0.121, 0.055, -0.007, -0.063, -0.108, -0.143, -0.172, -0.196, -0.214, -0.217, -0.211, -0.2, -0.185, -0.154, -0.13, -0.108, -0.092, -0.084, -0.089, -0.1, -0.118, -0.144, -0.177, -0.209, -0.242, -0.278, -0.321, -0.371, -0.438, -0.493, -0.524, -0.552, -0.572, -0.581, -0.588, -0.592, -0.592, -0.598, -0.603, -0.601, -0.595, -0.583, -0.564, -0.54, -0.514, -0.487, -0.458, -0.425, -0.392, -0.361, -0.337, -0.32, -0.309, -0.31, -0.314, -0.318, -0.32, -0.321, -0.314, -0.304, -0.286, -0.269, -0.26, -0.255, -0.254, -0.256, -0.262, -0.274, -0.29, -0.31, -0.33, -0.356, -0.381, -0.406, -0.427, -0.45, -0.473, -0.498, -0.522, -0.547, -0.57, -0.586, -0.602, -0.608, -0.605, -0.595, -0.583, -0.572, -0.559, -0.548, -0.543, -0.543, -0.549, -0.559, -0.569, -0.574, -0.575];
+var macdData = [0.0, -0.024, 0.087, 0.1, 0.148, 0.204, 0.22, 0.236, 0.175, 0.065, 0.119, 0.275, 0.545, 0.569, 0.459, 0.385, 0.35, 0.494, 0.606, 0.516, 0.498, 0.296, 0.33, 0.308, 0.536, 0.633, 0.597, 0.82, 0.974, 1.329, 1.29, 0.911, 0.877, 0.635, 0.368, -0.002, -0.21, -0.337, -0.495, -0.764, -0.943, -0.81, -0.759, -0.809, -1.136, -1.586, -1.845, -1.978, -2.013, -1.933, -1.739, -1.444, -1.222, -1.028, -0.822, -0.688, -0.494, -0.347, -0.285, -0.219, -0.196, -0.167, -0.118, -0.01, 0.073, 0.287, 0.623, 0.709, 0.64, 0.567, 0.361, 0.211, 0.126, 0.041, -0.004, 0.015, 0.044, 0.225, 0.278, 0.228, 0.202, 0.166, 0.109, 0.081, 0.076, 0.036, -0.002, -0.027, -0.135, -0.156, -0.129, 0.082, 0.073, 0.114, 0.057, -0.005, 0.072, 0.069, 0.015, -0.015, -0.019, -0.008, -0.013, -0.041, -0.091, -0.093, -0.079, -0.098, -0.1, -0.122, -0.078, -0.101, -0.118, -0.101, -0.077, -0.022, 0.051, 0.071, 0.129, 0.183, 0.206, 0.229, 0.249, 0.295, 0.362, 0.434, 0.401, 0.581, 0.707, 0.813, 0.944, 0.877, 0.821, 0.634, 0.474, 0.231, 0.06, -0.035, -0.097, -0.221, -0.284, -0.391, -0.48, -0.546, -0.623, -0.586, -0.533, -0.496, -0.447, -0.358, -0.28, -0.235, -0.189, -0.144, -0.022, 0.044, 0.091, 0.115, 0.248, 0.196, 0.179, 0.127, 0.062, -0.043, -0.084, -0.144, -0.21, -0.26, -0.259, -0.267, -0.286, -0.343, -0.399, -0.54, -0.436, -0.248, -0.224, -0.161, -0.076, -0.056, -0.029, -0.003, -0.042, -0.043, 0.018, 0.042, 0.103, 0.148, 0.192, 0.206, 0.215, 0.236, 0.265, 0.264, 0.247, 0.195, 0.133, 0.085, -0.008, -0.03, -0.035, -0.015, -0.009, 0.055, 0.085, 0.144, 0.131, 0.073, 0.043, 0.009, -0.016, -0.049, -0.099, -0.129, -0.159, -0.16, -0.205, -0.202, -0.199, -0.17, -0.18, -0.184, -0.201, -0.189, -0.204, -0.184, -0.128, -0.123, -0.053, 0.024, 0.084, 0.095, 0.088, 0.104, 0.084, 0.039, 0.005, -0.047, -0.087, -0.078, -0.036, -0.01];
+var rsiData = [null, null, null, null, null, null, null, null, null, null, null, null, null, 68.43, 62.75, 65.05, 62.08, 71.4, 71.68, 64.03, 66.6, 59.09, 66.21, 68.32, 71.09, 68.55, 62.04, 73.56, 79.1, 82.55, 75.34, 63.65, 67.24, 66.57, 64.03, 64.18, 61.98, 62.8, 55.61, 51.33, 52.0, 50.32, 47.16, 34.39, 31.69, 31.26, 18.81, 19.85, 19.87, 21.98, 21.06, 23.81, 24.04, 26.71, 28.14, 12.57, 17.54, 18.83, 24.53, 37.0, 36.57, 39.3, 43.48, 49.02, 43.92, 50.81, 68.06, 60.19, 52.4, 55.05, 43.61, 43.73, 47.63, 45.92, 48.56, 51.47, 51.76, 56.77, 53.8, 42.32, 27.88, 31.69, 35.16, 36.44, 48.63, 46.11, 43.4, 45.97, 37.83, 37.42, 39.18, 41.58, 36.5, 44.7, 39.03, 38.37, 47.99, 44.53, 41.41, 43.08, 44.44, 45.23, 49.92, 45.79, 41.77, 27.27, 35.28, 27.23, 32.42, 32.04, 20.07, 19.59, 21.84, 24.72, 23.11, 27.5, 34.62, 34.49, 45.61, 45.42, 43.84, 50.74, 52.55, 63.04, 63.44, 80.46, 71.19, 81.36, 82.92, 83.88, 85.62, 78.91, 78.85, 69.36, 70.07, 61.89, 61.64, 61.13, 59.33, 52.49, 56.6, 38.62, 33.45, 26.33, 12.19, 21.91, 17.2, 19.85, 19.95, 30.99, 30.79, 25.22, 24.55, 31.02, 42.55, 49.47, 55.43, 59.83, 82.87, 56.76, 58.94, 57.49, 54.24, 45.01, 46.95, 45.25, 42.25, 40.41, 33.26, 32.65, 30.39, 27.54, 10.4, 10.24, 26.69, 36.57, 32.79, 37.38, 37.86, 37.52, 39.4, 40.29, 36.07, 37.89, 43.07, 45.21, 50.32, 60.62, 49.75, 37.79, 51.78, 50.41, 49.38, 55.61, 53.64, 48.16, 55.4, 52.11, 32.14, 42.11, 33.67, 37.14, 32.38, 45.45, 43.43, 46.82, 37.85, 34.71, 36.33, 38.05, 39.79, 38.31, 41.24, 34.77, 32.12, 29.81, 26.25, 17.78, 17.58, 10.36, 10.4, 11.56, 8.94, 10.26, 9.2, 12.4, 20.5, 18.15, 30.34, 33.11, 39.3, 33.21, 32.85, 33.81, 34.81, 32.75, 34.43, 30.36, 32.28, 34.13, 33.9, 37.36];
+var kData = [null, null, null, null, null, null, null, null, 52.97, 44.5, 57.06, 66.35, 74.16, 68.2, 59.46, 54.97, 54.11, 63.65, 71.73, 68.76, 70.42, 59.06, 66.5, 68.0, 78.67, 80.1, 78.43, 85.57, 87.12, 91.42, 84.73, 71.63, 70.73, 64.71, 57.46, 47.32, 36.2, 30.03, 23.25, 15.66, 17.95, 30.47, 40.21, 44.31, 29.54, 19.69, 19.51, 17.73, 15.09, 13.38, 13.68, 17.39, 18.18, 25.8, 37.48, 34.02, 41.6, 43.87, 38.58, 34.33, 24.56, 17.1, 17.49, 23.99, 27.71, 47.3, 64.3, 66.47, 60.8, 56.3, 43.21, 30.96, 23.49, 16.14, 12.26, 12.29, 15.7, 37.84, 46.98, 42.37, 40.36, 36.55, 29.28, 24.87, 23.0, 16.22, 14.87, 13.73, 11.9, 15.42, 21.72, 43.42, 41.38, 44.69, 37.25, 30.59, 37.68, 36.37, 29.6, 24.67, 22.63, 23.61, 22.5, 15.7, 10.85, 15.25, 20.65, 16.28, 14.91, 10.7, 21.24, 17.73, 20.56, 24.27, 26.35, 34.85, 51.11, 53.77, 65.75, 75.69, 79.41, 84.15, 82.83, 86.15, 84.02, 84.46, 76.55, 84.37, 84.12, 85.11, 83.41, 77.28, 74.29, 65.78, 59.96, 49.74, 35.44, 27.88, 23.23, 16.68, 15.93, 11.4, 8.17, 9.13, 6.24, 10.71, 14.17, 13.89, 14.95, 20.94, 31.26, 35.78, 43.18, 47.43, 59.05, 63.26, 66.95, 67.41, 76.71, 63.81, 58.92, 49.3, 36.95, 25.52, 20.71, 14.46, 10.21, 8.14, 9.18, 6.5, 5.67, 4.27, 2.85, 2.33, 17.46, 38.26, 39.75, 43.57, 49.6, 48.35, 47.65, 46.76, 37.4, 27.06, 31.64, 29.36, 35.84, 40.83, 46.89, 48.2, 49.35, 53.84, 59.46, 59.37, 53.33, 37.97, 27.9, 20.36, 14.72, 16.48, 17.88, 21.58, 23.74, 37.47, 47.67, 56.45, 52.6, 40.31, 30.09, 21.69, 16.49, 11.92, 8.14, 6.35, 6.52, 11.78, 8.52, 9.06, 6.3, 6.66, 5.6, 5.37, 6.25, 8.81, 8.65, 11.28, 17.18, 12.76, 20.63, 34.24, 43.66, 41.26, 34.1, 36.72, 30.14, 23.94, 19.69, 14.55, 13.64, 16.21, 22.29, 24.45];
+var dData = [null, null, null, null, null, null, null, null, 52.97, 50.15, 52.45, 57.09, 62.78, 64.59, 62.88, 60.24, 58.2, 60.02, 63.92, 65.54, 67.16, 64.46, 65.14, 66.09, 70.28, 73.56, 75.18, 78.64, 81.47, 84.79, 84.77, 80.39, 77.17, 73.01, 67.83, 60.99, 52.73, 45.16, 37.86, 30.46, 26.29, 27.68, 31.86, 36.01, 33.85, 29.13, 25.92, 23.19, 20.49, 18.12, 16.64, 16.89, 17.32, 20.15, 25.93, 28.62, 32.95, 36.59, 37.25, 36.28, 32.37, 27.28, 24.02, 24.01, 25.24, 32.59, 43.16, 50.93, 54.22, 54.92, 51.01, 44.33, 37.38, 30.3, 24.29, 20.29, 18.76, 25.12, 32.41, 35.73, 37.27, 37.03, 34.45, 31.25, 28.5, 24.41, 21.23, 18.73, 16.45, 16.11, 17.98, 26.46, 31.43, 35.85, 36.32, 34.41, 35.5, 35.79, 33.72, 30.71, 28.01, 26.55, 25.2, 22.03, 18.3, 17.28, 18.41, 17.7, 16.77, 14.75, 16.91, 17.18, 18.31, 20.3, 22.31, 26.49, 34.7, 41.06, 49.29, 58.09, 65.2, 71.51, 75.29, 78.91, 80.61, 81.89, 80.11, 81.53, 82.39, 83.3, 83.34, 81.32, 78.97, 74.58, 69.71, 63.05, 53.85, 45.19, 37.87, 30.81, 25.85, 21.03, 16.74, 14.21, 11.55, 11.27, 12.24, 12.79, 13.51, 15.99, 21.08, 25.98, 31.71, 36.95, 44.32, 50.63, 56.07, 59.85, 65.47, 64.92, 62.92, 58.38, 51.24, 42.66, 35.35, 28.39, 22.33, 17.6, 14.79, 12.03, 9.91, 8.03, 6.3, 4.98, 9.14, 18.85, 25.81, 31.73, 37.69, 41.24, 43.38, 44.51, 42.14, 37.11, 35.29, 33.31, 34.15, 36.38, 39.89, 42.66, 44.89, 47.87, 51.73, 54.28, 53.96, 48.63, 41.72, 34.6, 27.97, 24.14, 22.06, 21.9, 22.51, 27.5, 34.22, 41.63, 45.29, 43.63, 39.12, 33.31, 27.7, 22.44, 17.67, 13.9, 11.44, 11.55, 10.54, 10.05, 8.8, 8.09, 7.26, 6.63, 6.5, 7.27, 7.73, 8.91, 11.67, 12.03, 14.9, 21.35, 28.78, 32.94, 33.33, 34.46, 33.02, 29.99, 26.56, 22.56, 19.58, 18.46, 19.73, 21.31];
+var jData = [null, null, null, null, null, null, null, null, 52.97, 33.21, 66.27, 84.88, 96.93, 75.44, 52.62, 44.42, 45.95, 70.93, 87.35, 75.22, 76.93, 48.25, 69.22, 71.81, 95.43, 93.19, 84.94, 99.41, 98.43, 104.67, 84.65, 54.11, 57.86, 48.09, 36.72, 19.98, 3.13, -0.24, -5.97, -13.93, 1.28, 36.04, 56.9, 60.92, 20.92, 0.82, 6.67, 6.81, 4.29, 3.88, 7.77, 18.38, 19.91, 37.1, 60.6, 44.81, 58.91, 58.42, 41.24, 30.43, 8.94, -3.27, 4.42, 23.95, 32.65, 76.72, 106.58, 97.55, 73.96, 59.07, 27.6, 4.23, -4.31, -12.18, -11.8, -3.7, 9.59, 63.29, 76.13, 55.66, 46.52, 35.59, 18.95, 12.09, 11.98, -0.15, 2.14, 3.73, 2.79, 14.05, 29.19, 77.35, 61.27, 62.37, 39.11, 22.96, 42.04, 37.53, 21.34, 12.59, 11.86, 17.74, 17.1, 3.03, -4.07, 11.18, 25.14, 13.45, 11.2, 2.61, 29.89, 18.82, 25.06, 32.23, 34.41, 51.56, 83.94, 79.2, 98.68, 110.9, 107.84, 109.41, 97.92, 100.64, 90.83, 89.59, 69.43, 90.04, 87.58, 88.74, 83.55, 69.21, 64.91, 48.19, 40.47, 23.13, -1.38, -6.75, -6.04, -11.59, -3.91, -7.86, -8.98, -1.01, -4.39, 9.58, 18.04, 16.1, 17.84, 30.86, 51.62, 55.39, 66.11, 68.39, 88.52, 88.52, 88.71, 82.52, 99.19, 61.6, 50.91, 31.14, 8.38, -8.78, -8.55, -13.38, -14.02, -10.79, -2.03, -4.56, -2.8, -3.24, -4.06, -2.97, 34.11, 77.07, 67.62, 67.25, 73.43, 62.56, 56.19, 51.28, 27.92, 6.96, 24.35, 21.46, 39.21, 49.74, 60.91, 59.29, 58.27, 65.77, 74.91, 69.55, 52.06, 16.64, 0.27, -8.13, -11.78, 1.16, 9.54, 20.94, 26.2, 57.4, 74.57, 86.1, 67.21, 33.68, 12.04, -1.55, -5.92, -9.13, -10.93, -8.76, -3.31, 12.23, 4.48, 7.09, 1.31, 3.81, 2.28, 2.86, 5.74, 11.88, 10.49, 16.02, 28.19, 14.22, 32.09, 60.03, 73.41, 57.89, 35.65, 41.25, 24.37, 11.83, 5.96, -1.47, 1.76, 11.71, 27.39, 30.73];
+var bollMidData = [NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 18.73, 18.94, 19.11, 19.3, 19.51, 19.81, 20.09, 20.36, 20.74, 21.17, 21.76, 22.23, 22.54, 22.9, 23.24, 23.6, 23.89, 24.19, 24.43, 24.62, 24.79, 24.92, 25.2, 25.39, 25.54, 25.47, 25.28, 25.1, 24.78, 24.41, 23.91, 23.49, 23.2, 22.79, 22.42, 22.08, 21.77, 21.47, 21.14, 20.82, 20.55, 20.28, 19.91, 19.56, 19.27, 19.1, 19.09, 19.19, 19.25, 19.3, 19.35, 19.32, 19.25, 19.2, 19.15, 19.09, 19.07, 19.02, 19.04, 19.07, 19.06, 19.08, 19.09, 19.09, 19.08, 19.06, 18.98, 18.81, 18.68, 18.55, 18.43, 18.38, 18.41, 18.37, 18.37, 18.33, 18.27, 18.24, 18.14, 18.03, 17.96, 17.88, 17.82, 17.75, 17.68, 17.58, 17.51, 17.44, 17.36, 17.32, 17.25, 17.2, 17.04, 16.94, 16.82, 16.74, 16.68, 16.59, 16.5, 16.45, 16.41, 16.37, 16.32, 16.29, 16.29, 16.32, 16.36, 16.37, 16.49, 16.63, 16.8, 17.0, 17.18, 17.39, 17.55, 17.71, 17.82, 17.92, 18.05, 18.15, 18.23, 18.31, 18.35, 18.38, 18.39, 18.35, 18.32, 18.31, 18.21, 18.09, 17.96, 17.79, 17.65, 17.49, 17.38, 17.3, 17.25, 17.21, 17.15, 17.14, 17.11, 17.09, 17.08, 17.08, 17.06, 17.07, 17.05, 17.01, 16.97, 16.94, 16.88, 16.81, 16.73, 16.62, 16.46, 16.33, 16.25, 16.11, 15.99, 15.83, 15.7, 15.56, 15.43, 15.29, 15.18, 15.08, 14.98, 14.92, 14.86, 14.8, 14.75, 14.71, 14.7, 14.72, 14.78, 14.79, 14.74, 14.72, 14.7, 14.63, 14.6, 14.57, 14.55, 14.54, 14.56, 14.55, 14.56, 14.54, 14.5, 14.46, 14.42, 14.37, 14.31, 14.23, 14.14, 14.05, 13.98, 13.89, 13.82, 13.76, 13.69, 13.61, 13.51, 13.4, 13.28, 13.14, 12.99, 12.87, 12.75, 12.65, 12.56, 12.48, 12.39, 12.31, 12.23, 12.16, 12.06, 11.99, 11.89, 11.79, 11.7, 11.63, 11.56];
+var bollUpperData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 21.66, 21.97, 21.99, 22.31, 22.53, 23.22, 23.8, 24.18, 25.06, 25.89, 27.22, 27.99, 28.31, 29.04, 29.42, 29.6, 29.58, 29.55, 29.63, 29.66, 29.49, 29.35, 29.01, 28.8, 28.46, 28.66, 29.25, 29.74, 30.11, 30.31, 29.91, 29.59, 29.43, 28.84, 28.37, 27.87, 27.53, 27.01, 26.36, 25.72, 25.28, 24.81, 23.72, 22.44, 20.9, 20.02, 20.01, 20.57, 20.77, 20.82, 20.86, 20.87, 20.82, 20.81, 20.81, 20.79, 20.78, 20.73, 20.78, 20.81, 20.81, 20.81, 20.8, 20.8, 20.8, 20.8, 20.72, 20.15, 19.79, 19.72, 19.58, 19.58, 19.64, 19.62, 19.62, 19.64, 19.66, 19.62, 19.33, 19.14, 19.07, 18.97, 18.86, 18.81, 18.75, 18.69, 18.65, 18.61, 18.59, 18.63, 18.67, 18.65, 18.34, 18.29, 18.12, 18.07, 18.01, 17.74, 17.57, 17.46, 17.36, 17.22, 17.05, 16.91, 16.89, 17.03, 17.23, 17.29, 17.89, 18.43, 19.0, 19.71, 20.08, 20.45, 20.62, 20.74, 20.76, 20.77, 20.75, 20.74, 20.69, 20.61, 20.53, 20.46, 20.45, 20.54, 20.57, 20.59, 20.59, 20.53, 20.35, 19.93, 19.64, 19.21, 18.94, 18.64, 18.52, 18.38, 18.17, 18.11, 18.02, 17.93, 17.91, 17.91, 17.92, 17.9, 17.93, 17.99, 18.06, 18.11, 18.15, 18.21, 18.33, 18.46, 18.73, 18.65, 18.53, 18.44, 18.3, 17.9, 17.7, 17.41, 17.15, 16.92, 16.76, 16.51, 16.3, 16.13, 15.98, 15.78, 15.61, 15.48, 15.46, 15.49, 15.38, 15.38, 15.2, 15.21, 15.2, 15.23, 15.24, 15.25, 15.24, 15.24, 15.24, 15.23, 15.25, 15.23, 15.22, 15.19, 15.18, 15.15, 15.11, 15.05, 14.98, 14.94, 14.91, 14.96, 14.97, 15.02, 15.02, 15.04, 15.03, 15.03, 14.92, 14.83, 14.61, 14.42, 14.3, 14.11, 13.91, 13.7, 13.5, 13.35, 13.18, 13.05, 12.91, 12.87, 12.82, 12.79, 12.67, 12.59, 12.52];
+var bollLowerData = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 15.79, 15.92, 16.23, 16.29, 16.49, 16.39, 16.39, 16.54, 16.42, 16.46, 16.29, 16.46, 16.78, 16.76, 17.06, 17.6, 18.21, 18.83, 19.22, 19.57, 20.09, 20.49, 21.39, 21.98, 22.63, 22.28, 21.31, 20.46, 19.45, 18.51, 17.9, 17.39, 16.97, 16.73, 16.46, 16.28, 16.01, 15.92, 15.93, 15.91, 15.83, 15.75, 16.1, 16.69, 17.63, 18.17, 18.18, 17.81, 17.74, 17.78, 17.83, 17.76, 17.67, 17.6, 17.5, 17.4, 17.35, 17.31, 17.3, 17.32, 17.31, 17.35, 17.39, 17.39, 17.35, 17.33, 17.24, 17.46, 17.57, 17.37, 17.29, 17.18, 17.18, 17.12, 17.12, 17.02, 16.88, 16.87, 16.95, 16.93, 16.84, 16.8, 16.77, 16.7, 16.61, 16.47, 16.37, 16.27, 16.13, 16.02, 15.84, 15.74, 15.74, 15.58, 15.52, 15.41, 15.34, 15.43, 15.44, 15.45, 15.47, 15.52, 15.6, 15.67, 15.68, 15.6, 15.48, 15.46, 15.1, 14.82, 14.6, 14.29, 14.28, 14.33, 14.48, 14.68, 14.89, 15.08, 15.34, 15.57, 15.77, 16.01, 16.18, 16.31, 16.32, 16.17, 16.06, 16.03, 15.83, 15.65, 15.57, 15.65, 15.65, 15.77, 15.81, 15.95, 15.98, 16.03, 16.13, 16.17, 16.2, 16.25, 16.25, 16.25, 16.2, 16.25, 16.17, 16.03, 15.88, 15.77, 15.61, 15.41, 15.12, 14.78, 14.2, 14.02, 13.96, 13.79, 13.68, 13.76, 13.7, 13.71, 13.72, 13.66, 13.6, 13.65, 13.67, 13.7, 13.74, 13.82, 13.89, 13.94, 13.94, 13.94, 14.19, 14.19, 14.27, 14.24, 14.19, 14.04, 13.96, 13.89, 13.86, 13.84, 13.87, 13.86, 13.87, 13.85, 13.78, 13.73, 13.66, 13.59, 13.51, 13.41, 13.3, 13.17, 13.05, 12.83, 12.67, 12.5, 12.37, 12.17, 11.99, 11.78, 11.64, 11.45, 11.38, 11.33, 11.2, 11.19, 11.21, 11.26, 11.28, 11.26, 11.28, 11.26, 11.21, 11.1, 10.95, 10.79, 10.72, 10.66, 10.6];
+
+var commonXAxis = {
+    type: 'category', data: dates,
+    axisLine: { lineStyle: { color: '#30363d' } },
+    axisLabel: { color: '#8b949e', fontSize: 11 },
+    splitLine: { show: false },
+    boundaryGap: true, min: 'dataMin', max: 'dataMax'
+};
+
+var commonDataZoom = [
+    { type: 'inside', start: 0, end: 100 },
+    { type: 'slider', height: 18, bottom: 2, borderColor: '#30363d', backgroundColor: '#161b22',
+       fillerColor: 'rgba(88,166,255,0.15)', handleStyle: { color: '#58a6ff' } }
+];
+
+var tooltipStyle = {
+    backgroundColor: 'rgba(22, 27, 34, 0.96)', borderColor: '#30363d', borderWidth: 1,
+    textStyle: { color: '#c9d1d9', fontSize: 13 }
+};
+
+// ===== 图1 K线图 =====
+var klineChart = echarts.init(document.getElementById('kline-chart'), 'dark');
+klineChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+        trigger: 'axis', axisPointer: { type: 'cross' },
+        ...tooltipStyle,
+        formatter: function(params) {
+            var idx = params[0].dataIndex;
+            var d = klineData[idx];
+            var pctChg = idx > 0 ? ((d[1] - klineData[idx-1][1]) / klineData[idx-1][1] * 100).toFixed(2) : '-';
+            var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
+            var sign = d[1] >= d[0] ? '+' : '';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div></div>';
+        }
+    },
+    grid: { left: '6%', right: '3%', top: '8%', bottom: '15%' },
+    xAxis: commonXAxis,
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [
+        { name: 'K线', type: 'candlestick', data: klineData, itemStyle: { color: '#ef5350', color0: '#26a69a', borderColor: '#ef5350', borderColor0: '#26a69a' } },
+        { name: 'MA5', type: 'line', data: ma5Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#f9c74f' } },
+        { name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#f8961e' } },
+        { name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#90be6d' } },
+        { name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#577590' } }
+    ]
+});
+
+// ===== 图2 成交量图 =====
+var volumeChart = echarts.init(document.getElementById('volume-chart'), 'dark');
+volumeChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, ...tooltipStyle,
+        formatter: function(params) {
+            var idx = params[0].dataIndex;
+            var d = klineData[idx];
+            var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
+        }
+    },
+    grid: { left: '6%', right: '3%', top: '8%', bottom: '25%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11, formatter: function(v) { return (v / 10000).toFixed(0) + '万'; } }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [{ name: '成交量', type: 'bar', data: volumeData, itemStyle: { borderRadius: [2, 2, 0, 0] } }]
+});
+
+// ===== 图3 MACD图 =====
+var macdChart = echarts.init(document.getElementById('macd-chart'), 'dark');
+macdChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle },
+    legend: { data: ['DIF', 'DEA', 'MACD'], textStyle: { color: '#8b949e' }, top: 5 },
+    grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [
+        { name: 'DIF', type: 'line', data: difData, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#f9c74f' } },
+        { name: 'DEA', type: 'line', data: deaData, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#f8961e' } },
+        { name: 'MACD', type: 'bar', data: macdData,
+            itemStyle: { color: function(params) { return params.value >= 0 ? '#ef5350' : '#26a69a'; } }
+        }
+    ]
+});
+
+// ===== 图4 RSI图 =====
+var rsiChart = echarts.init(document.getElementById('rsi-chart'), 'dark');
+rsiChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle },
+    legend: { data: ['RSI(14)'], textStyle: { color: '#8b949e' }, top: 5 },
+    grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: { type: 'value', min: 0, max: 100, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [
+        { name: 'RSI(14)', type: 'line', data: rsiData, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#58a6ff' }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(88,166,255,0.2)' }, { offset: 1, color: 'rgba(88,166,255,0.02)' }] } } },
+        { name: '超买线', type: 'line', data: dates.map(() => 70), symbol: 'none', lineStyle: { width: 1, color: '#ef5350', type: 'dashed' }, silent: true },
+        { name: '超卖线', type: 'line', data: dates.map(() => 30), symbol: 'none', lineStyle: { width: 1, color: '#26a69a', type: 'dashed' }, silent: true },
+        { name: '中轴线', type: 'line', data: dates.map(() => 50), symbol: 'none', lineStyle: { width: 1, color: '#8b949e', type: 'dashed' }, silent: true }
+    ]
+});
+
+// ===== 图5 KDJ图 =====
+var kdjChart = echarts.init(document.getElementById('kdj-chart'), 'dark');
+kdjChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle },
+    legend: { data: ['K', 'D', 'J'], textStyle: { color: '#8b949e' }, top: 5 },
+    grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: { type: 'value', min: 0, max: 100, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [
+        { name: 'K', type: 'line', data: kData, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#f9c74f' } },
+        { name: 'D', type: 'line', data: dData, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#f8961e' } },
+        { name: 'J', type: 'line', data: jData, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#90be6d' } },
+        { name: '超买线', type: 'line', data: dates.map(() => 80), symbol: 'none', lineStyle: { width: 1, color: '#ef5350', type: 'dashed' }, silent: true },
+        { name: '超卖线', type: 'line', data: dates.map(() => 20), symbol: 'none', lineStyle: { width: 1, color: '#26a69a', type: 'dashed' }, silent: true }
+    ]
+});
+
+// ===== 图6 布林带图 =====
+var bollChart = echarts.init(document.getElementById('boll-chart'), 'dark');
+bollChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle },
+    legend: { data: ['收盘价', '中轨(MA20)', '上轨', '下轨'], textStyle: { color: '#8b949e' }, top: 5 },
+    grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+    dataZoom: commonDataZoom,
+    series: [
+        { name: '收盘价', type: 'line', data: closeData, smooth: false, symbol: 'none', lineStyle: { width: 1.5, color: '#58a6ff' } },
+        { name: '中轨(MA20)', type: 'line', data: bollMidData, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#f8961e' } },
+        { name: '上轨', type: 'line', data: bollUpperData, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#ef5350', type: 'dashed' } },
+        { name: '下轨', type: 'line', data: bollLowerData, smooth: true, symbol: 'none', lineStyle: { width: 1, color: '#26a69a', type: 'dashed' } }
+    ]
+});
+
+// ===== 图7 市值与换手率 =====
+var turnoverChart = echarts.init(document.getElementById('turnover-chart'), 'dark');
+// 估算市值 = 收盘价 * 总股本(约26.85亿股)
+var totalShares = 26.85;
+var marketCap = closeData.map(p => Math.round(p * totalShares * 100) / 100);
+// 估算换手率 = 成交量(手) / (总股本 * 10000) * 100%
+var turnoverRate = volumeData.map(v => Math.round(v.value / (totalShares * 10000) * 10000) / 100);
+
+turnoverChart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle },
+    legend: { data: ['市值(亿元)', '换手率(%)'], textStyle: { color: '#8b949e' }, top: 5 },
+    grid: { left: '6%', right: '8%', top: '15%', bottom: '15%' },
+    xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { show: false }, splitLine: { show: false }, boundaryGap: true, min: 'dataMin', max: 'dataMax' },
+    yAxis: [
+        { type: 'value', name: '市值(亿元)', position: 'left', axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { lineStyle: { color: '#21262d', type: 'dashed' } } },
+        { type: 'value', name: '换手率(%)', position: 'right', axisLine: { lineStyle: { color: '#30363d' } }, axisLabel: { color: '#8b949e', fontSize: 11 }, splitLine: { show: false } }
+    ],
+    dataZoom: commonDataZoom,
+    series: [
+        { name: '市值(亿元)', type: 'line', data: marketCap, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#58a6ff' }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(88,166,255,0.2)' }, { offset: 1, color: 'rgba(88,166,255,0.02)' }] } } },
+        { name: '换手率(%)', type: 'line', data: turnoverRate, smooth: true, symbol: 'none', lineStyle: { width: 1.5, color: '#f8961e' }, yAxisIndex: 1 }
+    ]
+});
+
+// ===== 联动 =====
+echarts.connect([klineChart, volumeChart, macdChart, rsiChart, kdjChart, bollChart, turnoverChart]);
+
+// ===== 自适应 =====
+window.addEventListener('resize', function() {
+    klineChart.resize(); volumeChart.resize(); macdChart.resize();
+    rsiChart.resize(); kdjChart.resize(); bollChart.resize(); turnoverChart.resize();
+});
+</script>
 </body>
 </html>
