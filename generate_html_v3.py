@@ -731,7 +731,7 @@ bollChart.setOption({{
 }});
 
 var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
-var totalShares = 26.85;
+var totalShares = 17.02;  // 内蒙一机实际总股本约17.02亿股
 var marketCap = closeData.map(p => Math.round(p * totalShares * 100) / 100);
 var turnoverRate = volumeData.map(v => Math.round(v.value / (totalShares * 10000) * 10000) / 100);
 
