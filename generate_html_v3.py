@@ -4,9 +4,7 @@ import os
 import numpy as np
 from datetime import datetime
 
-# ============ 技术指标计算函数 ============
 def calc_ema(data, n):
-    """计算指数移动平均"""
     ema = [data[0]]
     multiplier = 2 / (n + 1)
     for i in range(1, len(data)):
@@ -14,7 +12,6 @@ def calc_ema(data, n):
     return ema
 
 def calc_macd(close):
-    """计算MACD指标"""
     ema12 = calc_ema(close, 12)
     ema26 = calc_ema(close, 26)
     dif = [ema12[i] - ema26[i] for i in range(len(close))]
@@ -23,7 +20,6 @@ def calc_macd(close):
     return dif, dea, macd
 
 def calc_rsi(close, n=14):
-    """计算RSI指标"""
     delta = pd.Series(close).diff()
     gain = delta.where(delta > 0, 0)
     loss = (-delta).where(delta < 0, 0)
@@ -34,7 +30,6 @@ def calc_rsi(close, n=14):
     return rsi.tolist()
 
 def calc_kdj(high, low, close, n=9, m1=3, m2=3):
-    """计算KDJ指标"""
     df = pd.DataFrame({'high': high, 'low': low, 'close': close})
     low_min = df['low'].rolling(window=n).min()
     high_max = df['high'].rolling(window=n).max()
@@ -45,7 +40,6 @@ def calc_kdj(high, low, close, n=9, m1=3, m2=3):
     return k.tolist(), d.tolist(), j.tolist()
 
 def calc_boll(close, n=20):
-    """计算布林带指标"""
     ma = pd.Series(close).rolling(window=n).mean().tolist()
     std = pd.Series(close).rolling(window=n).std().tolist()
     upper = [ma[i] + 2 * std[i] if std[i] == std[i] else None for i in range(len(close))]
@@ -54,7 +48,6 @@ def calc_boll(close, n=20):
 
 
 def generate_html_report(csv_path, output_dir='output'):
-    """生成完整交互式HTML分析报告（含技术指标）"""
     df = pd.read_csv(csv_path)
     df['trade_date'] = pd.to_datetime(df['trade_date'])
     df = df.sort_values('trade_date').reset_index(drop=True)
@@ -62,7 +55,6 @@ def generate_html_report(csv_path, output_dir='output'):
     ts_code = df['ts_code'].iloc[0]
     stock_name = '内蒙一机'
 
-    # 准备基础数据
     dates = [d.strftime('%Y-%m-%d') for d in df['trade_date']]
     kline_data = [[round(row['open'], 2), round(row['close'], 2), round(row['low'], 2), round(row['high'], 2)]
                   for _, row in df.iterrows()]
@@ -74,9 +66,8 @@ def generate_html_report(csv_path, output_dir='output'):
     for _, row in df.iterrows():
         vol = round(row['vol'], 0)
         is_up = row['close'] >= row['open']
-        volumes.append({'value': vol, 'itemStyle': {'color': '#ef5350' if is_up else '#26a69a'}})
+        volumes.append({'value': vol, 'itemStyle': {'color': '#ef4444' if is_up else '#22c55e'}})
 
-    # 计算均线
     def calc_ma(data, n):
         result = []
         for i in range(len(data)):
@@ -92,13 +83,11 @@ def generate_html_report(csv_path, output_dir='output'):
     ma20 = calc_ma(close_prices, 20)
     ma60 = calc_ma(close_prices, 60)
 
-    # 计算技术指标
     dif, dea, macd = calc_macd(close_prices)
     rsi = calc_rsi(close_prices)
     k, d, j = calc_kdj(high_prices, low_prices, close_prices)
     boll_mid, boll_upper, boll_lower = calc_boll(close_prices)
 
-    # 统计
     start_date_str = df['trade_date'].min().strftime('%Y年%m月%d日')
     end_date_str = df['trade_date'].max().strftime('%Y年%m月%d日')
     trading_days = len(df)
@@ -119,7 +108,6 @@ def generate_html_report(csv_path, output_dir='output'):
     price_std = df['close'].std()
     volatility = round(price_std / avg_price * 100, 2)
 
-    # 年度表现
     df['year'] = df['trade_date'].dt.year
     yearly_stats = []
     for year in sorted(df['year'].unique()):
@@ -140,7 +128,6 @@ def generate_html_report(csv_path, output_dir='output'):
             'down': year_down, 'up_ratio': year_up_ratio, 'avg_vol': year_avg_vol
         })
 
-    # 最新技术指标值（用于解读）
     latest_idx = len(close_prices) - 1
     latest_dif = round(dif[latest_idx], 3)
     latest_dea = round(dea[latest_idx], 3)
@@ -153,7 +140,6 @@ def generate_html_report(csv_path, output_dir='output'):
     latest_boll_upper = round(boll_upper[latest_idx], 2) if boll_upper[latest_idx] is not None else '-'
     latest_boll_lower = round(boll_lower[latest_idx], 2) if boll_lower[latest_idx] is not None else '-'
 
-    # JSON序列化
     dates_json = json.dumps(dates)
     kline_json = json.dumps(kline_data)
     volumes_json = json.dumps(volumes)
@@ -173,7 +159,6 @@ def generate_html_report(csv_path, output_dir='output'):
     boll_lower_json = json.dumps([round(x, 2) if x is not None else None for x in boll_lower])
     close_json = json.dumps([round(x, 2) for x in close_prices])
 
-    # 生成HTML
     html_content = f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -185,72 +170,98 @@ def generate_html_report(csv_path, output_dir='output'):
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 body {{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background: #0d1117; color: #c9d1d9; line-height: 1.8;
+    background: #ffffff; color: #333333; line-height: 1.8;
 }}
 .container {{ max-width: 1200px; margin: 0 auto; padding: 24px; }}
 .header {{
-    background: linear-gradient(135deg, #161b22 0%, #1a2332 100%);
-    border: 1px solid #30363d; border-radius: 12px;
-    padding: 32px 40px; margin-bottom: 24px;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+    border-radius: 16px;
+    padding: 40px 48px; margin-bottom: 32px;
+    box-shadow: 0 10px 40px rgba(30, 64, 175, 0.15);
 }}
-.header h1 {{ font-size: 32px; font-weight: 700; color: #f0f6fc; margin-bottom: 8px; }}
-.header .subtitle {{ font-size: 15px; color: #8b949e; }}
+.header h1 {{ font-size: 32px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }}
+.header .subtitle {{ font-size: 15px; color: rgba(255,255,255,0.9); }}
 .header .subtitle span {{ margin-right: 24px; }}
 .tag {{
-    display: inline-block; background: #21262d; color: #58a6ff;
-    padding: 4px 12px; border-radius: 4px; font-size: 13px; margin-right: 8px;
+    display: inline-block; background: rgba(255,255,255,0.2); color: #ffffff;
+    padding: 5px 14px; border-radius: 20px; font-size: 13px; margin-right: 10px;
+    backdrop-filter: blur(10px);
 }}
 .section {{
-    background: #161b22; border: 1px solid #30363d;
-    border-radius: 12px; padding: 28px; margin-bottom: 24px;
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 32px; margin-bottom: 28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }}
 .section h2 {{
-    font-size: 22px; font-weight: 600; color: #f0f6fc;
-    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #21262d;
+    font-size: 24px; font-weight: 700; color: #1f2937;
+    margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid #3b82f6;
+    position: relative;
+}}
+.section h2::after {{
+    content: ''; position: absolute; left: 0; bottom: -2px; width: 60px; height: 2px;
+    background: #1e40af; border-radius: 2px;
 }}
 .section h3 {{
-    font-size: 18px; font-weight: 600; color: #f0f6fc; margin-bottom: 16px;
+    font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 16px;
 }}
-.intro-text {{ font-size: 15px; color: #c9d1d9; margin-bottom: 20px; line-height: 2; }}
+.intro-text {{ font-size: 15px; color: #4b5563; margin-bottom: 24px; line-height: 2; }}
 .stats-grid {{
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 16px; margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px; margin-bottom: 28px;
 }}
 .stat-card {{
-    background: #21262d; border: 1px solid #30363d;
-    border-radius: 8px; padding: 20px; text-align: center; transition: border-color 0.3s;
+    background: #f9fafb; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 24px; text-align: center;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
 }}
-.stat-card:hover {{ border-color: #58a6ff; }}
-.stat-card .label {{ font-size: 12px; color: #8b949e; margin-bottom: 8px; }}
-.stat-card .value {{ font-size: 26px; font-weight: 700; color: #f0f6fc; }}
-.stat-card .value.negative {{ color: #ef5350; }}
-.stat-card .value.positive {{ color: #26a69a; }}
-.stat-card .unit {{ font-size: 13px; color: #8b949e; margin-top: 4px; }}
-table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
-th {{ background: #21262d; color: #8b949e; font-weight: 600; text-align: center; padding: 12px 10px; border-bottom: 2px solid #30363d; }}
-td {{ text-align: center; padding: 10px; border-bottom: 1px solid #21262d; }}
-tr:hover td {{ background: #1a2332; }}
-.text-red {{ color: #ef5350; }}
-.text-green {{ color: #26a69a; }}
+.stat-card::before {{
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}}
+.stat-card:hover {{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12);
+    border-color: #3b82f6;
+}}
+.stat-card .label {{ font-size: 12px; color: #6b7280; margin-bottom: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }}
+.stat-card .value {{ font-size: 32px; font-weight: 700; color: #1f2937; }}
+.stat-card .value.negative {{ color: #ef4444; }}
+.stat-card .value.positive {{ color: #22c55e; }}
+.stat-card .unit {{ font-size: 14px; color: #9ca3af; margin-top: 6px; }}
+table {{ width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }}
+th {{
+    background: #f3f4f6; color: #374151; font-weight: 600;
+    text-align: center; padding: 14px 12px; border-bottom: 2px solid #e5e7eb;
+}}
+td {{ text-align: center; padding: 12px; border-bottom: 1px solid #f3f4f6; }}
+tr:hover td {{ background: #f9fafb; }}
+.text-red {{ color: #ef4444; }}
+.text-green {{ color: #22c55e; }}
 .chart-box {{ width: 100%; height: 380px; margin: 16px 0; }}
-.chart-box-lg {{ width: 100%; height: 480px; margin: 16px 0; }}
+.chart-box-lg {{ width: 100%; height: 500px; margin: 16px 0; }}
 .chart-box-sm {{ width: 100%; height: 300px; margin: 16px 0; }}
 .interpretation {{
-    background: #21262d; border-left: 3px solid #58a6ff;
-    padding: 16px 20px; margin: 20px 0; font-size: 14px; line-height: 2;
+    background: #f0f9ff; border-left: 4px solid #3b82f6;
+    padding: 20px 24px; margin: 24px 0; font-size: 15px; line-height: 2.2;
+    border-radius: 0 8px 8px 0;
 }}
-.interpretation strong {{ color: #58a6ff; }}
-.analysis-point {{ margin: 12px 0; padding-left: 24px; position: relative; }}
-.analysis-point::before {{ content: "•"; position: absolute; left: 0; color: #58a6ff; font-weight: bold; }}
+.interpretation strong {{ color: #1e40af; }}
+.analysis-point {{ margin: 14px 0; padding-left: 24px; position: relative; color: #4b5563; }}
+.analysis-point::before {{
+    content: "✓"; position: absolute; left: 0; color: #3b82f6; font-weight: bold;
+    font-size: 14px;
+}}
 .risk-box {{
-    background: #21262d; border: 1px solid #f8514980;
-    border-radius: 8px; padding: 20px; margin-top: 16px;
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: 12px; padding: 24px; margin-top: 20px;
 }}
-.risk-box h4 {{ color: #f85149; font-size: 16px; margin-bottom: 12px; }}
-.footer {{ text-align: center; padding: 24px; color: #484f58; font-size: 13px; }}
+.risk-box h4 {{ color: #dc2626; font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }}
+.risk-box h4::before {{ content: "⚠"; font-size: 18px; }}
+.footer {{ text-align: center; padding: 32px; color: #9ca3af; font-size: 13px; }}
 .tooltip-box {{
-    padding: 12px 16px; background: rgba(22, 27, 34, 0.96);
-    border: 1px solid #30363d; border-radius: 8px; font-size: 13px; line-height: 1.8;
+    padding: 14px 18px; background: #ffffff;
+    border: 1px solid #e5e7eb; border-radius: 10px; font-size: 13px; line-height: 1.8;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }}
 .valuation-table td:first-child {{ text-align: left; padding-left: 20px; }}
 .valuation-table th:first-child {{ text-align: left; padding-left: 20px; }}
@@ -259,7 +270,6 @@ tr:hover td {{ background: #1a2332; }}
 <body>
 <div class="container">
 
-<!-- Header -->
 <div class="header">
     <h1>{stock_name}（{ts_code}）近一年交易数据全景报告</h1>
     <div class="subtitle">
@@ -267,14 +277,13 @@ tr:hover td {{ background: #1a2332; }}
         <span class="tag">地面兵装龙头</span>
         <span class="tag">央企平台</span>
     </div>
-    <div class="subtitle" style="margin-top: 12px;">
-        <span>数据区间：{start_date_str} — {end_date_str}</span>
-        <span>交易日：{trading_days}天</span>
-        <span>报告生成：{datetime.now().strftime("%Y年%m月%d日")}</span>
+    <div class="subtitle" style="margin-top: 14px;">
+        <span>📅 数据区间：{start_date_str} — {end_date_str}</span>
+        <span>📊 交易日：{trading_days}天</span>
+        <span>🗓️ 报告生成：{datetime.now().strftime("%Y年%m月%d日")}</span>
     </div>
 </div>
 
-<!-- 一、数据概览 -->
 <div class="section">
     <h2>一、数据概览</h2>
     <div class="intro-text">
@@ -298,7 +307,6 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 二、年度表现汇总 -->
 <div class="section">
     <h2>二、年度表现汇总</h2>
     <div class="intro-text">
@@ -327,7 +335,6 @@ tr:hover td {{ background: #1a2332; }}
     </table>
 </div>
 
-<!-- 三、日线K线走势图 -->
 <div class="section">
     <h2>三、日线 K 线走势图</h2>
     <h3>图1 {stock_name}（{ts_code}）近一年日线K线走势与均线系统</h3>
@@ -341,7 +348,6 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 四、日成交量走势图 -->
 <div class="section">
     <h2>四、日成交量走势图</h2>
     <h3>图2 {stock_name}（{ts_code}）近一年日成交量分布（红柱涨 / 绿柱跌）</h3>
@@ -355,7 +361,6 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 五、技术面分析 -->
 <div class="section">
     <h2>五、技术面分析</h2>
 
@@ -413,7 +418,6 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 六、基本面分析 -->
 <div class="section">
     <h2>六、基本面分析</h2>
 
@@ -493,7 +497,6 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 七、投资建议 -->
 <div class="section">
     <h2>七、投资建议</h2>
     <div class="intro-text">基于{stock_name}当前的技术面与基本面综合分析，提出以下投资建议：</div>
@@ -531,32 +534,30 @@ tr:hover td {{ background: #1a2332; }}
     </div>
 </div>
 
-<!-- 八、风险提示 -->
 <div class="section">
     <h2>八、风险提示</h2>
     <div class="risk-box">
-        <h4>⚠ 重要风险提示</h4>
+        <h4>重要风险提示</h4>
         <div class="analysis-point"><strong>业绩波动风险：</strong>军工订单交付节奏不确定，可能导致营收和利润短期波动</div>
         <div class="analysis-point"><strong>资产注入不确定性：</strong>兵工集团资产整合时间表和方案尚未明确，存在落地不及预期风险</div>
         <div class="analysis-point"><strong>估值风险：</strong>当前动态市盈率约54倍，估值偏高，若业绩持续下滑可能面临估值回调压力</div>
         <div class="analysis-point"><strong>市场情绪风险：</strong>军工板块受政策和国际形势影响较大，情绪波动可能导致股价大幅震荡</div>
         <div class="analysis-point"><strong>技术面风险：</strong>当前MACD、KDJ、布林带等多个指标均显示空头趋势，短期存在进一步下探可能</div>
     </div>
-    <div class="interpretation" style="border-left-color: #f85149;">
+    <div class="interpretation" style="border-left-color: #dc2626; background: #fef2f2;">
         <strong>免责声明：</strong>本报告仅供内部研究参考，不构成任何投资建议。投资者应根据自身风险承受能力独立决策，
         并充分了解股票投资的风险。历史数据和分析结论不能保证未来表现，市场有风险，投资需谨慎。
     </div>
 </div>
 
 <div class="footer">
-    数据来源：Tushare Pro API ｜ 生成工具：Python + ECharts ｜ 前复权数据<br>
+    📈 数据来源：Tushare Pro API ｜ ⚡ 生成工具：Python + ECharts ｜ 📊 前复权数据<br>
     © 2026 {stock_name}（{ts_code}）交易数据分析报告
 </div>
 
 </div>
 
 <script>
-// ===== 通用数据 =====
 var dates = {dates_json};
 var klineData = {kline_json};
 var volumeData = {volumes_json};
@@ -579,25 +580,25 @@ var bollLowerData = {boll_lower_json};
 
 var commonXAxis = {{
     type: 'category', data: dates,
-    axisLine: {{ lineStyle: {{ color: '#30363d' }} }},
-    axisLabel: {{ color: '#8b949e', fontSize: 11 }},
+    axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }},
+    axisLabel: {{ color: '#6b7280', fontSize: 11 }},
     splitLine: {{ show: false }},
     boundaryGap: true, min: 'dataMin', max: 'dataMax'
 }};
 
 var commonDataZoom = [
     {{ type: 'inside', start: 0, end: 100 }},
-    {{ type: 'slider', height: 18, bottom: 2, borderColor: '#30363d', backgroundColor: '#161b22',
-       fillerColor: 'rgba(88,166,255,0.15)', handleStyle: {{ color: '#58a6ff' }} }}
+    {{ type: 'slider', height: 18, bottom: 2, borderColor: '#e5e7eb', backgroundColor: '#f9fafb',
+       fillerColor: 'rgba(59,130,246,0.15)', handleStyle: {{ color: '#3b82f6' }} }}
 ];
 
 var tooltipStyle = {{
-    backgroundColor: 'rgba(22, 27, 34, 0.96)', borderColor: '#30363d', borderWidth: 1,
-    textStyle: {{ color: '#c9d1d9', fontSize: 13 }}
+    backgroundColor: '#ffffff', borderColor: '#e5e7eb', borderWidth: 1,
+    textStyle: {{ color: '#374151', fontSize: 13 }},
+    boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
 }};
 
-// ===== 图1 K线图 =====
-var klineChart = echarts.init(document.getElementById('kline-chart'), 'dark');
+var klineChart = echarts.init(document.getElementById('kline-chart'));
 klineChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{
@@ -607,153 +608,143 @@ klineChart.setOption({{
             var idx = params[0].dataIndex;
             var d = klineData[idx];
             var pctChg = idx > 0 ? ((d[1] - klineData[idx-1][1]) / klineData[idx-1][1] * 100).toFixed(2) : '-';
-            var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
+            var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
             var sign = d[1] >= d[0] ? '+' : '';
-            return '<div class="tooltip-box"><div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div></div>';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div></div>';
         }}
     }},
     grid: {{ left: '6%', right: '3%', top: '8%', bottom: '15%' }},
     xAxis: commonXAxis,
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [
-        {{ name: 'K线', type: 'candlestick', data: klineData, itemStyle: {{ color: '#ef5350', color0: '#26a69a', borderColor: '#ef5350', borderColor0: '#26a69a' }} }},
-        {{ name: 'MA5', type: 'line', data: ma5Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f9c74f' }} }},
-        {{ name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f8961e' }} }},
-        {{ name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#90be6d' }} }},
-        {{ name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#577590' }} }}
+        {{ name: 'K线', type: 'candlestick', data: klineData, itemStyle: {{ color: '#ef4444', color0: '#22c55e', borderColor: '#ef4444', borderColor0: '#22c55e' }} }},
+        {{ name: 'MA5', type: 'line', data: ma5Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f59e0b' }} }},
+        {{ name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f97316' }} }},
+        {{ name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#10b981' }} }},
+        {{ name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#6366f1' }} }}
     ]
 }});
 
-// ===== 图2 成交量图 =====
-var volumeChart = echarts.init(document.getElementById('volume-chart'), 'dark');
+var volumeChart = echarts.init(document.getElementById('volume-chart'));
 volumeChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'shadow' }}, ...tooltipStyle,
         formatter: function(params) {{
             var idx = params[0].dataIndex;
             var d = klineData[idx];
-            var color = d[1] >= d[0] ? '#ef5350' : '#26a69a';
-            return '<div class="tooltip-box"><div style="font-weight:700;color:#f0f6fc;border-bottom:1px solid #30363d;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#8b949e;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
+            var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
         }}
     }},
     grid: {{ left: '6%', right: '3%', top: '8%', bottom: '25%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [{{ name: '成交量', type: 'bar', data: volumeData, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}]
 }});
 
-// ===== 图3 MACD图 =====
-var macdChart = echarts.init(document.getElementById('macd-chart'), 'dark');
+var macdChart = echarts.init(document.getElementById('macd-chart'));
 macdChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['DIF', 'DEA', 'MACD'], textStyle: {{ color: '#8b949e' }}, top: 5 }},
+    legend: {{ data: ['DIF', 'DEA', 'MACD'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
     grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [
-        {{ name: 'DIF', type: 'line', data: difData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f9c74f' }} }},
-        {{ name: 'DEA', type: 'line', data: deaData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f8961e' }} }},
+        {{ name: 'DIF', type: 'line', data: difData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f59e0b' }} }},
+        {{ name: 'DEA', type: 'line', data: deaData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f97316' }} }},
         {{ name: 'MACD', type: 'bar', data: macdData,
-            itemStyle: {{ color: function(params) {{ return params.value >= 0 ? '#ef5350' : '#26a69a'; }} }}
+            itemStyle: {{ color: function(params) {{ return params.value >= 0 ? '#ef4444' : '#22c55e'; }} }}
         }}
     ]
 }});
 
-// ===== 图4 RSI图 =====
-var rsiChart = echarts.init(document.getElementById('rsi-chart'), 'dark');
+var rsiChart = echarts.init(document.getElementById('rsi-chart'));
 rsiChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['RSI(14)'], textStyle: {{ color: '#8b949e' }}, top: 5 }},
+    legend: {{ data: ['RSI(14)'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
     grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [
-        {{ name: 'RSI(14)', type: 'line', data: rsiData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#58a6ff' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(88,166,255,0.2)' }}, {{ offset: 1, color: 'rgba(88,166,255,0.02)' }}] }} }} }},
-        {{ name: '超买线', type: 'line', data: dates.map(() => 70), symbol: 'none', lineStyle: {{ width: 1, color: '#ef5350', type: 'dashed' }}, silent: true }},
-        {{ name: '超卖线', type: 'line', data: dates.map(() => 30), symbol: 'none', lineStyle: {{ width: 1, color: '#26a69a', type: 'dashed' }}, silent: true }},
-        {{ name: '中轴线', type: 'line', data: dates.map(() => 50), symbol: 'none', lineStyle: {{ width: 1, color: '#8b949e', type: 'dashed' }}, silent: true }}
+        {{ name: 'RSI(14)', type: 'line', data: rsiData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#3b82f6' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(59,130,246,0.15)' }}, {{ offset: 1, color: 'rgba(59,130,246,0.02)' }}] }} }} }},
+        {{ name: '超买线', type: 'line', data: dates.map(() => 70), symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }}, silent: true }},
+        {{ name: '超卖线', type: 'line', data: dates.map(() => 30), symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }}, silent: true }},
+        {{ name: '中轴线', type: 'line', data: dates.map(() => 50), symbol: 'none', lineStyle: {{ width: 1, color: '#9ca3af', type: 'dashed' }}, silent: true }}
     ]
 }});
 
-// ===== 图5 KDJ图 =====
-var kdjChart = echarts.init(document.getElementById('kdj-chart'), 'dark');
+var kdjChart = echarts.init(document.getElementById('kdj-chart'));
 kdjChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['K', 'D', 'J'], textStyle: {{ color: '#8b949e' }}, top: 5 }},
+    legend: {{ data: ['K', 'D', 'J'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
     grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [
-        {{ name: 'K', type: 'line', data: kData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f9c74f' }} }},
-        {{ name: 'D', type: 'line', data: dData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f8961e' }} }},
-        {{ name: 'J', type: 'line', data: jData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#90be6d' }} }},
-        {{ name: '超买线', type: 'line', data: dates.map(() => 80), symbol: 'none', lineStyle: {{ width: 1, color: '#ef5350', type: 'dashed' }}, silent: true }},
-        {{ name: '超卖线', type: 'line', data: dates.map(() => 20), symbol: 'none', lineStyle: {{ width: 1, color: '#26a69a', type: 'dashed' }}, silent: true }}
+        {{ name: 'K', type: 'line', data: kData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f59e0b' }} }},
+        {{ name: 'D', type: 'line', data: dData, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f97316' }} }},
+        {{ name: 'J', type: 'line', data: jData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#10b981' }} }},
+        {{ name: '超买线', type: 'line', data: dates.map(() => 80), symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }}, silent: true }},
+        {{ name: '超卖线', type: 'line', data: dates.map(() => 20), symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }}, silent: true }}
     ]
 }});
 
-// ===== 图6 布林带图 =====
-var bollChart = echarts.init(document.getElementById('boll-chart'), 'dark');
+var bollChart = echarts.init(document.getElementById('boll-chart'));
 bollChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['收盘价', '中轨(MA20)', '上轨', '下轨'], textStyle: {{ color: '#8b949e' }}, top: 5 }},
+    legend: {{ data: ['收盘价', '中轨(MA20)', '上轨', '下轨'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
     grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [
-        {{ name: '收盘价', type: 'line', data: closeData, smooth: false, symbol: 'none', lineStyle: {{ width: 1.5, color: '#58a6ff' }} }},
-        {{ name: '中轨(MA20)', type: 'line', data: bollMidData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f8961e' }} }},
-        {{ name: '上轨', type: 'line', data: bollUpperData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#ef5350', type: 'dashed' }} }},
-        {{ name: '下轨', type: 'line', data: bollLowerData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#26a69a', type: 'dashed' }} }}
+        {{ name: '收盘价', type: 'line', data: closeData, smooth: false, symbol: 'none', lineStyle: {{ width: 1.5, color: '#3b82f6' }} }},
+        {{ name: '中轨(MA20)', type: 'line', data: bollMidData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#f97316' }} }},
+        {{ name: '上轨', type: 'line', data: bollUpperData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }} }},
+        {{ name: '下轨', type: 'line', data: bollLowerData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }} }}
     ]
 }});
 
-// ===== 图7 市值与换手率 =====
-var turnoverChart = echarts.init(document.getElementById('turnover-chart'), 'dark');
-// 估算市值 = 收盘价 * 总股本(约26.85亿股)
+var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
 var totalShares = 26.85;
 var marketCap = closeData.map(p => Math.round(p * totalShares * 100) / 100);
-// 估算换手率 = 成交量(手) / (总股本 * 10000) * 100%
 var turnoverRate = volumeData.map(v => Math.round(v.value / (totalShares * 10000) * 10000) / 100);
 
 turnoverChart.setOption({{
     backgroundColor: 'transparent',
     tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['市值(亿元)', '换手率(%)'], textStyle: {{ color: '#8b949e' }}, top: 5 }},
+    legend: {{ data: ['市值(亿元)', '换手率(%)'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
     grid: {{ left: '6%', right: '8%', top: '15%', bottom: '15%' }},
-    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
     yAxis: [
-        {{ type: 'value', name: '市值(亿元)', position: 'left', axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#21262d', type: 'dashed' }} }} }},
-        {{ type: 'value', name: '换手率(%)', position: 'right', axisLine: {{ lineStyle: {{ color: '#30363d' }} }}, axisLabel: {{ color: '#8b949e', fontSize: 11 }}, splitLine: {{ show: false }} }}
+        {{ type: 'value', name: '市值(亿元)', position: 'left', axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+        {{ type: 'value', name: '换手率(%)', position: 'right', axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ show: false }} }}
     ],
     dataZoom: commonDataZoom,
     series: [
-        {{ name: '市值(亿元)', type: 'line', data: marketCap, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#58a6ff' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(88,166,255,0.2)' }}, {{ offset: 1, color: 'rgba(88,166,255,0.02)' }}] }} }} }},
-        {{ name: '换手率(%)', type: 'line', data: turnoverRate, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f8961e' }}, yAxisIndex: 1 }}
+        {{ name: '市值(亿元)', type: 'line', data: marketCap, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#3b82f6' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(59,130,246,0.15)' }}, {{ offset: 1, color: 'rgba(59,130,246,0.02)' }}] }} }} }},
+        {{ name: '换手率(%)', type: 'line', data: turnoverRate, smooth: true, symbol: 'none', lineStyle: {{ width: 1.5, color: '#f97316' }}, yAxisIndex: 1 }}
     ]
 }});
 
-// ===== 联动 =====
 echarts.connect([klineChart, volumeChart, macdChart, rsiChart, kdjChart, bollChart, turnoverChart]);
 
-// ===== 自适应 =====
 window.addEventListener('resize', function() {{
     klineChart.resize(); volumeChart.resize(); macdChart.resize();
     rsiChart.resize(); kdjChart.resize(); bollChart.resize(); turnoverChart.resize();
