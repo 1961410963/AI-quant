@@ -23,10 +23,11 @@ def calc_rsi(close, n=14):
     delta = pd.Series(close).diff()
     gain = delta.where(delta > 0, 0)
     loss = (-delta).where(delta < 0, 0)
-    avg_gain = gain.rolling(window=n).mean()
-    avg_loss = loss.rolling(window=n).mean()
+    avg_gain = gain.ewm(alpha=1/n, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1/n, adjust=False).mean()
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
+    rsi[:n] = float('nan')
     return rsi.tolist()
 
 def calc_kdj(high, low, close, n=9, m1=3, m2=3):
