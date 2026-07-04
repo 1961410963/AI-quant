@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import os
+import json
 
 def calc_ma(data, n):
     return data.rolling(window=n).mean().tolist()
@@ -149,6 +150,30 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
     k, d, j = calc_kdj(data)
     upper_boll, mid_boll, lower_boll = calc_boll(closes)
     tr, atr = calc_atr(data)
+    
+    # 将所有NaN替换为None，并用json.dumps序列化为JS的null
+    def clean_nan(lst):
+        return [None if (x is None or (isinstance(x, float) and np.isnan(x))) else x for x in lst]
+    
+    def js(lst):
+        return json.dumps(clean_nan(lst))
+    
+    ma5_js = js(ma5)
+    ma10_js = js(ma10)
+    ma20_js = js(ma20)
+    ma60_js = js(ma60)
+    dif_js = js(dif)
+    dea_js = js(dea)
+    macd_bar_js = js(macd_bar)
+    rsi_js = js(rsi)
+    k_js = js(k)
+    d_js = js(d)
+    j_js = js(j)
+    upper_boll_js = js(upper_boll)
+    mid_boll_js = js(mid_boll)
+    lower_boll_js = js(lower_boll)
+    tr_js = js(tr)
+    atr_js = js(atr)
     
     signals = detect_signals(data, dif, dea, rsi, k, d, upper_boll, mid_boll, lower_boll, atr, macd_bar)
     
@@ -381,22 +406,22 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
         const highs = {highs};
         const lows = {lows};
         const closes = {closes};
-        const ma5 = {ma5};
-        const ma10 = {ma10};
-        const ma20 = {ma20};
-        const ma60 = {ma60};
-        const dif = {dif};
-        const dea = {dea};
-        const macdBar = {macd_bar};
-        const rsi = {rsi};
-        const kLine = {k};
-        const dLine = {d};
-        const jLine = {j};
-        const upperBoll = {upper_boll};
-        const midBoll = {mid_boll};
-        const lowerBoll = {lower_boll};
-        const tr = {tr};
-        const atr = {atr};
+        const ma5 = {ma5_js};
+        const ma10 = {ma10_js};
+        const ma20 = {ma20_js};
+        const ma60 = {ma60_js};
+        const dif = {dif_js};
+        const dea = {dea_js};
+        const macdBar = {macd_bar_js};
+        const rsi = {rsi_js};
+        const kLine = {k_js};
+        const dLine = {d_js};
+        const jLine = {j_js};
+        const upperBoll = {upper_boll_js};
+        const midBoll = {mid_boll_js};
+        const lowerBoll = {lower_boll_js};
+        const tr = {tr_js};
+        const atr = {atr_js};
 
         const baseX = {{type: 'category', data: dates, boundaryGap: true, axisLabel: {{fontSize: 10}}, axisLine: {{lineStyle: {{color: '#ccc'}}}}}};
 
