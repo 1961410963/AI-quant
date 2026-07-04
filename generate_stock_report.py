@@ -24,7 +24,6 @@ def calc_macd(close):
     macd = [dif[i] - dea[i] for i in range(len(close))]
     for i in range(26):
         dif[i] = float('nan')
-    for i in range(35):
         dea[i] = float('nan')
         macd[i] = float('nan')
     return dif, dea, macd
