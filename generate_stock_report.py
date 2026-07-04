@@ -238,7 +238,7 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{stock_name}（{ts_code}）近一年交易数据分析报告</title>
+<title>{stock_name}（{ts_code}）近三年交易数据分析报告</title>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -323,7 +323,7 @@ tr:hover {{ background: #f9fafb; }}
 <div class="container">
 
 <div class="header">
-    <h1>{stock_name}（{ts_code}）近一年交易数据分析报告</h1>
+    <h1>{stock_name}（{ts_code}）近三年交易数据分析报告</h1>
     <div class="subtitle">
         <span>📅 数据区间：{start_date_str} ~ {end_date_str}</span>
         <span>📊 前复权 · 日K线</span>
@@ -387,24 +387,24 @@ tr:hover {{ background: #f9fafb; }}
 
 <div class="section">
     <h2>三、日线K线走势图</h2>
-    <h3>图1 {stock_name}（{ts_code}）近一年日线K线走势与均线系统</h3>
+    <h3>图1 {stock_name}（{ts_code}）近三年日线K线走势与均线系统</h3>
     <div id="kline-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图1解读】</strong>K线图反映了{stock_name}近一年的价格走势全貌，叠加MA5、MA10、MA20、MA60四条均线，用于判断短中长期趋势。<br><br>
+        <strong>【图1解读】</strong>K线图反映了{stock_name}近三年的价格走势全貌，叠加MA5、MA10、MA20、MA60四条均线，用于判断短中长期趋势。<br><br>
         <strong>均线系统：</strong>短期均线（MA5/MA10）反映近期市场情绪，中长期均线（MA20/MA60）则代表趋势方向。当短期均线上穿中长期均线形成"金叉"时，通常是买入信号；反之，"死叉"则预示调整。<br><br>
-        <strong>走势分析：</strong>整体来看，股价从{start_price}元起步，经历了冲高回落的过程。2025年7-8月股价快速拉升，创下{highest_price}元的阶段高点，随后进入长期下行通道。均线系统呈现空头排列（MA5 &lt; MA10 &lt; MA20 &lt; MA60），表明中长期趋势偏弱。当前股价位于各均线下方，短期反弹仍需放量突破均线压制。
+        <strong>走势分析：</strong>近三年股价整体呈现震荡下行走势。2023年下半年至2024年上半年股价在相对高位震荡整理，2024年下半年开始逐步走弱，进入下降通道。2025年7-8月出现一波快速拉升行情，创下{highest_price}元的阶段高点，但随后持续回落，均线系统再度呈现空头排列（MA5 &lt; MA10 &lt; MA20 &lt; MA60），表明中长期趋势偏弱。当前股价位于各均线下方，短期反弹仍需放量突破均线压制。
     </div>
 </div>
 
 <div class="section">
     <h2>四、日成交量走势图</h2>
-    <h3>图2 {stock_name}（{ts_code}）近一年日成交量分布（红柱涨/绿柱跌）</h3>
+    <h3>图2 {stock_name}（{ts_code}）近三年日成交量分布（红柱涨/绿柱跌）</h3>
     <div id="volume-chart2" class="chart-box"></div>
     <div class="interpretation">
         <strong>【图2解读】</strong>成交量是市场资金活跃度的直接体现。红色柱体表示当日上涨放量，绿色柱体表示当日下跌放量。<br><br>
-        <strong>量价关系：</strong>2025年7-8月股价上涨阶段，成交量显著放大，表明资金积极入场，推动股价上行。2025年8月中旬创阶段新高时，成交量达到峰值（单日最大{round(df['vol'].max()/10000,2)}万手），随后量能逐步萎缩。2025年四季度至2026年上半年，股价持续下跌过程中成交量整体萎缩，显示抛压减弱但买盘也不积极。缩量下跌通常意味着下跌动能在逐步消耗，但底部形成还需配合放量信号确认。<br><br>
-        <strong>阶段性特征：</strong>从全年成交量分布来看，可分为三个阶段：（1）2025年7-8月放量上涨期，日均成交超过百万手；（2）2025年9月-12月缩量震荡期，成交量逐步回落；（3）2026年以来极度缩量下跌期，日均成交量降至约30万手水平。<br><br>
-        <strong>地量信号：</strong>当前成交量处于一年来的低位水平，地量往往是底部区域的重要特征之一，但地量之后还可能有地价，需结合后续是否出现放量长阳来确认底部反转。
+        <strong>量价关系：</strong>从近三年成交量分布来看，股价与成交量呈现明显的正相关关系。2023年下半年至2024年上半年，股价处于相对高位震荡阶段，成交量维持在中等水平。2024年下半年股价逐步回落，成交量也相应萎缩。2025年7-8月股价快速拉升阶段，成交量显著放大，单日最大{round(df['vol'].max()/10000,2)}万手，表明资金积极入场推动股价上行。随后量能逐步萎缩，进入缩量下跌格局。<br><br>
+        <strong>阶段性特征：</strong>三年来可分为几个典型阶段：（1）2023年下半年-2024年上半年：高位震荡，量能中等；（2）2024年下半年-2025年上半年：缩量阴跌，量能持续低迷；（3）2025年7-8月：放量拉升，量价齐升；（4）2025年9月至今：缩量回调，地量频现。<br><br>
+        <strong>地量信号：</strong>当前成交量处于三年来的低位水平，地量往往是底部区域的重要特征之一，但地量之后还可能有地价，需结合后续是否出现放量长阳来确认底部反转。
     </div>
 </div>
 
@@ -434,7 +434,7 @@ tr:hover {{ background: #f9fafb; }}
     <div class="interpretation">
         <strong>【图4解读】</strong>RSI（Relative Strength Index）衡量平均上涨幅度与平均下跌幅度的比值，把相对强弱压缩到0-100区间。本站采用14日Wilder平滑方法。70为超买观察线，30为超卖观察线。<br><br>
         <strong>当前状态：</strong>RSI(14) = {latest_rsi}。<br><br>
-        <strong>走势分析：</strong>2025年7-8月上涨阶段，RSI快速攀升至80以上，进入超买区域，表明市场极度乐观，后续调整压力增大。随后RSI回落至30以下进入超卖区域。2026年以来股价持续下跌过程中，RSI多次跌入30以下的超卖区间，反映出卖方力量阶段性达到极致。<br><br>
+        <strong>走势分析：</strong>从近三年RSI走势来看，指标在30-70区间内反复波动，与股价的阶段性涨跌对应良好。2025年7-8月上涨阶段，RSI快速攀升至80以上进入超买区域，随后股价见顶回落。2024年及2026年的下跌过程中，RSI多次跌入30以下的超卖区间，反映出卖方力量阶段性达到极致。<br><br>
         <strong>信号判断：</strong>RSI处于低位并不意味着马上会反弹，超卖后还可能继续超卖。有效信号是RSI从超卖区回升并突破50中轴线，才确认多方力量开始占优。当前RSI仍在中性偏低区域，需观察能否站稳50。
     </div>
 
@@ -525,9 +525,9 @@ tr:hover {{ background: #f9fafb; }}
         <strong>短期（1-3个月）：中性偏谨慎</strong><br>
         技术面上，股价仍处于下降趋势中，均线空头排列，成交量萎缩，MACD零轴下方运行，短期尚未出现明确的底部反转信号。建议观望为主，等待放量突破MA20或MACD金叉等积极信号出现后再考虑参与。<br><br>
         <strong>中期（3-6个月）：关注底部布局机会</strong><br>
-        经过近一年的持续调整，股价跌幅已超过35%，估值风险得到一定程度释放。RSI等指标多次进入超卖区域，下跌动能在逐步消耗。中期可关注以下信号作为底部确认：（1）成交量持续放大并伴随股价上涨；（2）MACD在零轴下方形成金叉并逐步上移；（3）股价放量突破MA20和MA60压制。若上述信号出现，可考虑逐步布局。<br><br>
+        从近三年走势来看，股价经历了多轮调整，当前处于相对低位区域。RSI等指标多次进入超卖区域，下跌动能在逐步消耗。中期可关注以下信号作为底部确认：（1）成交量持续放大并伴随股价上涨；（2）MACD在零轴下方形成金叉并逐步上移；（3）股价放量突破MA20和MA60压制。若上述信号出现，可考虑逐步布局。<br><br>
         <strong>长期（6个月以上）：看好行业景气度</strong><br>
-        从基本面看，国防军工行业长期景气度确定，装备现代化建设是长期趋势。{stock_name}作为装甲装备龙头，将持续受益于国防预算增长和装备更新换代。同时，大股东资产整合预期、无人化智能化转型等也为公司提供长期成长空间。长期投资者可逢低分批布局，重点关注军工行业政策面、订单情况和公司业绩兑现。
+        从基本面看，国防军工行业长期景气度确定，装备现代化建设是长期趋势。{stock_name}作为装甲装备龙头，将持续受益于国防预算增长和装备更新换代。同时，大股东资产整合预期、无人化智能化转型等也为公司提供长期成长空间。近三年股价的阶段性调整为长期投资者提供了较好的布局窗口，可逢低分批布局，重点关注军工行业政策面、订单情况和公司业绩兑现。
     </div>
 </div>
 
@@ -772,12 +772,7 @@ window.addEventListener('resize', function() {{
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html_content)
 
-    index_path = 'index.html'
-    with open(index_path, 'w', encoding='utf-8') as f:
-        f.write(html_content)
-
     print(f'HTML报告已生成: {output_path}')
-    print(f'首页已生成: {index_path}')
     return output_path
 
 
