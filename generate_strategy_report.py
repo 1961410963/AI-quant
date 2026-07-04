@@ -521,7 +521,7 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
             klineChart.resize(); macdChart.resize(); rsiChart.resize();
             kdjChart.resize(); bollChart.resize(); atrChart.resize();
         }});
-    <\/script>
+    </script>
 </body>
 </html>"""
 
