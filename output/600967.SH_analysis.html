@@ -167,20 +167,16 @@ tr:hover { background: #f9fafb; }
         <strong>均线系统：</strong>短期均线（MA5/MA10）反映近期市场情绪，中长期均线（MA20/MA60）则代表趋势方向。当短期均线上穿中长期均线形成"金叉"时，通常是买入信号；反之，"死叉"则预示调整。<br><br>
         <strong>走势分析：</strong>整体来看，股价从16.96元起步，经历了冲高回落的过程。2025年7-8月股价快速拉升，创下30.68元的阶段高点，随后进入长期下行通道。均线系统呈现空头排列（MA5 &lt; MA10 &lt; MA20 &lt; MA60），表明中长期趋势偏弱。当前股价位于各均线下方，短期反弹仍需放量突破均线压制。
     </div>
-
-    <h3>图2 内蒙一机（600967.SH）近一年日成交量分布（红柱涨/绿柱跌）</h3>
-    <div id="volume-chart" class="chart-box small"></div>
-    <div class="interpretation">
-        <strong>【图2解读】</strong>成交量是市场资金活跃度的直接体现。红色柱体表示当日上涨放量，绿色柱体表示当日下跌放量。<br><br>
-        <strong>量价关系：</strong>2025年7-8月股价上涨阶段，成交量显著放大，表明资金积极入场，推动股价上行。2025年8月中旬创阶段新高时，成交量达到峰值（单日最大268.42万手），随后量能逐步萎缩。2025年四季度至2026年上半年，股价持续下跌过程中成交量整体萎缩，显示抛压减弱但买盘也不积极。缩量下跌通常意味着下跌动能在逐步消耗，但底部形成还需配合放量信号确认。
-    </div>
 </div>
 
 <div class="section">
     <h2>四、日成交量走势图</h2>
+    <h3>图2 内蒙一机（600967.SH）近一年日成交量分布（红柱涨/绿柱跌）</h3>
     <div id="volume-chart2" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图2解读·补充】</strong>从全年成交量分布来看，可分为三个阶段：（1）2025年7-8月放量上涨期，日均成交超过百万手；（2）2025年9月-12月缩量震荡期，成交量逐步回落；（3）2026年以来极度缩量下跌期，日均成交量降至约30万手水平。<br><br>
+        <strong>【图2解读】</strong>成交量是市场资金活跃度的直接体现。红色柱体表示当日上涨放量，绿色柱体表示当日下跌放量。<br><br>
+        <strong>量价关系：</strong>2025年7-8月股价上涨阶段，成交量显著放大，表明资金积极入场，推动股价上行。2025年8月中旬创阶段新高时，成交量达到峰值（单日最大268.42万手），随后量能逐步萎缩。2025年四季度至2026年上半年，股价持续下跌过程中成交量整体萎缩，显示抛压减弱但买盘也不积极。缩量下跌通常意味着下跌动能在逐步消耗，但底部形成还需配合放量信号确认。<br><br>
+        <strong>阶段性特征：</strong>从全年成交量分布来看，可分为三个阶段：（1）2025年7-8月放量上涨期，日均成交超过百万手；（2）2025年9月-12月缩量震荡期，成交量逐步回落；（3）2026年以来极度缩量下跌期，日均成交量降至约30万手水平。<br><br>
         <strong>地量信号：</strong>当前成交量处于一年来的低位水平，地量往往是底部区域的重要特征之一，但地量之后还可能有地价，需结合后续是否出现放量长阳来确认底部反转。
     </div>
 </div>
@@ -412,24 +408,8 @@ klineChart.setOption({
     ]
 });
 
-var volumeChart = echarts.init(document.getElementById('volume-chart'));
+var volumeChart = echarts.init(document.getElementById('volume-chart2'));
 volumeChart.setOption({
-    backgroundColor: 'transparent',
-    tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle,
-        formatter: function(params) {
-            var v = params[0];
-            return dates[v.dataIndex] + '<br/>成交量: ' + v.data.value.toLocaleString() + ' 手';
-        }
-    },
-    grid: { left: '6%', right: '3%', top: '8%', bottom: '15%' },
-    xAxis: commonXAxis,
-    yAxis: { type: 'value', axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
-    dataZoom: commonDataZoom,
-    series: [{ name: '成交量', type: 'bar', data: volumeData }]
-});
-
-var volumeChart2 = echarts.init(document.getElementById('volume-chart2'));
-volumeChart2.setOption({
     backgroundColor: 'transparent',
     tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, ...tooltipStyle,
         formatter: function(params) {
@@ -551,9 +531,9 @@ turnoverChart.setOption({
     ]
 });
 
-echarts.connect([klineChart, volumeChart, volumeChart2, macdChart, rsiChart, kdjChart, bollChart, atrChart, turnoverChart]);
+echarts.connect([klineChart, volumeChart, macdChart, rsiChart, kdjChart, bollChart, atrChart, turnoverChart]);
 window.addEventListener('resize', function() {
-    klineChart.resize(); volumeChart.resize(); volumeChart2.resize(); macdChart.resize();
+    klineChart.resize(); volumeChart.resize(); macdChart.resize();
     rsiChart.resize(); kdjChart.resize(); bollChart.resize(); atrChart.resize(); turnoverChart.resize();
 });
 </script>
