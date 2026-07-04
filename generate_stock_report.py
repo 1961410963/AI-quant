@@ -60,6 +60,20 @@ def calc_boll(close, n=20):
     return ma, upper, lower
 
 
+def calc_atr(high, low, close, n=14):
+    high_s = pd.Series(high)
+    low_s = pd.Series(low)
+    close_s = pd.Series(close)
+    prev_close = close_s.shift(1)
+    tr1 = high_s - low_s
+    tr2 = (high_s - prev_close).abs()
+    tr3 = (low_s - prev_close).abs()
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    atr = tr.ewm(alpha=1/n, adjust=False).mean()
+    atr[:n] = float('nan')
+    return tr.tolist(), atr.tolist()
+
+
 def get_stock_data(ts_code, days=365, output_dir='output'):
     csv_path = os.path.join(output_dir, f'{ts_code}_daily_data.csv')
     if os.path.exists(csv_path):
@@ -128,6 +142,7 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     rsi = calc_rsi(close_prices)
     k, d, j = calc_kdj(high_prices, low_prices, close_prices)
     boll_mid, boll_upper, boll_lower = calc_boll(close_prices)
+    tr_list, atr_list = calc_atr(high_prices, low_prices, close_prices)
 
     start_date_str = df['trade_date'].min().strftime('%Y年%m月%d日')
     end_date_str = df['trade_date'].max().strftime('%Y年%m月%d日')
@@ -181,6 +196,8 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     latest_boll_mid = round(boll_mid[latest_idx], 2) if boll_mid[latest_idx] is not None else '-'
     latest_boll_upper = round(boll_upper[latest_idx], 2) if boll_upper[latest_idx] is not None else '-'
     latest_boll_lower = round(boll_lower[latest_idx], 2) if boll_lower[latest_idx] is not None else '-'
+    latest_atr = round(atr_list[latest_idx], 2) if atr_list[latest_idx] == atr_list[latest_idx] else '-'
+    latest_atr_pct = round(atr_list[latest_idx] / close_prices[latest_idx] * 100, 2) if atr_list[latest_idx] == atr_list[latest_idx] else '-'
 
     market_cap_now = round(end_price * total_shares_yi, 2)
     avg_turnover = round(avg_volume / (total_shares_yi * 10000) * 100, 2)
@@ -202,6 +219,8 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     boll_mid_json = json.dumps([round(x, 2) if x is not None else None for x in boll_mid])
     boll_upper_json = json.dumps([round(x, 2) if x is not None else None for x in boll_upper])
     boll_lower_json = json.dumps([round(x, 2) if x is not None else None for x in boll_lower])
+    tr_json = json.dumps([round(x, 2) if x == x else None for x in tr_list])
+    atr_json = json.dumps([round(x, 2) if x == x else None for x in atr_list])
     close_json = json.dumps([round(x, 2) for x in close_prices])
 
     yearly_rows = ''
@@ -442,6 +461,16 @@ tr:hover {{ background: #f9fafb; }}
         <strong>开口与收窄：</strong>布林带开口扩大表明波动率增加，通常伴随趋势的加速；布林带收窄表明波动率降低，通常是变盘的前兆。股价触及上轨时短期有回调压力，触及下轨时短期有反弹可能。<br><br>
         <strong>趋势判断：</strong>在上升趋势中，股价沿上轨运行；在下降趋势中，股价沿下轨运行。当前股价位于布林带中下轨区域，偏弱格局明显。若股价能从中下轨逐步上穿中轨并站稳，则短期趋势有望转强。
     </div>
+
+    <h3>5.6 ATR平均真实波幅分析</h3>
+    <h3>图7 ATR(14)平均真实波幅走势图</h3>
+    <div id="atr-chart" class="chart-box small"></div>
+    <div class="interpretation">
+        <strong>【图7解读】</strong>ATR（Average True Range，平均真实波幅）衡量价格波动幅度，不判断方向。TR取三个值的最大值：当日高低差、高与昨收差的绝对值、低与昨收差的绝对值，比"最高-最低"更全面地反映了隔夜跳空带来的价格波动。本课采用14日Wilder平滑方法。<br><br>
+        <strong>当前状态：</strong>ATR(14) = {latest_atr} 元，ATR% = {latest_atr_pct}%。<br><br>
+        <strong>波动分析：</strong>ATR越大说明单日价格摆动通常越大，市场波动越剧烈；ATR越小说明波动越平静。2025年7-8月股价快速上涨阶段，ATR显著放大，反映市场情绪高涨、波动加剧。2025年9月以后随着股价回落和成交量萎缩，ATR逐步下行，表明市场波动在减小。2026年以来ATR处于相对低位，结合地量特征，说明市场交易清淡、多空双方都比较谨慎，波动收敛往往是变盘的前兆。<br><br>
+        <strong>应用价值：</strong>ATR主要用于衡量波动性和设置止损，ATR本身不提供买卖方向信号，但结合价格位置和其他指标使用，可以更全面地评估市场状态。
+    </div>
 </div>
 
 <div class="section">
@@ -471,10 +500,10 @@ tr:hover {{ background: #f9fafb; }}
     </div>
 
     <h3>6.4 市值与换手率走势</h3>
-    <h3>图7 市值与换手率走势图</h3>
+    <h3>图8 市值与换手率走势图</h3>
     <div id="turnover-chart" class="chart-box small"></div>
     <div class="interpretation">
-        <strong>【图7解读】</strong>左轴为总市值（亿元），右轴为日换手率（%）。市值走势与股价走势基本一致，从最高约{round(highest_price*total_shares_yi,0):.0f}亿元回落至当前{market_cap_now}亿元左右。换手率在2025年7-8月股价快速上涨期间显著放大，最高超过5%，反映资金博弈激烈。2026年以来换手率持续维持在1%左右的低位，交投清淡，筹码趋于稳定。
+        <strong>【图8解读】</strong>左轴为总市值（亿元），右轴为日换手率（%）。市值走势与股价走势基本一致，从最高约{round(highest_price*total_shares_yi,0):.0f}亿元回落至当前{market_cap_now}亿元左右。换手率在2025年7-8月股价快速上涨期间显著放大，最高超过5%，反映资金博弈激烈。2026年以来换手率持续维持在1%左右的低位，交投清淡，筹码趋于稳定。
     </div>
 
     <h3>6.5 行业地位与竞争优势</h3>
@@ -544,6 +573,8 @@ var jData = {j_json};
 var bollMidData = {boll_mid_json};
 var bollUpperData = {boll_upper_json};
 var bollLowerData = {boll_lower_json};
+var trData = {tr_json};
+var atrData = {atr_json};
 var closeData = {close_json};
 
 var tooltipStyle = {{
@@ -710,6 +741,21 @@ bollChart.setOption({{
     ]
 }});
 
+var atrChart = echarts.init(document.getElementById('atr-chart'));
+atrChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['TR(真实波幅)', 'ATR(14)'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
+    xAxis: commonXAxis,
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'TR(真实波幅)', type: 'bar', data: trData, itemStyle: {{ color: 'rgba(156,163,175,0.5)' }}, barWidth: '60%' }},
+        {{ name: 'ATR(14)', type: 'line', data: atrData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }}
+    ]
+}});
+
 var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
 var totalShares = {total_shares_yi};
 var marketCap = closeData.map(p => Math.round(p * totalShares * 100) / 100);
@@ -732,10 +778,10 @@ turnoverChart.setOption({{
     ]
 }});
 
-echarts.connect([klineChart, volumeChart, volumeChart2, macdChart, rsiChart, kdjChart, bollChart, turnoverChart]);
+echarts.connect([klineChart, volumeChart, volumeChart2, macdChart, rsiChart, kdjChart, bollChart, atrChart, turnoverChart]);
 window.addEventListener('resize', function() {{
     klineChart.resize(); volumeChart.resize(); volumeChart2.resize(); macdChart.resize();
-    rsiChart.resize(); kdjChart.resize(); bollChart.resize(); turnoverChart.resize();
+    rsiChart.resize(); kdjChart.resize(); bollChart.resize(); atrChart.resize(); turnoverChart.resize();
 }});
 </script>
 </body>
