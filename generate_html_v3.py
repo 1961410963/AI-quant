@@ -16,7 +16,12 @@ def calc_macd(close):
     ema26 = calc_ema(close, 26)
     dif = [ema12[i] - ema26[i] for i in range(len(close))]
     dea = calc_ema(dif, 9)
-    macd = [2 * (dif[i] - dea[i]) for i in range(len(close))]
+    macd = [dif[i] - dea[i] for i in range(len(close))]
+    for i in range(26):
+        dif[i] = float('nan')
+        macd[i] = float('nan')
+    for i in range(35):
+        dea[i] = float('nan')
     return dif, dea, macd
 
 def calc_rsi(close, n=14):
