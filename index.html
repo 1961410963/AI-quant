@@ -197,8 +197,12 @@ tr:hover { background: #f9fafb; }
     <div class="interpretation">
         <strong>【图3解读】</strong>MACD（指数平滑异同移动平均线）由DIF线（快线）、DEA线（慢线）和MACD柱（DIF-DEA）组成，用于判断趋势强弱和多空转换。本站MACD柱不乘2，直接等于DIF减DEA。<br><br>
         <strong>当前状态：</strong>DIF=-0.58，DEA=-0.575，MACD柱=-0.005。<br><br>
-        <strong>零轴位置：</strong>DIF和DEA均运行在零轴下方，表明中期趋势处于空头主导。MACD柱若由绿转红并逐步放大，说明多头力量在增强，是反弹信号；若绿柱持续放大，则空头力量仍在增强。<br><br>
-        <strong>金叉死叉：</strong>关注DIF与DEA的交叉情况。在零轴下方的金叉通常是反弹信号而非反转信号，需配合量能和均线突破来确认。零轴以上的金叉可靠性更高。
+        <strong>策略角色分析：</strong><br>
+        <span class="analysis-point">趋势跟随策略</span>DIF上穿DEA作为趋势增强候选，下穿作为趋势减弱候选。当前DIF接近DEA，尚未形成明确交叉信号。<br>
+        <span class="analysis-point">零轴过滤策略</span>只在DIF位于零轴上方时接受多头信号。当前DIF和DEA均在零轴下方，按此策略应过滤所有多头信号，等待DIF站上零轴后再考虑做多。<br>
+        <span class="analysis-point">动量加速/减速策略</span>MACD柱由负转正、连续扩大或缩小，描述趋势动量的变化速度。当前MACD柱接近零轴，动量处于微弱状态。<br>
+        <span class="analysis-point">多指标确认</span>需将MACD与均线突破、成交量结合，避免仅凭一次交叉交易。<br><br>
+        <strong>典型风险：</strong>金叉和死叉只是可编码条件，不是盈利保证。震荡市场中频繁反复交叉是核心风险。
     </div>
 
     <h3>5.3 RSI相对强弱指标分析</h3>
@@ -207,8 +211,12 @@ tr:hover { background: #f9fafb; }
     <div class="interpretation">
         <strong>【图4解读】</strong>RSI（Relative Strength Index）衡量平均上涨幅度与平均下跌幅度的比值，把相对强弱压缩到0-100区间。本站采用14日Wilder平滑方法。70为超买观察线，30为超卖观察线。<br><br>
         <strong>当前状态：</strong>RSI(14) = 30.45。<br><br>
-        <strong>走势分析：</strong>2025年7-8月上涨阶段，RSI快速攀升至80以上，进入超买区域，表明市场极度乐观，后续调整压力增大。随后RSI回落至30以下进入超卖区域。2026年以来股价持续下跌过程中，RSI多次跌入30以下的超卖区间，反映出卖方力量阶段性达到极致。<br><br>
-        <strong>信号判断：</strong>RSI处于低位并不意味着马上会反弹，超卖后还可能继续超卖。有效信号是RSI从超卖区回升并突破50中轴线，才确认多方力量开始占优。当前RSI仍在中性偏低区域，需观察能否站稳50。
+        <strong>策略角色分析：</strong><br>
+        <span class="analysis-point">均值回归策略</span>RSI从低位向上穿越阈值时关注反弹，从高位回落时关注回归。当前RSI接近30超卖线，若向上突破可关注反弹机会，但需结合其他信号确认。<br>
+        <span class="analysis-point">趋势过滤策略</span>在趋势信号上增加RSI条件，只在RSI未处于极端高位时开仓，减少追涨风险。当前RSI处于低位，不构成追涨风险，但需确认趋势方向。<br>
+        <span class="analysis-point">背离研究</span>价格创新高而RSI未创新高，用作趋势减弱的候选特征。观察历史走势，2025年8月股价创阶段新高但RSI未能同步创新高，显示出顶背离迹象，随后股价大幅回落。<br><br>
+        <strong>核心提醒：</strong>RSI既可用于"反转"逻辑也可用于"趋势强度"逻辑——指标本身不是策略，需结合具体策略框架使用。<br><br>
+        <strong>典型风险：</strong>强趋势中长期极端值持续，RSI在单边下跌趋势中可能长时间处于30以下，此时不应单独作为买入信号。
     </div>
 
     <h3>5.4 KDJ随机指标分析</h3>
@@ -227,8 +235,13 @@ tr:hover { background: #f9fafb; }
     <div class="interpretation">
         <strong>【图6解读】</strong>布林带由中轨（MA20）、上轨（中轨+2倍标准差）和下轨（中轨-2倍标准差）组成，反映价格的波动率和运行区间。<br><br>
         <strong>当前状态：</strong>上轨=12.5，中轨=11.56，下轨=10.62。<br><br>
-        <strong>开口与收窄：</strong>布林带开口扩大表明波动率增加，通常伴随趋势的加速；布林带收窄表明波动率降低，通常是变盘的前兆。股价触及上轨时短期有回调压力，触及下轨时短期有反弹可能。<br><br>
-        <strong>趋势判断：</strong>在上升趋势中，股价沿上轨运行；在下降趋势中，股价沿下轨运行。当前股价位于布林带中下轨区域，偏弱格局明显。若股价能从中下轨逐步上穿中轨并站稳，则短期趋势有望转强。
+        <strong>策略角色分析：</strong><br>
+        <span class="analysis-point">均值回归策略</span>价格偏离中轨触及上下轨后，研究是否向中轨回归。当前股价位于中下轨区域，更接近下轨，若触及下轨可关注反弹向中轨回归的机会。<br>
+        <span class="analysis-point">突破策略</span>价格突破上轨且带宽扩大，作为波动和方向同时增强的候选信号。当前股价尚未突破上轨，需等待放量突破确认。<br>
+        <span class="analysis-point">波动率收缩策略(Squeeze)</span>带宽降至历史低位时观察后续波动扩张，布林带本身不能提前确定突破方向。当前布林带处于收窄状态，可能预示即将出现变盘。<br>
+        <span class="analysis-point">动态区间/止损参考</span>根据近期标准差变化调整观察区间，不能假设价格一定被限制在上下轨内。<br><br>
+        <strong>核心提醒：</strong>同样触及上轨，均值回归可能考虑反向，突破策略可能考虑顺势——策略假设不同，动作完全相反。<br><br>
+        <strong>典型风险：</strong>触轨不代表反转，布林带只是描述性指标，需结合其他信号确认方向。
     </div>
 
     <h3>5.6 ATR平均真实波幅分析</h3>
@@ -237,8 +250,13 @@ tr:hover { background: #f9fafb; }
     <div class="interpretation">
         <strong>【图7解读】</strong>ATR（Average True Range，平均真实波幅）衡量价格波动幅度，不判断方向。TR取三个值的最大值：当日高低差、高与昨收差的绝对值、低与昨收差的绝对值，比"最高-最低"更全面地反映了隔夜跳空带来的价格波动。本站采用14日Wilder平滑方法。<br><br>
         <strong>当前状态：</strong>ATR(14) = 0.36 元，ATR% = 3.3%。<br><br>
-        <strong>波动分析：</strong>ATR越大说明单日价格摆动通常越大，市场波动越剧烈；ATR越小说明波动越平静。2025年7-8月股价快速上涨阶段，ATR显著放大，反映市场情绪高涨、波动加剧。2025年9月以后随着股价回落和成交量萎缩，ATR逐步下行，表明市场波动在减小。2026年以来ATR处于相对低位，结合地量特征，说明市场交易清淡、多空双方都比较谨慎，波动收敛往往是变盘的前兆。<br><br>
-        <strong>应用价值：</strong>ATR主要用于衡量波动性和设置止损，ATR本身不提供买卖方向信号，但结合价格位置和其他指标使用，可以更全面地评估市场状态。
+        <strong>策略角色分析：</strong><br>
+        <span class="analysis-point">波动率仓位管理</span>ATR大时减少持仓数量，ATR小时适度增加，使不同市场阶段承担的价格风险更接近。当前ATR处于相对低位，可考虑适度增加仓位，但需结合方向信号。<br>
+        <span class="analysis-point">动态止损策略</span>入场价减去若干倍ATR设置多头止损，让止损距离随市场波动自动变化。建议初始止损设置为2-3倍ATR（约0.72-1.08元），即价格跌破10.14-9.84元时止损。<br>
+        <span class="analysis-point">突破过滤策略</span>要求突破幅度超过一定比例或若干倍ATR，过滤过小的价格波动。当前ATR较小，突破阈值可相应降低，提高突破信号的灵敏度。<br>
+        <span class="analysis-point">波动率目标/标的比较</span>使用ATR_PCT比较不同价格标的的相对波动，辅助组合风险分配。<br><br>
+        <strong>核心提醒：</strong>ATR只告诉我们"波动多大"，不告诉我们"向哪边走"。它更常承担风险管理角色，而不是单独产生方向信号。<br><br>
+        <strong>典型风险：</strong>不提供方向，倍数可能过拟合，需结合其他指标确定方向后使用。
     </div>
 </div>
 
@@ -295,12 +313,56 @@ tr:hover { background: #f9fafb; }
 <div class="section">
     <h2>七、投资建议</h2>
     <div class="interpretation">
-        <strong>短期（1-3个月）：中性偏谨慎</strong><br>
-        技术面上，股价仍处于下降趋势中，均线空头排列，成交量萎缩，MACD零轴下方运行，短期尚未出现明确的底部反转信号。建议观望为主，等待放量突破MA20或MACD金叉等积极信号出现后再考虑参与。<br><br>
-        <strong>中期（3-6个月）：关注底部布局机会</strong><br>
-        经过近一年的持续调整，股价跌幅已超过35%，估值风险得到一定程度释放。RSI等指标多次进入超卖区域，下跌动能在逐步消耗。中期可关注以下信号作为底部确认：（1）成交量持续放大并伴随股价上涨；（2）MACD在零轴下方形成金叉并逐步上移；（3）股价放量突破MA20和MA60压制。若上述信号出现，可考虑逐步布局。<br><br>
-        <strong>长期（6个月以上）：看好行业景气度</strong><br>
-        从基本面看，国防军工行业长期景气度确定，装备现代化建设是长期趋势。内蒙一机作为装甲装备龙头，将持续受益于国防预算增长和装备更新换代。同时，大股东资产整合预期、无人化智能化转型等也为公司提供长期成长空间。长期投资者可逢低分批布局，重点关注军工行业政策面、订单情况和公司业绩兑现。
+        <strong>【指标综合判断】</strong><br>
+        当前技术面整体偏弱，但已出现部分积极信号：MACD接近零轴金叉、RSI接近超卖线、布林带收窄预示变盘、ATR处于低位。建议采用<strong>分阶段、分仓位</strong>策略，结合各指标策略角色进行综合决策。<br><br>
+
+        <strong>📊 短期（1-3个月）：观望为主，等待确认信号</strong><br>
+        <span class="analysis-point">仓位建议：0%-20%</span><br>
+        <span class="analysis-point">策略逻辑：零轴过滤+趋势跟随</span><br><br>
+        <strong>看多条件：</strong><br>
+        ✅ MACD在零轴下方形成金叉（趋势跟随策略）<br>
+        ✅ RSI从30下方回升并突破50（均值回归+趋势过滤策略）<br>
+        ✅ 股价放量突破MA20（多指标确认）<br>
+        ✅ 布林带下轨反弹且带宽开始扩大（波动率收缩策略）<br><br>
+        <strong>看空条件：</strong><br>
+        ❌ 跌破前期低点10.5元<br>
+        ❌ MACD再次死叉且绿柱放大<br>
+        ❌ 布林带开口向下扩大<br><br>
+        <strong>操作建议：</strong>当前仅可轻仓（不超过20%）尝试左侧交易，止损设置为2-3倍ATR（约10.14-9.84元）。<br><br>
+
+        <strong>📈 中期（3-6个月）：逐步建仓，把握趋势反转</strong><br>
+        <span class="analysis-point">仓位建议：30%-50%</span><br>
+        <span class="analysis-point">策略逻辑：动量加速+突破策略+波动率仓位管理</span><br><br>
+        <strong>加仓条件：</strong><br>
+        ✅ MACD柱由负转正并持续放大（动量加速策略）<br>
+        ✅ DIF站上零轴（零轴过滤策略确认）<br>
+        ✅ 股价突破MA60且成交量持续放大（多指标确认+突破策略）<br>
+        ✅ RSI站稳50中轴线（趋势过滤策略）<br><br>
+        <strong>减仓条件：</strong><br>
+        ❌ MACD柱由正转负（动量减速）<br>
+        ❌ RSI突破70进入超买区（趋势过滤）<br>
+        ❌ 股价跌破MA20（止损参考）<br><br>
+        <strong>操作建议：</strong>分批建仓，每满足一个加仓条件增加10%-15%仓位，最高不超过50%。<br><br>
+
+        <strong>🎯 长期（6个月以上）：坚定持有，分享成长红利</strong><br>
+        <span class="analysis-point">仓位建议：50%-80%</span><br>
+        <span class="analysis-point">策略逻辑：基本面+技术面共振</span><br><br>
+        <strong>持仓条件：</strong><br>
+        ✅ 国防预算稳步增长<br>
+        ✅ 公司订单持续落地<br>
+        ✅ 均线系统转为多头排列<br>
+        ✅ MACD长期运行在零轴上方<br><br>
+        <strong>减仓条件：</strong><br>
+        ❌ 行业政策发生重大变化<br>
+        ❌ 公司业绩出现持续下滑<br>
+        ❌ 估值水平过高（PE超过行业均值150%）<br><br>
+        <strong>操作建议：</strong>长期投资者可在中期信号确认后逐步加仓至50%-80%，重点关注公司基本面变化和行业景气度。<br><br>
+
+        <strong>⚠️ 风险管理要点：</strong><br>
+        1. <strong>动态止损：</strong>使用2-3倍ATR设置止损，随市场波动自动调整止损距离<br>
+        2. <strong>仓位控制：</strong>ATR较大时减少仓位，较小时适度增加<br>
+        3. <strong>多指标确认：</strong>避免仅凭单一指标信号交易，至少需要2-3个指标共振确认<br>
+        4. <strong>趋势优先：</strong>零轴上方的金叉可靠性远高于零轴下方，强趋势中慎用均值回归策略
     </div>
 </div>
 
