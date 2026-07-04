@@ -54,7 +54,7 @@ def calc_kdj(high, low, close, n=9, m1=3, m2=3):
 
 def calc_boll(close, n=20):
     ma = pd.Series(close).rolling(window=n).mean().tolist()
-    std = pd.Series(close).rolling(window=n).std().tolist()
+    std = pd.Series(close).rolling(window=n).std(ddof=0).tolist()
     upper = [ma[i] + 2 * std[i] if std[i] == std[i] else None for i in range(len(close))]
     lower = [ma[i] - 2 * std[i] if std[i] == std[i] else None for i in range(len(close))]
     return ma, upper, lower
