@@ -117,6 +117,15 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     high_prices = df['high'].tolist()
     low_prices = df['low'].tolist()
 
+    if 'turnover' in df.columns:
+        turnover_list = (df['turnover'] * 100).tolist()
+    else:
+        turnover_list = None
+    if 'outstanding_share' in df.columns:
+        outstanding_share_yi = df['outstanding_share'].iloc[-1] / 100000000
+    else:
+        outstanding_share_yi = total_shares_yi
+
     volumes = []
     for _, row in df.iterrows():
         vol = round(row['vol'], 0)
@@ -200,7 +209,10 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     latest_atr_pct = round(atr_list[latest_idx] / close_prices[latest_idx] * 100, 2) if atr_list[latest_idx] == atr_list[latest_idx] else '-'
 
     market_cap_now = round(end_price * total_shares_yi, 2)
-    avg_turnover = round(avg_volume / (total_shares_yi * 10000) * 100, 2)
+    if turnover_list is not None:
+        avg_turnover = round(pd.Series(turnover_list).mean(), 2)
+    else:
+        avg_turnover = round(avg_volume / (outstanding_share_yi * 100000000) * 100, 2)
 
     # 动态生成走势描述
     ma5_now = ma5[latest_idx]
@@ -253,6 +265,7 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     tr_json = json.dumps([round(x, 2) if x == x else None for x in tr_list])
     atr_json = json.dumps([round(x, 2) if x == x else None for x in atr_list])
     close_json = json.dumps([round(x, 2) for x in close_prices])
+    turnover_json = json.dumps([round(x, 2) if x == x else None for x in (turnover_list if turnover_list else [])])
 
     yearly_rows = ''
     for y in yearly_stats:
@@ -517,8 +530,8 @@ tr:hover {{ background: #f9fafb; }}
     <table>
         <tr><th>指标</th><th>数值</th><th>说明</th></tr>
         <tr><td>最新收盘价</td><td>{end_price} 元</td><td>截至{end_date_str}</td></tr>
-        <tr><td>总市值</td><td>{market_cap_now} 亿元</td><td>总股本 {total_shares_yi} 亿股</td></tr>
-        <tr><td>日均换手率</td><td>{avg_turnover}%</td><td>过去一年平均</td></tr>
+        <tr><td>总市值</td><td>{market_cap_now} 亿元</td><td>总股本 {total_shares_yi} 亿股，流通 {outstanding_share_yi:.2f} 亿股</td></tr>
+        <tr><td>日均换手率</td><td>{avg_turnover}%</td><td>近三年平均（基于流通股本）</td></tr>
         <tr><td>区间最高市值</td><td>{round(highest_price*total_shares_yi,2)} 亿元</td><td>{highest_date}</td></tr>
         <tr><td>区间最低市值</td><td>{round(lowest_price*total_shares_yi,2)} 亿元</td><td>{lowest_date}</td></tr>
     </table>
@@ -603,6 +616,7 @@ var bollLowerData = {boll_lower_json};
 var trData = {tr_json};
 var atrData = {atr_json};
 var closeData = {close_json};
+var turnoverData = {turnover_json};
 
 var tooltipStyle = {{
     backgroundColor: 'rgba(255,255,255,0.98)',
@@ -778,7 +792,7 @@ atrChart.setOption({{
 var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
 var totalShares = {total_shares_yi};
 var marketCap = closeData.map(p => Math.round(p * totalShares * 100) / 100);
-var turnoverRate = volumeData.map(v => Math.round(v.value / (totalShares * 10000) * 10000) / 100);
+var turnoverRate = turnoverData.length > 0 ? turnoverData : volumeData.map(v => Math.round(v.value / (totalShares * 100000000) * 10000) / 100);
 
 turnoverChart.setOption({{
     backgroundColor: 'transparent',
