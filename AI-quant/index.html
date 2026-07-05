@@ -152,6 +152,61 @@
             margin-left: 8px;
         }
 
+        /* Large Project Card */
+        .project-card.large {
+            grid-column: span 2;
+            padding: 40px;
+        }
+
+        .project-card.large .project-title {
+            font-size: 28px;
+        }
+
+        .project-card.large .project-desc {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .subproject-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .subproject-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .subproject-item:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+
+        .subproject-item .num {
+            font-size: 13px;
+            color: #764ba2;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .subproject-item .name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .subproject-item .stock {
+            font-size: 12px;
+            color: #6b7280;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -172,6 +227,15 @@
             }
 
             .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card.large {
+                grid-column: span 1;
+                padding: 28px;
+            }
+
+            .subproject-list {
                 grid-template-columns: 1fr;
             }
 
@@ -197,55 +261,41 @@
 
         <!-- Projects Grid -->
         <div class="projects-grid">
-            <!-- Project 1 -->
-            <div class="project-card">
+            <!-- Project 01 - Large Card -->
+            <div class="project-card large">
                 <div class="project-number">项目 01</div>
-                <h2 class="project-title">内蒙一机股票交易数据分析</h2>
+                <h2 class="project-title">个股分析系列</h2>
                 <p class="project-desc">
-                    使用Python获取并分析内蒙一机（600967.SH）近三年交易数据，绘制K线图、成交量图及多项技术指标（MACD、RSI、KDJ、布林带、ATR），结合策略角色给出分周期投资建议。
+                    针对不同行业代表性个股的深度分析，涵盖技术面指标研究、基本面数据解读及交易策略制定。
+                    覆盖军工制造、有色金属、新能源等多个行业，建立系统化的个股分析方法论。
                 </p>
-                <div class="project-tags">
-                    <span class="project-tag">Tushare数据</span>
-                    <span class="project-tag">ECharts可视化</span>
-                    <span class="project-tag">技术面分析</span>
-                    <span class="project-tag">基本面分析</span>
+                <div class="subproject-list">
+                    <div class="subproject-item">
+                        <div class="num">01.1</div>
+                        <div class="name">内蒙一机</div>
+                        <div class="stock">600967.SH</div>
+                    </div>
+                    <div class="subproject-item">
+                        <div class="num">01.2</div>
+                        <div class="name">紫金矿业</div>
+                        <div class="stock">601899.SH</div>
+                    </div>
+                    <div class="subproject-item">
+                        <div class="num">01.3</div>
+                        <div class="name">恩捷股份</div>
+                        <div class="stock">002812.SZ</div>
+                    </div>
                 </div>
-                <a href="stock-analysis-600967.html" class="project-link">查看报告</a>
-            </div>
-
-            <!-- Project 1.1 -->
-            <div class="project-card">
-                <div class="project-number">项目 01.1</div>
-                <h2 class="project-title">紫金矿业交易策略方案</h2>
-                <p class="project-desc">
-                    深入分析紫金矿业（601899.SH）近三年技术指标，包含MACD趋势跟随、RSI均值回归、布林带突破、多指标共振四种策略，提供具体进场时机、买入卖出价位、止损止盈方案及仓位管理建议。
-                </p>
-                <div class="project-tags">
-                    <span class="project-tag">技术指标分析</span>
-                    <span class="project-tag">交易策略</span>
-                    <span class="project-tag">进场时机</span>
-                    <span class="project-tag">仓位管理</span>
-                </div>
-                <a href="output/601899.SH_strategy_report.html" class="project-link">查看策略</a>
-            </div>
-
-            <!-- Project 01.2 -->
-            <div class="project-card">
-                <div class="project-number">项目 01.2</div>
-                <h2 class="project-title">恩捷股份技术面基本面全分析</h2>
-                <p class="project-desc">
-                    全面分析恩捷股份（002812.SZ）技术面指标（MA/MACD/RSI/KDJ/布林带/ATR）、基本面数据（PE/PB/市值）及交易策略，包含具体买卖时机、止损止盈方案及仓位管理建议。
-                </p>
                 <div class="project-tags">
                     <span class="project-tag">技术面分析</span>
-                    <span class="project-tag">基本面分析</span>
                     <span class="project-tag">交易策略</span>
-                    <span class="project-tag">买卖时机</span>
+                    <span class="project-tag">多行业覆盖</span>
+                    <span class="project-tag">实战导向</span>
                 </div>
-                <a href="output/002812.SZ_analysis.html" class="project-link">查看报告</a>
+                <a href="project-01.html" class="project-link">进入项目</a>
             </div>
 
-            <!-- Project 2 -->
+            <!-- Project 02 -->
             <div class="project-card">
                 <div class="project-number">项目 02</div>
                 <h2 class="project-title">股票技术指标可视化工具</h2>

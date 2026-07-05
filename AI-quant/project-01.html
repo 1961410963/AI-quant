@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目零一 · 个股分析系列 - AI量化交易课程作品集</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 15px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffffff;
+            transform: translateX(-4px);
+        }
+
+        .back-btn::before {
+            content: '←';
+            margin-right: 8px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .project-label {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .header .subtitle {
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .header .meta {
+            margin-top: 28px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header .tag {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* Sub-projects Section */
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 24px;
+            padding-left: 16px;
+            border-left: 4px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .subprojects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Sub-project Card */
+        .subproject-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subproject-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .subproject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+        }
+
+        .subproject-number {
+            font-size: 14px;
+            color: #d97706;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .subproject-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .subproject-stock {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+
+        .subproject-stock span {
+            color: #374151;
+            background: #f3f4f6;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .subproject-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .subproject-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .subproject-tag {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .subproject-link {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .subproject-link:hover {
+            opacity: 0.9;
+            transform: translateX(4px);
+        }
+
+        .subproject-link::after {
+            content: ' →';
+            margin-left: 6px;
+        }
+
+        /* Overview Section */
+        .overview-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .overview-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .overview-item {
+            text-align: center;
+        }
+
+        .overview-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .overview-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .subprojects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .overview-section {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="index.html" class="back-btn">返回作品集首页</a>
+
+        <!-- Header -->
+        <div class="header">
+            <div class="project-label">项目 01</div>
+            <h1>个股分析系列</h1>
+            <p class="subtitle">
+                针对不同行业代表性个股的深度分析，涵盖技术面指标研究、基本面数据解读及交易策略制定，
+                建立系统化的个股分析方法论。
+            </p>
+            <div class="meta">
+                <span class="tag">📊 技术面分析</span>
+                <span class="tag">📈 交易策略</span>
+                <span class="tag">🏭 多行业覆盖</span>
+                <span class="tag">💡 实战导向</span>
+            </div>
+        </div>
+
+        <!-- Overview -->
+        <div class="overview-section">
+            <h3 class="overview-title">项目概览</h3>
+            <div class="overview-grid">
+                <div class="overview-item">
+                    <div class="overview-number">3</div>
+                    <div class="overview-label">子项目数量</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-number">3</div>
+                    <div class="overview-label">覆盖行业</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-number">6+</div>
+                    <div class="overview-label">技术指标</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-number">3年</div>
+                    <div class="overview-label">数据周期</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-projects -->
+        <h3 class="section-title">子项目列表</h3>
+        <div class="subprojects-grid">
+            <!-- Sub-project 01.1 -->
+            <div class="subproject-card">
+                <div class="subproject-number">项目 01.1</div>
+                <h2 class="subproject-title">内蒙一机股票交易数据分析</h2>
+                <div class="subproject-stock">股票代码：<span>600967.SH</span></div>
+                <p class="subproject-desc">
+                    获取并分析内蒙一机近三年交易数据，绘制K线图、成交量图及多项技术指标（MACD、RSI、KDJ、布林带、ATR），结合策略角色给出分周期投资建议。
+                </p>
+                <div class="subproject-tags">
+                    <span class="subproject-tag">军工制造</span>
+                    <span class="subproject-tag">ECharts可视化</span>
+                    <span class="subproject-tag">技术面分析</span>
+                    <span class="subproject-tag">基本面分析</span>
+                </div>
+                <a href="stock-analysis-600967.html" class="subproject-link">查看报告</a>
+            </div>
+
+            <!-- Sub-project 01.2 -->
+            <div class="subproject-card">
+                <div class="subproject-number">项目 01.2</div>
+                <h2 class="subproject-title">紫金矿业交易策略方案</h2>
+                <div class="subproject-stock">股票代码：<span>601899.SH</span></div>
+                <p class="subproject-desc">
+                    深入分析紫金矿业近三年技术指标，包含MACD趋势跟随、RSI均值回归、布林带突破、多指标共振四种策略，提供具体进场时机、止损止盈及仓位管理建议。
+                </p>
+                <div class="subproject-tags">
+                    <span class="subproject-tag">有色金属</span>
+                    <span class="subproject-tag">多策略对比</span>
+                    <span class="subproject-tag">进场时机</span>
+                    <span class="subproject-tag">仓位管理</span>
+                </div>
+                <a href="output/601899.SH_strategy_report.html" class="subproject-link">查看策略</a>
+            </div>
+
+            <!-- Sub-project 01.3 -->
+            <div class="subproject-card">
+                <div class="subproject-number">项目 01.3</div>
+                <h2 class="subproject-title">恩捷股份技术面基本面全分析</h2>
+                <div class="subproject-stock">股票代码：<span>002812.SZ</span></div>
+                <p class="subproject-desc">
+                    全面分析恩捷股份技术面指标（MA/MACD/RSI/KDJ/布林带/ATR）、基本面数据（PE/PB/市值）及交易策略，包含近30日买卖信号提示、止损止盈及仓位管理建议。
+                </p>
+                <div class="subproject-tags">
+                    <span class="subproject-tag">新能源</span>
+                    <span class="subproject-tag">技术面分析</span>
+                    <span class="subproject-tag">基本面分析</span>
+                    <span class="subproject-tag">买卖信号</span>
+                </div>
+                <a href="output/002812.SZ_analysis.html" class="subproject-link">查看报告</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 AI量化交易课程 · 持续更新中</p>
+            <p style="margin-top: 8px;">
+                <a href="https://github.com/1961410963/AI-quant" target="_blank">GitHub仓库</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
