@@ -157,7 +157,7 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
     avg_price = round(df['close'].mean(), 2)
     avg_volume = round(df['vol'].mean(), 0)
     avg_amount = round(df['amount'].mean(), 0)
-    avg_amount_yi = avg_amount / 100000
+    avg_amount_yi = avg_amount / 100000000
     up_days = len(df[df['close'] > df['open']])
     down_days = len(df[df['close'] < df['open']])
     flat_days = len(df[df['close'] == df['open']])
@@ -201,6 +201,37 @@ def generate_html_report(ts_code, stock_name, total_shares_yi, csv_path=None, ou
 
     market_cap_now = round(end_price * total_shares_yi, 2)
     avg_turnover = round(avg_volume / (total_shares_yi * 10000) * 100, 2)
+
+    # 动态生成走势描述
+    ma5_now = ma5[latest_idx]
+    ma10_now = ma10[latest_idx]
+    ma20_now = ma20[latest_idx]
+    ma60_now = ma60[latest_idx]
+    if ma5_now < ma10_now < ma20_now < ma60_now:
+        ma_arrangement = "空头排列"
+        ma_trend = "弱势格局"
+    elif ma5_now > ma10_now > ma20_now > ma60_now:
+        ma_arrangement = "多头排列"
+        ma_trend = "强势格局"
+    else:
+        ma_arrangement = "均线交织"
+        ma_trend = "震荡整理"
+    
+    if change_pct >= 30:
+        trend_desc = f"近三年股价整体呈现大幅上涨走势，累计涨幅达{change_pct}%。"
+    elif change_pct >= 10:
+        trend_desc = f"近三年股价整体呈现震荡上行走势，累计涨幅为{change_pct}%。"
+    elif change_pct >= -10:
+        trend_desc = f"近三年股价整体呈现震荡整理走势，累计涨跌幅为{change_pct}%。"
+    elif change_pct >= -30:
+        trend_desc = f"近三年股价整体呈现震荡下行走势，累计跌幅为{abs(change_pct)}%。"
+    else:
+        trend_desc = f"近三年股价整体呈现大幅下跌走势，累计跌幅达{abs(change_pct)}%。"
+    
+    if end_price > ma60_now:
+        price_vs_ma = "当前股价位于MA60均线上方，中长期趋势偏强"
+    else:
+        price_vs_ma = "当前股价位于MA60均线下方，中长期趋势偏弱"
 
     dates_json = json.dumps(dates)
     kline_json = json.dumps(kline_data)
@@ -392,7 +423,7 @@ tr:hover {{ background: #f9fafb; }}
     <div class="interpretation">
         <strong>【图1解读】</strong>K线图反映了{stock_name}近三年的价格走势全貌，叠加MA5、MA10、MA20、MA60四条均线，用于判断短中长期趋势。<br><br>
         <strong>均线系统：</strong>短期均线（MA5/MA10）反映近期市场情绪，中长期均线（MA20/MA60）则代表趋势方向。当短期均线上穿中长期均线形成"金叉"时，通常是买入信号；反之，"死叉"则预示调整。<br><br>
-        <strong>走势分析：</strong>近三年股价整体呈现震荡下行走势。2023年下半年至2024年上半年股价在相对高位震荡整理，2024年下半年开始逐步走弱，进入下降通道。2025年7-8月出现一波快速拉升行情，创下{highest_price}元的阶段高点，但随后持续回落，均线系统再度呈现空头排列（MA5 &lt; MA10 &lt; MA20 &lt; MA60），表明中长期趋势偏弱。当前股价位于各均线下方，短期反弹仍需放量突破均线压制。
+        <strong>走势分析：</strong>{trend_desc}2023年下半年至2024年上半年股价在相对高位震荡整理，2024年下半年市场整体调整期间股价随之下行。2025年7-8月出现一波快速拉升行情，创下{highest_price}元的阶段高点，但随后持续回落。当前均线系统呈现{ma_arrangement}格局（MA5={ma5_now:.2f}，MA10={ma10_now:.2f}，MA20={ma20_now:.2f}，MA60={ma60_now:.2f}），表明{ma_trend}。{price_vs_ma}，短期反弹仍需放量突破均线压制。
     </div>
 </div>
 
