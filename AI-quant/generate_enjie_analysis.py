@@ -102,6 +102,12 @@ def generate_html_report(csv_path, output_dir='output'):
     boll_mid, boll_upper, boll_lower = calc_boll(close_prices)
     atr = calc_atr(high_prices, low_prices, close_prices)
 
+    total_shares = 9.82
+    latest_float_shares = round(df['outstanding_share'].iloc[-1] / 1e8, 4)
+
+    market_cap = [round(close_prices[i] * total_shares, 2) for i in range(len(close_prices))]
+    turnover_rate = [round(df['turnover'].iloc[i] * 100, 2) for i in range(len(close_prices))]
+
     start_date_str = df['trade_date'].min().strftime('%Y年%m月%d日')
     end_date_str = df['trade_date'].max().strftime('%Y年%m月%d日')
     trading_days = len(df)
@@ -115,13 +121,20 @@ def generate_html_report(csv_path, output_dir='output'):
     avg_price = round(df['close'].mean(), 2)
     avg_volume = round(df['vol'].mean(), 0)
     avg_amount = round(df['amount'].mean(), 0)
-    avg_amount_yi = avg_amount / 100000
+    avg_amount_yi = avg_amount / 1e8
     up_days = len(df[df['close'] > df['open']])
     down_days = len(df[df['close'] < df['open']])
     flat_days = len(df[df['close'] == df['open']])
     up_ratio = round(up_days / trading_days * 100, 1)
     price_std = df['close'].std()
     volatility = round(price_std / avg_price * 100, 2)
+
+    missing_values = df.isnull().sum()
+    total_missing = int(missing_values.sum())
+    missing_cols = [(col, int(val)) for col, val in missing_values.items() if val > 0]
+
+    desc_stats = df[['open', 'high', 'low', 'close', 'vol', 'amount', 'turnover']].describe()
+    desc_stats.loc['range'] = desc_stats.loc['max'] - desc_stats.loc['min']
 
     df['year'] = df['trade_date'].dt.year
     yearly_stats = []
@@ -255,6 +268,8 @@ def generate_html_report(csv_path, output_dir='output'):
     boll_lower_json = json.dumps([round(x, 2) if x is not None else None for x in boll_lower])
     close_json = json.dumps([round(x, 2) for x in close_prices])
     atr_json = json.dumps([round(x, 2) if x == x else None for x in atr])
+    market_cap_json = json.dumps(market_cap)
+    turnover_rate_json = json.dumps(turnover_rate)
 
     trend_desc = "整体呈现震荡下行走势" if change_pct < 0 else "整体呈现震荡上行走势"
     recent_trend = "近期股价有所企稳" if end_price > ma5[latest_idx] else "近期股价仍处于弱势"
@@ -418,13 +433,80 @@ tr:hover td {{ background: #f9fafb; }}
         <div class="stat-card"><div class="label">期间最高价</div><div class="value">{highest_price}</div><div class="unit">元</div></div>
         <div class="stat-card"><div class="label">期间最低价</div><div class="value">{lowest_price}</div><div class="unit">元</div></div>
         <div class="stat-card"><div class="label">平均收盘价</div><div class="value">{avg_price}</div><div class="unit">元</div></div>
-        <div class="stat-card"><div class="label">日均成交量</div><div class="value">{int(avg_volume):,}</div><div class="unit">手</div></div>
+        <div class="stat-card"><div class="label">日均成交量</div><div class="value">{avg_volume/1e4:.2f}</div><div class="unit">万股</div></div>
         <div class="stat-card"><div class="label">日均成交额</div><div class="value">{avg_amount_yi:.2f}</div><div class="unit">亿元</div></div>
         <div class="stat-card"><div class="label">上涨天数</div><div class="value positive">{up_days}天</div></div>
         <div class="stat-card"><div class="label">下跌天数</div><div class="value negative">{down_days}天</div></div>
         <div class="stat-card"><div class="label">平盘天数</div><div class="value">{flat_days}天</div></div>
         <div class="stat-card"><div class="label">上涨天数占比</div><div class="value">{up_ratio}%</div></div>
         <div class="stat-card"><div class="label">价格波动率</div><div class="value">{volatility}%</div><div class="unit">中等</div></div>
+    </div>
+
+    <h3>1.1 缺失值检查</h3>
+    <div class="interpretation">
+        <strong>【检查结果】</strong> 对数据集中所有字段进行缺失值检查，共 {trading_days} 条记录、10 个字段。<br><br>
+        {'<strong>缺失值总计：' + str(total_missing) + ' 个</strong>，数据完整性良好。<br><br>' + 
+         ('涉及字段：' + '、'.join([f'{col}({val}个)' for col, val in missing_cols]) + '<br><br>' if missing_cols else '所有字段均无缺失值，数据质量优良。<br><br>')
+         if total_missing > 0 else
+         '<strong>缺失值总计：0 个</strong>，所有字段均无缺失值，数据质量优良，可直接用于后续分析。'}
+        <strong>检查字段：</strong>trade_date（交易日期）、open（开盘价）、high（最高价）、low（最低价）、close（收盘价）、vol（成交量）、amount（成交额）、outstanding_share（流通股本）、turnover（换手率）、ts_code（股票代码）。
+    </div>
+    <table>
+        <thead><tr><th>字段名</th><th>含义</th><th>数据类型</th><th>非空数量</th><th>缺失数量</th><th>缺失率</th></tr></thead>
+        <tbody>
+'''
+
+    field_names = {
+        'trade_date': '交易日期', 'open': '开盘价', 'high': '最高价', 'low': '最低价',
+        'close': '收盘价', 'vol': '成交量（股）', 'amount': '成交额（元）',
+        'outstanding_share': '流通股本（股）', 'turnover': '换手率', 'ts_code': '股票代码'
+    }
+    for col in df.columns:
+        non_null = int(df[col].count())
+        miss = int(df[col].isnull().sum())
+        miss_rate = round(miss / trading_days * 100, 2)
+        html_content += f'''            <tr><td>{col}</td><td>{field_names.get(col, col)}</td><td>{df[col].dtype}</td><td>{non_null}</td><td>{miss}</td><td>{miss_rate}%</td></tr>
+'''
+
+    html_content += f'''        </tbody>
+    </table>
+
+    <h3>1.2 描述性统计量</h3>
+    <div class="intro-text">
+        下表展示了{stock_name}近三年核心交易指标的描述性统计量，包括计数（count）、均值（mean）、标准差（std）、
+        最小值（min）、第一四分位数（25%）、中位数（50%）、第三四分位数（75%）、最大值（max）和极差（range）。
+    </div>
+    <table>
+        <thead><tr>
+            <th>统计量</th><th>开盘价(元)</th><th>最高价(元)</th><th>最低价(元)</th><th>收盘价(元)</th><th>成交量(万股)</th><th>成交额(亿元)</th><th>换手率(%)</th>
+        </tr></thead>
+        <tbody>
+'''
+
+    stat_labels = {'count': '计数', 'mean': '均值', 'std': '标准差', 'min': '最小值',
+                   '25%': '第一四分位数(Q1)', '50%': '中位数(Q2)', '75%': '第三四分位数(Q3)',
+                   'max': '最大值', 'range': '极差'}
+    for stat_name in ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max', 'range']:
+        row = desc_stats.loc[stat_name]
+        if stat_name == 'count':
+            html_content += f'''            <tr><td><strong>{stat_labels[stat_name]}</strong></td><td>{int(row["open"])}</td><td>{int(row["high"])}</td><td>{int(row["low"])}</td><td>{int(row["close"])}</td><td>{int(row["vol"])}</td><td>{int(row["amount"])}</td><td>{int(row["turnover"])}</td></tr>
+'''
+        else:
+            html_content += f'''            <tr><td><strong>{stat_labels[stat_name]}</strong></td><td>{row["open"]:.2f}</td><td>{row["high"]:.2f}</td><td>{row["low"]:.2f}</td><td>{row["close"]:.2f}</td><td>{row["vol"]/1e4:.2f}</td><td>{row["amount"]/1e8:.2f}</td><td>{row["turnover"]*100:.2f}</td></tr>
+'''
+
+    html_content += f'''        </tbody>
+    </table>
+    <div class="interpretation">
+        <strong>【统计解读】</strong><br><br>
+        <strong>价格分布：</strong>收盘价均值约{desc_stats.loc["mean","close"]:.2f}元，中位数约{desc_stats.loc["50%","close"]:.2f}元，
+        标准差约{desc_stats.loc["std","close"]:.2f}元，价格极差为{desc_stats.loc["range","close"]:.2f}元（最低{desc_stats.loc["min","close"]:.2f}元至最高{desc_stats.loc["max","close"]:.2f}元），
+        反映出近三年股价波动幅度较大。<br><br>
+        <strong>成交活跃度：</strong>日均成交量约{desc_stats.loc["mean","vol"]/1e4:.2f}万股，日均成交额约{desc_stats.loc["mean","amount"]/1e8:.2f}亿元，
+        成交量中位数{desc_stats.loc["50%","vol"]/1e4:.2f}万股，成交额分布右偏，说明存在部分交易日成交异常活跃的情况。<br><br>
+        <strong>换手率特征：</strong>日均换手率约{desc_stats.loc["mean","turnover"]*100:.2f}%，中位数约{desc_stats.loc["50%","turnover"]*100:.2f}%，
+        最大换手率达{desc_stats.loc["max","turnover"]*100:.2f}%，最小仅{desc_stats.loc["min","turnover"]*100:.2f}%，
+        换手率波动较大，反映市场参与度在不同时期差异显著。
     </div>
 </div>
 
@@ -436,7 +518,7 @@ tr:hover td {{ background: #f9fafb; }}
     <table>
         <thead><tr>
             <th>年度</th><th>年初开盘价</th><th>年末收盘价</th><th>年度涨跌幅</th><th>年度最高</th><th>年度最低</th>
-            <th>交易天数</th><th>上涨天数</th><th>下跌天数</th><th>上涨占比</th><th>日均成交量(手)</th>
+            <th>交易天数</th><th>上涨天数</th><th>下跌天数</th><th>上涨占比</th><th>日均成交量(万股)</th>
         </tr></thead>
         <tbody>
 '''
@@ -446,7 +528,7 @@ tr:hover td {{ background: #f9fafb; }}
         html_content += f'''            <tr>
                 <td><strong>{ys['year']}</strong></td><td>{ys['start']}</td><td>{ys['end']}</td>
                 <td class="{change_class}">{ys['change']:+.2f}%</td><td>{ys['high']}</td><td>{ys['low']}</td>
-                <td>{ys['days']}</td><td>{ys['up']}</td><td>{ys['down']}</td><td>{ys['up_ratio']}%</td><td>{int(ys['avg_vol']):,}</td>
+                <td>{ys['days']}</td><td>{ys['up']}</td><td>{ys['down']}</td><td>{ys['up_ratio']}%</td><td>{ys['avg_vol']/1e4:.2f}</td>
             </tr>
 '''
 
@@ -603,8 +685,8 @@ tr:hover td {{ background: #f9fafb; }}
             <tr><td>市盈率 (PE)</td><td>35.20</td><td>25.00</td><td class="text-red">偏高</td></tr>
             <tr><td>市净率 (PB)</td><td>3.85</td><td>3.50</td><td>中等</td></tr>
             <tr><td>市销率 (PS)</td><td>4.20</td><td>4.00</td><td>中等</td></tr>
-            <tr><td>总市值</td><td>{round(end_price * 9.82, 2)} 亿元</td><td>—</td><td>中等</td></tr>
-            <tr><td>流通市值</td><td>{round(end_price * 8.23, 2)} 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>总市值</td><td>{round(end_price * total_shares, 2)} 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>流通市值</td><td>{round(end_price * latest_float_shares, 2)} 亿元</td><td>—</td><td>中等</td></tr>
             <tr><td>ROE</td><td>8.50%</td><td>8.00%</td><td>中等</td></tr>
         </tbody>
     </table>
@@ -620,11 +702,11 @@ tr:hover td {{ background: #f9fafb; }}
     <div id="turnover-chart" class="chart-box"></div>
     <div class="interpretation">
         <strong>【图8解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
-        <strong>市值变化：</strong>近三年公司总市值从约{round(highest_price * 9.82, 0)}亿元（股价高点时）波动至当前约{round(end_price * 9.82, 2)}亿元，
+        <strong>市值变化：</strong>近三年公司总市值从约{round(highest_price * total_shares, 0)}亿元（股价高点时）波动至当前约{round(end_price * total_shares, 2)}亿元，
         市值波动主要受股价走势影响。<br><br>
-        <strong>换手率分析：</strong>近三年日均换手率约{round(df['vol'].mean() / (8.23 * 10000) * 100, 2)}%，在新能源板块中处于中等水平。
-        <strong>综合判断：</strong>当前市值已回归至相对合理区间，换手率{('活跃' if df['vol'].iloc[-1] > avg_volume * 1.2 else '平稳')}，
-        说明市场对公司基本面持{('积极关注' if df['vol'].iloc[-1] > avg_volume * 1.2 else '观望态度')}。
+        <strong>换手率分析：</strong>近三年日均换手率约{round(sum(turnover_rate) / len(turnover_rate), 2)}%，在新能源板块中处于中等水平。
+        <strong>综合判断：</strong>当前市值已回归至相对合理区间，最新换手率{turnover_rate[-1]}%{('，交易活跃' if turnover_rate[-1] > sum(turnover_rate) / len(turnover_rate) * 1.2 else '，交易平稳')}，
+        说明市场对公司基本面持{('积极关注' if turnover_rate[-1] > sum(turnover_rate) / len(turnover_rate) * 1.2 else '观望态度')}。
     </div>
 
     <h3>7.5 财务状况</h3>
@@ -759,6 +841,8 @@ var bollMidData = {boll_mid_json};
 var bollUpperData = {boll_upper_json};
 var bollLowerData = {boll_lower_json};
 var atrData = {atr_json};
+var marketCapData = {market_cap_json};
+var turnoverRateData = {turnover_rate_json};
 
 var commonXAxis = {{
     type: 'category', data: dates,
@@ -839,13 +923,13 @@ volumeChart.setOption({{
             var d = klineData[idx];
             var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
             return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万股</span></div>' +
                 '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
         }}
     }},
     grid: {{ left: '6%', right: '3%', top: '8%', bottom: '25%' }},
     xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万股'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [{{ name: '成交量', type: 'bar', data: volumeData, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}]
 }});
@@ -937,15 +1021,25 @@ atrChart.setOption({{
 var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
 turnoverChart.setOption({{
     backgroundColor: 'transparent',
-    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
-    legend: {{ data: ['收盘价', '成交量'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
-    grid: [{{ left: '6%', right: '3%', top: '12%', height: '50%' }}, {{ left: '6%', right: '3%', top: '70%', height: '20%' }}],
-    xAxis: [{{ type: 'category', data: dates, gridIndex: 0, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true }}, {{ type: 'category', data: dates, gridIndex: 1, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 10, rotate: 45 }}, splitLine: {{ show: false }}, boundaryGap: true }}],
-    yAxis: [{{ type: 'value', scale: true, gridIndex: 0, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }}, {{ type: 'value', scale: true, gridIndex: 1, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }}],
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle,
+        formatter: function(params) {{
+            var idx = params[0].dataIndex;
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">市值</span><span style="font-weight:600;color:#8b5cf6;">' + params[0].value + ' 亿元</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">换手率</span><span style="font-weight:600;color:#f97316;">' + params[1].value + '%</span></div></div>';
+        }}
+    }},
+    legend: {{ data: ['市值（亿元）', '换手率（%）'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '6%', top: '12%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 10, rotate: 45 }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: [
+        {{ type: 'value', scale: true, position: 'left', axisLine: {{ lineStyle: {{ color: '#8b5cf6' }} }}, axisLabel: {{ color: '#8b5cf6', fontSize: 11, formatter: function(v) {{ return v + '亿'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+        {{ type: 'value', scale: true, position: 'right', axisLine: {{ lineStyle: {{ color: '#f97316' }} }}, axisLabel: {{ color: '#f97316', fontSize: 11, formatter: function(v) {{ return v + '%'; }} }}, splitLine: {{ show: false }} }}
+    ],
     dataZoom: commonDataZoom,
     series: [
-        {{ name: '收盘价', type: 'line', data: closeData, xAxisIndex: 0, yAxisIndex: 0, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#374151' }}, itemStyle: {{ color: '#374151' }} }},
-        {{ name: '成交量', type: 'bar', data: volumeData, xAxisIndex: 1, yAxisIndex: 1, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}
+        {{ name: '市值（亿元）', type: 'line', data: marketCapData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(139,92,246,0.15)' }}, {{ offset: 1, color: 'rgba(139,92,246,0.02)' }}] }} }} }},
+        {{ name: '换手率（%）', type: 'line', data: turnoverRateData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#f97316' }}, itemStyle: {{ color: '#f97316' }}, yAxisIndex: 1 }}
     ]
 }});
 
