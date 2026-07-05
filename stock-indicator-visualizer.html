@@ -443,6 +443,7 @@ function recalculate() {
     const atr = calcATR(data, atrPeriod);
 
     const baseXAxis = { type: 'category', data: dates, boundaryGap: true, axisLabel: { fontSize: 10 }, axisLine: { lineStyle: { color: '#ccc' } } };
+    const fmtVal = v => (v === null || v === undefined || isNaN(v)) ? '-' : Number(v).toFixed(2);
 
     // K线+均线
     const klineSeries = [{
@@ -464,21 +465,21 @@ function recalculate() {
     });
 
     charts.chartKline.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: fmtVal },
         legend: { data: klineSeries.filter(s => s.type === 'line').map(s => s.name), top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { scale: true, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { scale: true, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: klineSeries
     }, true);
 
     // 成交量
     charts.chartVol.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: fmtVal },
         grid: { left: 60, right: 20, top: 20, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { fontSize: 10 } },
+        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { fontSize: 10, formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [{
             name: '成交量', type: 'bar',
@@ -491,11 +492,11 @@ function recalculate() {
 
     // MACD
     charts.chartMACD.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: fmtVal },
         legend: { data: ['DIF', 'DEA', 'MACD'], top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [
             { name: 'DIF', type: 'line', data: macd.dif, symbol: 'circle', symbolSize: 5, lineStyle: { width: 2, color: '#eab308' }, itemStyle: { color: '#eab308' } },
@@ -509,11 +510,11 @@ function recalculate() {
 
     // RSI
     charts.chartRSI.setOption({
-        tooltip: { trigger: 'axis' },
+        tooltip: { trigger: 'axis', valueFormatter: fmtVal },
         legend: { data: [`RSI${rsiPeriod}`], top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { min: 0, max: 100, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { min: 0, max: 100, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [
             { name: `RSI${rsiPeriod}`, type: 'line', data: rsi, symbol: 'circle', symbolSize: 5, lineStyle: { width: 2, color: '#3b82f6' }, itemStyle: { color: '#3b82f6' } },
@@ -524,11 +525,11 @@ function recalculate() {
 
     // KDJ
     charts.chartKDJ.setOption({
-        tooltip: { trigger: 'axis' },
+        tooltip: { trigger: 'axis', valueFormatter: fmtVal },
         legend: { data: ['K', 'D', 'J'], top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [
             { name: 'K', type: 'line', data: kdj.k, symbol: 'circle', symbolSize: 5, lineStyle: { width: 2, color: '#eab308' }, itemStyle: { color: '#eab308' } },
@@ -541,11 +542,11 @@ function recalculate() {
 
     // 布林带
     charts.chartBOLL.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: fmtVal },
         legend: { data: ['收盘价', '上轨', '中轨', '下轨'], top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { scale: true, splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { scale: true, splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [
             { name: '收盘价', type: 'line', data: closes, symbol: 'circle', symbolSize: 5, lineStyle: { width: 2, color: '#3b82f6' }, itemStyle: { color: '#3b82f6' } },
@@ -557,11 +558,11 @@ function recalculate() {
 
     // ATR
     charts.chartATR.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: fmtVal },
         legend: { data: ['TR', 'ATR'], top: 4, textStyle: { fontSize: 11 } },
         grid: { left: 60, right: 20, top: 30, bottom: 40 },
         xAxis: { ...baseXAxis },
-        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } } },
+        yAxis: { splitLine: { lineStyle: { color: '#f0f0f0' } }, axisLabel: { formatter: fmtVal } },
         dataZoom: [{ type: 'inside', start: 0, end: 100 }, { type: 'slider', bottom: 0, height: 20 }],
         series: [
             { name: 'TR', type: 'bar', data: atr.tr, itemStyle: { color: 'rgba(156,163,175,0.5)' }, barWidth: '60%' },

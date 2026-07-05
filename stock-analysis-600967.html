@@ -359,7 +359,15 @@ var tooltipStyle = {
     borderColor: '#e5e7eb',
     borderWidth: 1,
     textStyle: { color: '#374151', fontSize: 13 },
-    extraCssText: 'box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-radius: 8px;'
+    extraCssText: 'box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-radius: 8px;',
+    valueFormatter: function(v) {
+        if (v === null || v === undefined || isNaN(v)) return '-';
+        return Number(v).toFixed(2);
+    }
+};
+
+var yAxisLabelFmt = {
+    formatter: function(v) { return Number(v).toFixed(2); }
 };
 
 var commonXAxis = {
@@ -391,10 +399,10 @@ klineChart.setOption({
             var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
             var sign = d[1] >= d[0] ? '+' : '';
             return '<div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">开盘</span><span style="font-weight:600;">' + Number(d[0]).toFixed(2) + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘</span><span style="font-weight:600;color:' + color + '">' + Number(d[1]).toFixed(2) + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最高</span><span style="font-weight:600;">' + Number(d[3]).toFixed(2) + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最低</span><span style="font-weight:600;">' + Number(d[2]).toFixed(2) + '</span></div>' +
                 '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div>';
         }
     },
@@ -405,7 +413,7 @@ klineChart.setOption({
     },
     grid: { left: '6%', right: '3%', top: '12%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: 'K线', type: 'candlestick', data: klineData, itemStyle: { color: '#ef4444', color0: '#22c55e', borderColor: '#ef4444', borderColor0: '#22c55e' } },
@@ -427,7 +435,7 @@ volumeChart.setOption({
     },
     grid: { left: '6%', right: '3%', top: '5%', bottom: '15%' },
     xAxis: { ...commonXAxis, axisLabel: { show: true, color: '#6b7280', fontSize: 11, rotate: 30 } },
-    yAxis: { type: 'value', axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [{ name: '成交量', type: 'bar', data: volumeData }]
 });
@@ -439,7 +447,7 @@ macdChart.setOption({
     legend: { data: ['DIF', 'DEA', 'MACD柱'], textStyle: { color: '#6b7280' }, top: 5 },
     grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: 'DIF', type: 'line', data: difData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#eab308' }, itemStyle: { color: '#eab308' } },
@@ -457,7 +465,7 @@ rsiChart.setOption({
     legend: { data: ['RSI(14)'], textStyle: { color: '#6b7280' }, top: 5 },
     grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', min: 0, max: 100, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', min: 0, max: 100, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: 'RSI(14)', type: 'line', data: rsiData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#3b82f6' }, itemStyle: { color: '#3b82f6' }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(59,130,246,0.15)' }, { offset: 1, color: 'rgba(59,130,246,0.02)' }] } } },
@@ -474,7 +482,7 @@ kdjChart.setOption({
     legend: { data: ['K', 'D', 'J'], textStyle: { color: '#6b7280' }, top: 5 },
     grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: 'K', type: 'line', data: kData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#eab308' }, itemStyle: { color: '#eab308' } },
@@ -492,7 +500,7 @@ bollChart.setOption({
     legend: { data: ['收盘价', '中轨(MA20)', '上轨', '下轨'], textStyle: { color: '#6b7280' }, top: 5 },
     grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: '收盘价', type: 'line', data: closeData, smooth: false, symbol: 'circle', symbolSize: 6, lineStyle: { width: 2, color: '#3b82f6' }, itemStyle: { color: '#3b82f6' } },
@@ -509,7 +517,7 @@ atrChart.setOption({
     legend: { data: ['TR(真实波幅)', 'ATR(14)'], textStyle: { color: '#6b7280' }, top: 5 },
     grid: { left: '6%', right: '3%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
-    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+    yAxis: { type: 'value', scale: true, axisLine: { lineStyle: { color: '#9ca3af' } }, axisLabel: { color: '#6b7280', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
     dataZoom: commonDataZoom,
     series: [
         { name: 'TR(真实波幅)', type: 'bar', data: trData, itemStyle: { color: 'rgba(156,163,175,0.5)' }, barWidth: '60%' },
@@ -529,8 +537,8 @@ turnoverChart.setOption({
     grid: { left: '6%', right: '6%', top: '15%', bottom: '15%' },
     xAxis: commonXAxis,
     yAxis: [
-        { type: 'value', name: '市值(亿元)', axisLine: { lineStyle: { color: '#3b82f6' } }, axisLabel: { color: '#3b82f6', fontSize: 11 }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
-        { type: 'value', name: '换手率(%)', axisLine: { lineStyle: { color: '#f97316' } }, axisLabel: { color: '#f97316', fontSize: 11 }, splitLine: { show: false } }
+        { type: 'value', name: '市值(亿元)', axisLine: { lineStyle: { color: '#3b82f6' } }, axisLabel: { color: '#3b82f6', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { lineStyle: { color: '#f3f4f6', type: 'dashed' } } },
+        { type: 'value', name: '换手率(%)', axisLine: { lineStyle: { color: '#f97316' } }, axisLabel: { color: '#f97316', fontSize: 11, formatter: function(v){ return Number(v).toFixed(2); } }, splitLine: { show: false } }
     ],
     dataZoom: commonDataZoom,
     series: [

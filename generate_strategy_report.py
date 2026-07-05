@@ -424,14 +424,15 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
         const atr = {atr_js};
 
         const baseX = {{type: 'category', data: dates, boundaryGap: true, axisLabel: {{fontSize: 10}}, axisLine: {{lineStyle: {{color: '#ccc'}}}}}};
+        const fmtVal = v => (v === null || v === undefined || isNaN(v)) ? '-' : Number(v).toFixed(2);
 
         const klineChart = echarts.init(document.getElementById('kline-chart'));
         klineChart.setOption({{
-            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}}},
+            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}, valueFormatter: fmtVal}},
             legend: {{data: ['MA5', 'MA10', 'MA20', 'MA60'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{scale: true, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{scale: true, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'candlestick', data: dates.map((_,i) => [opens[i], closes[i], lows[i], highs[i]]), itemStyle: {{color: '#ef4444', color0: '#22c55e', borderColor: '#ef4444', borderColor0: '#22c55e'}}}},
@@ -444,11 +445,11 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
 
         const macdChart = echarts.init(document.getElementById('macd-chart'));
         macdChart.setOption({{
-            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}}},
+            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}, valueFormatter: fmtVal}},
             legend: {{data: ['DIF', 'DEA', 'MACD'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'line', name: 'DIF', data: dif, symbol: 'circle', symbolSize: 5, lineStyle: {{width: 2, color: '#eab308'}}, itemStyle: {{color: '#eab308'}}}},
@@ -459,11 +460,11 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
 
         const rsiChart = echarts.init(document.getElementById('rsi-chart'));
         rsiChart.setOption({{
-            tooltip: {{trigger: 'axis'}},
+            tooltip: {{trigger: 'axis', valueFormatter: fmtVal}},
             legend: {{data: ['RSI14'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{min: 0, max: 100, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{min: 0, max: 100, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'line', name: 'RSI14', data: rsi, symbol: 'circle', symbolSize: 5, lineStyle: {{width: 2, color: '#3b82f6'}}, itemStyle: {{color: '#3b82f6'}}}},
@@ -474,11 +475,11 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
 
         const kdjChart = echarts.init(document.getElementById('kdj-chart'));
         kdjChart.setOption({{
-            tooltip: {{trigger: 'axis'}},
+            tooltip: {{trigger: 'axis', valueFormatter: fmtVal}},
             legend: {{data: ['K', 'D', 'J'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'line', name: 'K', data: kLine, symbol: 'circle', symbolSize: 5, lineStyle: {{width: 2, color: '#eab308'}}, itemStyle: {{color: '#eab308'}}}},
@@ -489,11 +490,11 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
 
         const bollChart = echarts.init(document.getElementById('boll-chart'));
         bollChart.setOption({{
-            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}}},
+            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}, valueFormatter: fmtVal}},
             legend: {{data: ['收盘价', '上轨', '中轨', '下轨'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{scale: true, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{scale: true, splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'line', name: '收盘价', data: closes, symbol: 'circle', symbolSize: 5, lineStyle: {{width: 2, color: '#3b82f6'}}, itemStyle: {{color: '#3b82f6'}}}},
@@ -505,11 +506,11 @@ def generate_strategy_report(ts_code, stock_name, csv_path, output_dir='output')
 
         const atrChart = echarts.init(document.getElementById('atr-chart'));
         atrChart.setOption({{
-            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}}},
+            tooltip: {{trigger: 'axis', axisPointer: {{type: 'cross'}}, valueFormatter: fmtVal}},
             legend: {{data: ['TR', 'ATR'], top: 4}},
             grid: {{left: 60, right: 20, top: 30, bottom: 40}},
             xAxis: baseX,
-            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}}},
+            yAxis: {{splitLine: {{lineStyle: {{color: '#f0f0f0'}}}}, axisLabel: {{formatter: fmtVal}}}},
             dataZoom: [{{type: 'inside'}}, {{type: 'slider', bottom: 0, height: 20}}],
             series: [
                 {{type: 'bar', name: 'TR', data: tr, itemStyle: {{color: 'rgba(156,163,175,0.5)'}}, barWidth: '60%'}},
