@@ -53,9 +53,12 @@ Thumbs.db
 htmlcov/
 
 # Generated files
-output/
-*.png
-*.csv
+output/*.png
+output/*.csv
+output/*.html
+output/*.md
+output/*.py
+!output/*_data.json
 
 # Documentation
 功能说明
