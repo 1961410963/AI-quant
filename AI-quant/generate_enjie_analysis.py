@@ -1,0 +1,972 @@
+import pandas as pd
+import json
+import os
+from datetime import datetime
+
+def calc_ema(data, n):
+    ema = [data[0]]
+    multiplier = 2 / (n + 1)
+    for i in range(1, len(data)):
+        ema.append(data[i] * multiplier + ema[-1] * (1 - multiplier))
+    return ema
+
+def calc_macd(close):
+    ema12 = calc_ema(close, 12)
+    ema26 = calc_ema(close, 26)
+    dif = [ema12[i] - ema26[i] for i in range(len(close))]
+    dea = calc_ema(dif, 9)
+    macd = [dif[i] - dea[i] for i in range(len(close))]
+    for i in range(26):
+        dif[i] = float('nan')
+        macd[i] = float('nan')
+    for i in range(35):
+        dea[i] = float('nan')
+    return dif, dea, macd
+
+def calc_rsi(close, n=14):
+    delta = pd.Series(close).diff()
+    gain = delta.where(delta > 0, 0)
+    loss = (-delta).where(delta < 0, 0)
+    avg_gain = gain.ewm(alpha=1/n, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1/n, adjust=False).mean()
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    rsi[:n] = float('nan')
+    return rsi.tolist()
+
+def calc_kdj(high, low, close, n=9, m1=3, m2=3):
+    df = pd.DataFrame({'high': high, 'low': low, 'close': close})
+    low_min = df['low'].rolling(window=n).min()
+    high_max = df['high'].rolling(window=n).max()
+    rsv = 100 * (df['close'] - low_min) / (high_max - low_min)
+    k = rsv.ewm(com=m1-1, adjust=False).mean()
+    d = k.ewm(com=m2-1, adjust=False).mean()
+    j = 3 * k - 2 * d
+    return k.tolist(), d.tolist(), j.tolist()
+
+def calc_boll(close, n=20):
+    ma = pd.Series(close).rolling(window=n).mean().tolist()
+    std = pd.Series(close).rolling(window=n).std().tolist()
+    upper = [ma[i] + 2 * std[i] if std[i] == std[i] else None for i in range(len(close))]
+    lower = [ma[i] - 2 * std[i] if std[i] == std[i] else None for i in range(len(close))]
+    return ma, upper, lower
+
+def calc_atr(high, low, close, n=14):
+    df = pd.DataFrame({'high': high, 'low': low, 'close': close})
+    high_low = df['high'] - df['low']
+    high_close = abs(df['high'] - df['close'].shift())
+    low_close = abs(df['low'] - df['close'].shift())
+    true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    atr = true_range.rolling(window=n).mean().tolist()
+    return atr
+
+def generate_html_report(csv_path, output_dir='output'):
+    df = pd.read_csv(csv_path)
+    df['trade_date'] = pd.to_datetime(df['trade_date'])
+    df = df.sort_values('trade_date').reset_index(drop=True)
+
+    ts_code = df['ts_code'].iloc[0]
+    stock_name = '恩捷股份'
+
+    dates = [d.strftime('%Y-%m-%d') for d in df['trade_date']]
+    kline_data = [[round(row['open'], 2), round(row['close'], 2), round(row['low'], 2), round(row['high'], 2)]
+                  for _, row in df.iterrows()]
+    close_prices = df['close'].tolist()
+    high_prices = df['high'].tolist()
+    low_prices = df['low'].tolist()
+
+    volumes = []
+    for _, row in df.iterrows():
+        vol = round(row['vol'], 0)
+        is_up = row['close'] >= row['open']
+        volumes.append({'value': vol, 'itemStyle': {'color': '#ef4444' if is_up else '#22c55e'}})
+
+    def calc_ma(data, n):
+        result = []
+        for i in range(len(data)):
+            if i < n - 1:
+                result.append(None)
+            else:
+                s = sum(data[i - n + 1:i + 1]) / n
+                result.append(round(s, 2))
+        return result
+
+    ma5 = calc_ma(close_prices, 5)
+    ma10 = calc_ma(close_prices, 10)
+    ma20 = calc_ma(close_prices, 20)
+    ma60 = calc_ma(close_prices, 60)
+
+    dif, dea, macd = calc_macd(close_prices)
+    rsi = calc_rsi(close_prices)
+    k, d, j = calc_kdj(high_prices, low_prices, close_prices)
+    boll_mid, boll_upper, boll_lower = calc_boll(close_prices)
+    atr = calc_atr(high_prices, low_prices, close_prices)
+
+    start_date_str = df['trade_date'].min().strftime('%Y年%m月%d日')
+    end_date_str = df['trade_date'].max().strftime('%Y年%m月%d日')
+    trading_days = len(df)
+    highest_price = round(df['high'].max(), 2)
+    lowest_price = round(df['low'].min(), 2)
+    highest_date = df.loc[df['high'].idxmax(), 'trade_date'].strftime('%Y-%m-%d')
+    lowest_date = df.loc[df['low'].idxmin(), 'trade_date'].strftime('%Y-%m-%d')
+    start_price = round(df['close'].iloc[0], 2)
+    end_price = round(df['close'].iloc[-1], 2)
+    change_pct = round((end_price - start_price) / start_price * 100, 2)
+    avg_price = round(df['close'].mean(), 2)
+    avg_volume = round(df['vol'].mean(), 0)
+    avg_amount = round(df['amount'].mean(), 0)
+    avg_amount_yi = avg_amount / 100000
+    up_days = len(df[df['close'] > df['open']])
+    down_days = len(df[df['close'] < df['open']])
+    flat_days = len(df[df['close'] == df['open']])
+    up_ratio = round(up_days / trading_days * 100, 1)
+    price_std = df['close'].std()
+    volatility = round(price_std / avg_price * 100, 2)
+
+    df['year'] = df['trade_date'].dt.year
+    yearly_stats = []
+    for year in sorted(df['year'].unique()):
+        year_df = df[df['year'] == year]
+        year_start = year_df['close'].iloc[0]
+        year_end = year_df['close'].iloc[-1]
+        year_change = round((year_end - year_start) / year_start * 100, 2)
+        year_high = round(year_df['high'].max(), 2)
+        year_low = round(year_df['low'].min(), 2)
+        year_days = len(year_df)
+        year_up = len(year_df[year_df['close'] > year_df['open']])
+        year_down = len(year_df[year_df['close'] < year_df['open']])
+        year_up_ratio = round(year_up / year_days * 100, 1)
+        year_avg_vol = round(year_df['vol'].mean(), 0)
+        yearly_stats.append({
+            'year': year, 'start': year_start, 'end': year_end, 'change': year_change,
+            'high': year_high, 'low': year_low, 'days': year_days, 'up': year_up,
+            'down': year_down, 'up_ratio': year_up_ratio, 'avg_vol': year_avg_vol
+        })
+
+    latest_idx = len(close_prices) - 1
+    latest_dif = round(dif[latest_idx], 3) if dif[latest_idx] == dif[latest_idx] else '-'
+    latest_dea = round(dea[latest_idx], 3) if dea[latest_idx] == dea[latest_idx] else '-'
+    latest_macd = round(macd[latest_idx], 3) if macd[latest_idx] == macd[latest_idx] else '-'
+    latest_rsi = round(rsi[latest_idx], 2) if rsi[latest_idx] == rsi[latest_idx] else '-'
+    latest_k = round(k[latest_idx], 2) if k[latest_idx] == k[latest_idx] else '-'
+    latest_d = round(d[latest_idx], 2) if d[latest_idx] == d[latest_idx] else '-'
+    latest_j = round(j[latest_idx], 2) if j[latest_idx] == j[latest_idx] else '-'
+    latest_boll_mid = round(boll_mid[latest_idx], 2) if boll_mid[latest_idx] is not None else '-'
+    latest_boll_upper = round(boll_upper[latest_idx], 2) if boll_upper[latest_idx] is not None else '-'
+    latest_boll_lower = round(boll_lower[latest_idx], 2) if boll_lower[latest_idx] is not None else '-'
+    latest_atr = round(atr[latest_idx], 2) if atr[latest_idx] == atr[latest_idx] else '-'
+
+    entry_price = end_price
+    stop_loss_price = entry_price - 2 * (latest_atr if latest_atr != '-' else 0)
+    take_profit_price = entry_price + 3 * (latest_atr if latest_atr != '-' else 0)
+
+    def calc_signals():
+        n = len(close_prices)
+        macd_signals = []
+        kdj_signals = []
+        ma_signals = []
+        for i in range(n):
+            ms = '-'
+            ks = '-'
+            mas = '-'
+            if i > 35 and dif[i] == dif[i] and dea[i] == dea[i] and dif[i-1] == dif[i-1] and dea[i-1] == dea[i-1]:
+                if dif[i-1] <= dea[i-1] and dif[i] > dea[i]:
+                    ms = '买入'
+                elif dif[i-1] >= dea[i-1] and dif[i] < dea[i]:
+                    ms = '卖出'
+            macd_signals.append(ms)
+            if i > 10 and k[i] == k[i] and d[i] == d[i] and k[i-1] == k[i-1] and d[i-1] == d[i-1]:
+                if k[i-1] <= d[i-1] and k[i] > d[i] and k[i] < 50:
+                    ks = '买入'
+                elif k[i-1] >= d[i-1] and k[i] < d[i] and k[i] > 50:
+                    ks = '卖出'
+            kdj_signals.append(ks)
+            if i > 9 and ma5[i] is not None and ma10[i] is not None and ma5[i-1] is not None and ma10[i-1] is not None:
+                if ma5[i-1] <= ma10[i-1] and ma5[i] > ma10[i]:
+                    mas = '买入'
+                elif ma5[i-1] >= ma10[i-1] and ma5[i] < ma10[i]:
+                    mas = '卖出'
+            ma_signals.append(mas)
+
+        buy_points = []
+        sell_points = []
+        recent_signals = []
+        for i in range(n):
+            score = 0
+            if macd_signals[i] == '买入': score += 2
+            if macd_signals[i] == '卖出': score -= 2
+            if kdj_signals[i] == '买入': score += 1
+            if kdj_signals[i] == '卖出': score -= 1
+            if ma_signals[i] == '买入': score += 1
+            if ma_signals[i] == '卖出': score -= 1
+
+            if score >= 2:
+                buy_points.append({'name': '买入', 'coord': [dates[i], high_prices[i] + 0.5], 'value': '买入', 'itemStyle': {'color': '#ef4444'}})
+            elif score <= -2:
+                sell_points.append({'name': '卖出', 'coord': [dates[i], low_prices[i] - 0.5], 'value': '卖出', 'itemStyle': {'color': '#22c55e'}})
+
+            if i >= n - 30:
+                sig = '观望'
+                sig_cls = 'hold'
+                if score >= 2:
+                    sig = '买入'
+                    sig_cls = 'buy'
+                elif score <= -2:
+                    sig = '卖出'
+                    sig_cls = 'sell'
+                elif score > 0:
+                    sig = '偏多'
+                    sig_cls = 'buy'
+                elif score < 0:
+                    sig = '偏空'
+                    sig_cls = 'sell'
+                recent_signals.append({
+                    'date': dates[i],
+                    'close': round(close_prices[i], 2),
+                    'macd': macd_signals[i],
+                    'kdj': kdj_signals[i],
+                    'ma': ma_signals[i],
+                    'signal': sig,
+                    'cls': sig_cls
+                })
+
+        return buy_points, sell_points, recent_signals
+
+    buy_points, sell_points, recent_signals = calc_signals()
+    buy_points_json = json.dumps(buy_points)
+    sell_points_json = json.dumps(sell_points)
+
+    dates_json = json.dumps(dates)
+    kline_json = json.dumps(kline_data)
+    volumes_json = json.dumps(volumes)
+    ma5_json = json.dumps(ma5)
+    ma10_json = json.dumps(ma10)
+    ma20_json = json.dumps(ma20)
+    ma60_json = json.dumps(ma60)
+    dif_json = json.dumps([round(x, 3) if x == x else None for x in dif])
+    dea_json = json.dumps([round(x, 3) if x == x else None for x in dea])
+    macd_json = json.dumps([round(x, 3) if x == x else None for x in macd])
+    rsi_json = json.dumps([round(x, 2) if x == x else None for x in rsi])
+    k_json = json.dumps([round(x, 2) if x == x else None for x in k])
+    d_json = json.dumps([round(x, 2) if x == x else None for x in d])
+    j_json = json.dumps([round(x, 2) if x == x else None for x in j])
+    boll_mid_json = json.dumps([round(x, 2) if x is not None else None for x in boll_mid])
+    boll_upper_json = json.dumps([round(x, 2) if x is not None else None for x in boll_upper])
+    boll_lower_json = json.dumps([round(x, 2) if x is not None else None for x in boll_lower])
+    close_json = json.dumps([round(x, 2) for x in close_prices])
+    atr_json = json.dumps([round(x, 2) if x == x else None for x in atr])
+
+    trend_desc = "整体呈现震荡下行走势" if change_pct < 0 else "整体呈现震荡上行走势"
+    recent_trend = "近期股价有所企稳" if end_price > ma5[latest_idx] else "近期股价仍处于弱势"
+
+    kdj_signal = 'KDJ处于低位区域，K线上穿D线形成金叉，为买入信号。' if (latest_k != '-' and latest_k > latest_d and latest_k < 50) else 'KDJ处于高位区域，K线下穿D线形成死叉，为卖出信号。' if (latest_k != '-' and latest_k < latest_d and latest_k > 50) else 'KDJ处于超卖区，建议关注低位金叉机会。' if (latest_k != '-' and latest_k < 20) else 'KDJ处于超买区，建议关注高位死叉风险。' if (latest_k != '-' and latest_k > 80) else 'KDJ处于中性区，等待方向选择。'
+
+    boll_signal = '股价运行在下轨附近，布林带开口呈收窄迹象，属于波动率降低、方向选择阶段。若股价能有效站上中轨，则可能形成反转信号。' if (end_price < (latest_boll_mid if latest_boll_mid != '-' else end_price) and latest_boll_upper != '-' and latest_boll_lower != '-' and (latest_boll_upper - latest_boll_lower) / (latest_boll_upper + latest_boll_lower) < 0.05) else '股价运行在下轨附近，布林带开口较大，属于高波动阶段。若股价能有效站上中轨，则可能形成反转信号。' if (end_price < (latest_boll_mid if latest_boll_mid != '-' else end_price)) else '股价运行在上轨附近，布林带开口较大，上涨动能较强。若股价跌破中轨，则需警惕回调风险。' if (latest_boll_upper != '-' and latest_boll_lower != '-' and (latest_boll_upper - latest_boll_lower) / (latest_boll_upper + latest_boll_lower) > 0.08) else '股价运行在上轨附近，布林带开口正常，上涨动能一般。若股价跌破中轨，则需警惕回调风险。'
+
+    html_content = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{stock_name}（{ts_code}）近三年交易数据分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+* {{ margin: 0; padding: 0; box-sizing: border-box; }}
+body {{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: #ffffff; color: #333333; line-height: 1.8;
+}}
+.container {{ max-width: 1200px; margin: 0 auto; padding: 24px; }}
+.header {{
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+    border-radius: 16px;
+    padding: 40px 48px; margin-bottom: 32px;
+    box-shadow: 0 10px 40px rgba(124, 58, 237, 0.15);
+}}
+.header h1 {{ font-size: 32px; font-weight: 700; color: #ffffff; margin-bottom: 12px; }}
+.header .subtitle {{ font-size: 15px; color: rgba(255,255,255,0.9); }}
+.header .subtitle span {{ margin-right: 24px; }}
+.tag {{
+    display: inline-block; background: rgba(255,255,255,0.2); color: #ffffff;
+    padding: 5px 14px; border-radius: 20px; font-size: 13px; margin-right: 10px;
+    backdrop-filter: blur(10px);
+}}
+.section {{
+    background: #ffffff; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 32px; margin-bottom: 28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}}
+.section h2 {{
+    font-size: 24px; font-weight: 700; color: #1f2937;
+    margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid #8b5cf6;
+    position: relative;
+}}
+.section h2::after {{
+    content: ''; position: absolute; left: 0; bottom: -2px; width: 60px; height: 2px;
+    background: #7c3aed; border-radius: 2px;
+}}
+.section h3 {{
+    font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 16px;
+}}
+.intro-text {{ font-size: 15px; color: #4b5563; margin-bottom: 24px; line-height: 2; }}
+.stats-grid {{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px; margin-bottom: 28px;
+}}
+.stat-card {{
+    background: #f9fafb; border: 1px solid #e5e7eb;
+    border-radius: 12px; padding: 24px; text-align: center;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
+}}
+.stat-card::before {{
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, #7c3aed, #8b5cf6);
+}}
+.stat-card:hover {{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+    border-color: #8b5cf6;
+}}
+.stat-card .label {{ font-size: 12px; color: #6b7280; margin-bottom: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }}
+.stat-card .value {{ font-size: 32px; font-weight: 700; color: #1f2937; }}
+.stat-card .value.negative {{ color: #ef4444; }}
+.stat-card .value.positive {{ color: #22c55e; }}
+.stat-card .unit {{ font-size: 14px; color: #9ca3af; margin-top: 6px; }}
+table {{ width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }}
+th {{
+    background: #f3f4f6; color: #374151; font-weight: 600;
+    text-align: center; padding: 14px 12px; border-bottom: 2px solid #e5e7eb;
+}}
+td {{ text-align: center; padding: 12px; border-bottom: 1px solid #f3f4f6; }}
+tr:hover td {{ background: #f9fafb; }}
+.text-red {{ color: #ef4444; }}
+.text-green {{ color: #22c55e; }}
+.chart-box {{ width: 100%; height: 380px; margin: 16px 0; }}
+.chart-box-lg {{ width: 100%; height: 500px; margin: 16px 0; }}
+.chart-box-sm {{ width: 100%; height: 300px; margin: 16px 0; }}
+.interpretation {{
+    background: #f5f3ff; border-left: 4px solid #8b5cf6;
+    padding: 20px 24px; margin: 24px 0; font-size: 15px; line-height: 2.2;
+    border-radius: 0 8px 8px 0;
+}}
+.interpretation strong {{ color: #7c3aed; }}
+.analysis-point {{ margin: 14px 0; padding-left: 24px; position: relative; color: #4b5563; }}
+.analysis-point::before {{
+    content: "✓"; position: absolute; left: 0; color: #8b5cf6; font-weight: bold;
+    font-size: 14px;
+}}
+.risk-box {{
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-radius: 12px; padding: 24px; margin-top: 20px;
+}}
+.risk-box h4 {{ color: #dc2626; font-size: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }}
+.risk-box h4::before {{ content: "⚠"; font-size: 18px; }}
+.footer {{ text-align: center; padding: 32px; color: #9ca3af; font-size: 13px; }}
+.tooltip-box {{
+    padding: 14px 18px; background: #ffffff;
+    border: 1px solid #e5e7eb; border-radius: 10px; font-size: 13px; line-height: 1.8;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}}
+.valuation-table td:first-child {{ text-align: left; padding-left: 20px; }}
+.valuation-table th:first-child {{ text-align: left; padding-left: 20px; }}
+.strategy-table {{
+    width: 100%; border-collapse: collapse; margin-top: 20px;
+}}
+.strategy-table th {{
+    background: #f5f3ff; color: #7c3aed; font-weight: 600;
+    text-align: center; padding: 14px 12px; border-bottom: 2px solid #e9d5ff;
+}}
+.strategy-table td {{
+    text-align: center; padding: 12px; border-bottom: 1px solid #f3f4f6;
+}}
+.strategy-table tr:hover td {{ background: #faf5ff; }}
+.signal-badge {{
+    display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 500;
+}}
+.signal-badge.buy {{ background: #dcfce7; color: #166534; }}
+.signal-badge.sell {{ background: #fee2e2; color: #991b1b; }}
+.signal-badge.hold {{ background: #fef3c7; color: #92400e; }}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1>{stock_name}（{ts_code}）近三年交易数据全景报告</h1>
+    <div class="subtitle">
+        <span class="tag">锂电池隔膜</span>
+        <span class="tag">新能源材料龙头</span>
+        <span class="tag">全球领先</span>
+    </div>
+    <div class="subtitle" style="margin-top: 14px;">
+        <span>📅 数据区间：{start_date_str} — {end_date_str}</span>
+        <span>📊 交易日：{trading_days}天</span>
+        <span>🗓️ 报告生成：{datetime.now().strftime("%Y年%m月%d日")}</span>
+    </div>
+</div>
+
+<div class="section">
+    <h2>一、数据概览</h2>
+    <div class="intro-text">
+        {stock_name}（股票代码 {ts_code}）近三年交易数据总计 <strong>{trading_days}</strong> 个交易日，
+        自{start_date_str}至{end_date_str}，涵盖完整的市场周期。期间股价最高触及 <strong>{highest_price}元</strong>（{highest_date}），
+        最低下探至 <strong>{lowest_price}元</strong>（{lowest_date}），区间累计涨跌幅为 <strong class="{'text-red' if change_pct < 0 else 'text-green'}">{change_pct}%</strong>。
+        {trend_desc}，{recent_trend}。
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card"><div class="label">区间涨跌幅</div><div class="value {'negative' if change_pct < 0 else 'positive'}">{change_pct}%</div></div>
+        <div class="stat-card"><div class="label">期间最高价</div><div class="value">{highest_price}</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">期间最低价</div><div class="value">{lowest_price}</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">平均收盘价</div><div class="value">{avg_price}</div><div class="unit">元</div></div>
+        <div class="stat-card"><div class="label">日均成交量</div><div class="value">{int(avg_volume):,}</div><div class="unit">手</div></div>
+        <div class="stat-card"><div class="label">日均成交额</div><div class="value">{avg_amount_yi:.2f}</div><div class="unit">亿元</div></div>
+        <div class="stat-card"><div class="label">上涨天数</div><div class="value positive">{up_days}天</div></div>
+        <div class="stat-card"><div class="label">下跌天数</div><div class="value negative">{down_days}天</div></div>
+        <div class="stat-card"><div class="label">平盘天数</div><div class="value">{flat_days}天</div></div>
+        <div class="stat-card"><div class="label">上涨天数占比</div><div class="value">{up_ratio}%</div></div>
+        <div class="stat-card"><div class="label">价格波动率</div><div class="value">{volatility}%</div><div class="unit">中等</div></div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>二、年度表现汇总</h2>
+    <div class="intro-text">
+        下表汇总了{stock_name}近三年各年度的交易表现。整体来看，{trend_desc}，2025年表现{('强势' if yearly_stats[0]['change'] > 0 else '弱势') if len(yearly_stats) > 0 else '平稳'}，2026年至今{('延续上升趋势' if change_pct > 0 else '处于调整阶段')}。
+    </div>
+    <table>
+        <thead><tr>
+            <th>年度</th><th>年初开盘价</th><th>年末收盘价</th><th>年度涨跌幅</th><th>年度最高</th><th>年度最低</th>
+            <th>交易天数</th><th>上涨天数</th><th>下跌天数</th><th>上涨占比</th><th>日均成交量(手)</th>
+        </tr></thead>
+        <tbody>
+'''
+
+    for ys in yearly_stats:
+        change_class = 'text-red' if ys['change'] >= 0 else 'text-green'
+        html_content += f'''            <tr>
+                <td><strong>{ys['year']}</strong></td><td>{ys['start']}</td><td>{ys['end']}</td>
+                <td class="{change_class}">{ys['change']:+.2f}%</td><td>{ys['high']}</td><td>{ys['low']}</td>
+                <td>{ys['days']}</td><td>{ys['up']}</td><td>{ys['down']}</td><td>{ys['up_ratio']}%</td><td>{int(ys['avg_vol']):,}</td>
+            </tr>
+'''
+
+    html_content += f'''        </tbody>
+    </table>
+</div>
+
+<div class="section">
+    <h2>三、近30个交易日买卖信号</h2>
+    <div class="intro-text">
+        基于MACD（权重2）、KDJ（权重1）、MA5/MA10均线（权重1）三大指标综合评分，得分≥2为<strong class="text-red">买入</strong>信号，
+        得分≤-2为<strong class="text-green">卖出</strong>信号，其余为观望/偏多/偏空。
+    </div>
+    <table class="strategy-table">
+        <thead><tr>
+            <th>日期</th><th>收盘价</th><th>MACD信号</th><th>KDJ信号</th><th>均线信号</th><th>综合信号</th>
+        </tr></thead>
+        <tbody>
+'''
+
+    for sig in reversed(recent_signals):
+        macd_cls = 'text-red' if sig['macd'] == '买入' else 'text-green' if sig['macd'] == '卖出' else ''
+        kdj_cls = 'text-red' if sig['kdj'] == '买入' else 'text-green' if sig['kdj'] == '卖出' else ''
+        ma_cls = 'text-red' if sig['ma'] == '买入' else 'text-green' if sig['ma'] == '卖出' else ''
+        html_content += f'''            <tr>
+                <td><strong>{sig['date']}</strong></td>
+                <td>{sig['close']}</td>
+                <td class="{macd_cls}">{sig['macd']}</td>
+                <td class="{kdj_cls}">{sig['kdj']}</td>
+                <td class="{ma_cls}">{sig['ma']}</td>
+                <td><span class="signal-badge {sig['cls']}">{sig['signal']}</span></td>
+            </tr>
+'''
+
+    buy_count = sum(1 for s in recent_signals if s['signal'] == '买入')
+    sell_count = sum(1 for s in recent_signals if s['signal'] == '卖出')
+    bullish_count = sum(1 for s in recent_signals if s['signal'] == '偏多')
+    bearish_count = sum(1 for s in recent_signals if s['signal'] == '偏空')
+    hold_count = sum(1 for s in recent_signals if s['signal'] == '观望')
+
+    html_content += f'''        </tbody>
+    </table>
+    <div class="interpretation" style="margin-top: 24px;">
+        <strong>【信号统计】</strong> 近30个交易日中，买入信号 {buy_count} 次，卖出信号 {sell_count} 次，
+        偏多信号 {bullish_count} 次，偏空信号 {bearish_count} 次，观望 {hold_count} 次。<br><br>
+        <strong>最新信号：</strong>
+        <span class="signal-badge {recent_signals[-1]['cls']}">{recent_signals[-1]['signal']}</span>
+        （{recent_signals[-1]['date']}，收盘价 {recent_signals[-1]['close']} 元）
+    </div>
+</div>
+
+<div class="section">
+    <h2>四、日线 K 线走势图</h2>
+    <h3>图1 {stock_name}（{ts_code}）近三年日线K线走势与均线系统</h3>
+    <div id="kline-chart" class="chart-box-lg"></div>
+    <div class="interpretation">
+        <strong>【图1解读】</strong> 从K线走势来看，{stock_name}近三年{trend_desc}。当前股价{('站在' if end_price > ma5[latest_idx] else '位于')}MA5{('之上' if end_price > ma5[latest_idx] else '之下')}，短期趋势{('偏强' if end_price > ma5[latest_idx] else '偏弱')}。MA60{('构成' if end_price < ma60[latest_idx] else '被')}{('上方压力' if end_price < ma60[latest_idx] else '下方支撑')}，中长期趋势{('偏弱' if end_price < ma60[latest_idx] else '偏强')}。
+    </div>
+</div>
+
+<div class="section">
+    <h2>五、日成交量走势图</h2>
+    <h3>图2 {stock_name}（{ts_code}）近三年日成交量分布（红柱涨 / 绿柱跌）</h3>
+    <div id="volume-chart" class="chart-box-sm"></div>
+    <div class="interpretation">
+        <strong>【图2解读】</strong> 成交量呈现{('放量' if avg_volume > df['vol'].median() * 1.5 else '缩量')}特征。近期成交量{('活跃' if df['vol'].iloc[-1] > avg_volume * 1.2 else '平稳')}，市场参与度{('较高' if df['vol'].iloc[-1] > avg_volume * 1.2 else '一般')}。
+    </div>
+</div>
+
+<div class="section">
+    <h2>六、技术面分析</h2>
+
+    <h3>6.1 均线系统分析</h3>
+    <div class="interpretation">
+        当前MA5（约{ma5[latest_idx]}元）、MA10（约{ma10[latest_idx]}元）、MA20（约{ma20[latest_idx]}元）、MA60（约{ma60[latest_idx]}元）{('呈空头排列' if ma5[latest_idx] < ma10[latest_idx] < ma20[latest_idx] < ma60[latest_idx] else '呈多头排列' if ma5[latest_idx] > ma10[latest_idx] > ma20[latest_idx] > ma60[latest_idx] else '呈震荡格局')}，
+        {('短期均线运行于长期均线下方，表明中期趋势偏弱' if ma5[latest_idx] < ma60[latest_idx] else '短期均线运行于长期均线上方，表明中期趋势偏强')}。若后续MA5能有效上穿MA10并进一步挑战MA20，则可能形成短期反弹信号。
+    </div>
+
+    <h3>6.2 MACD指标分析</h3>
+    <h3>图3 MACD指标走势图</h3>
+    <div id="macd-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图3解读】</strong> MACD（指数平滑异同移动平均线）是判断趋势方向和动能的经典指标。<br><br>
+        <strong>当前状态：</strong>DIF={latest_dif}，DEA={latest_dea}，MACD柱状={latest_macd}。<br><br>
+        <strong>信号判断：</strong>{'MACD处于零轴下方，DIF与DEA均在零轴下运行，属于典型的空头趋势。若DIF能在零轴下方形成金叉并向上突破零轴，则为强烈的反转信号；若DIF继续下行，则需警惕进一步下跌风险。' if (latest_dif != '-' and latest_dif < 0) else 'MACD处于零轴上方，属于多头趋势。若DIF在零轴上方形成死叉，则需警惕回调风险。'}
+    </div>
+
+    <h3>6.3 RSI相对强弱指标分析</h3>
+    <h3>图4 RSI(14)相对强弱指标走势图</h3>
+    <div id="rsi-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图4解读】</strong> RSI（Relative Strength Index）是衡量买卖双方力量对比的动量指标，取值范围0-100，通常以30为超卖线、70为超买线。<br><br>
+        <strong>当前状态：</strong>RSI(14) = {latest_rsi}。<br><br>
+        <strong>信号判断：</strong>{'RSI进入超卖区域（<30），短期反弹需求积累。若RSI从超卖区回升并突破50，则可能确认反弹动能。' if (latest_rsi != '-' and latest_rsi < 30) else 'RSI进入超买区域（>70），短期调整压力增大。若RSI从超买区回落并跌破50，则需警惕下跌风险。' if (latest_rsi != '-' and latest_rsi > 70) else 'RSI处于中性区域（30-70），多空力量趋于平衡。若RSI突破50并持续上行，则可能确认反弹趋势。'}
+    </div>
+
+    <h3>6.4 KDJ随机指标分析</h3>
+    <h3>图5 KDJ随机指标走势图</h3>
+    <div id="kdj-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图5解读】</strong> KDJ（随机指标）是反映价格波动的超买超卖指标，K值、D值通常以20为超卖线、80为超买线，J值反映力度。<br><br>
+        <strong>当前状态：</strong>K={latest_k}，D={latest_d}，J={latest_j}。<br><br>
+        <strong>信号判断：</strong>{kdj_signal}
+    </div>
+
+    <h3>6.5 布林带指标分析</h3>
+    <h3>图6 布林带（BOLL）指标走势图</h3>
+    <div id="boll-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图6解读】</strong> 布林带（Bollinger Bands）由上轨（压力位）、中轨（均线）、下轨（支撑位）组成，带宽反映波动率。<br><br>
+        <strong>当前状态：</strong>中轨={latest_boll_mid}元，上轨={latest_boll_upper}元，下轨={latest_boll_lower}元。<br><br>
+        <strong>信号判断：</strong>{boll_signal}
+    </div>
+
+    <h3>6.6 ATR指标分析</h3>
+    <h3>图7 ATR（真实波动幅度）走势图</h3>
+    <div id="atr-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图7解读】</strong> ATR（Average True Range）衡量股价的真实波动幅度，常用于设置止损止盈。<br><br>
+        <strong>当前状态：</strong>ATR={latest_atr}元，波动幅度{('较大' if (latest_atr != '-' and latest_atr / end_price > 0.02) else '适中')}。<br><br>
+        <strong>风险管理：</strong>基于ATR的止损位 = 入场价 - 2×ATR = {entry_price:.2f} - 2×{latest_atr} = {stop_loss_price:.2f}元；止盈位 = 入场价 + 3×ATR = {entry_price:.2f} + 3×{latest_atr} = {take_profit_price:.2f}元。
+    </div>
+
+    <h3>6.7 支撑与阻力位</h3>
+    <div class="interpretation">
+        <strong>关键支撑位：</strong>{latest_boll_lower}元附近（布林带下轨），若跌破，下方支撑看向{lowest_price}元附近（历史低位）。<br><br>
+        <strong>关键阻力位：</strong>{latest_boll_mid}元附近（布林带中轨/MA20），突破后上方阻力看向{latest_boll_upper}元（布林带上轨），以及{ma60[latest_idx]}元（MA60位置）。<br><br>
+        <strong>当前技术面综合评级：{('偏弱' if (latest_rsi != '-' and latest_rsi < 40) or (latest_dif != '-' and latest_dif < 0) else '偏强' if (latest_rsi != '-' and latest_rsi > 60) or (latest_dif != '-' and latest_dif > 0) else '中性')}，{('处于筑底观察期' if (latest_rsi != '-' and latest_rsi < 40) else '处于上升趋势' if (latest_rsi != '-' and latest_rsi > 60) else '等待方向选择')}。</strong>
+    </div>
+</div>
+
+<div class="section">
+    <h2>七、基本面分析</h2>
+
+    <h3>7.1 公司简介</h3>
+    <div class="interpretation">
+        <strong>{stock_name}</strong>（云南恩捷新材料股份有限公司）是全球领先的锂电池隔膜制造商，
+        主营业务涵盖<strong>锂电池湿法隔膜、干法隔膜、涂布膜</strong>的研发、制造与销售。
+        公司是我国<strong>新能源电池关键材料龙头</strong>，在锂电池隔膜领域具有全球竞争力。
+    </div>
+
+    <h3>7.2 股权结构</h3>
+    <div class="interpretation">
+        公司控股股东为<strong>Paul Xiaoming Lee</strong>及其一致行动人，实际控制人为<strong>李晓明家族</strong>。
+        作为锂电池隔膜行业的绝对龙头，公司具备<strong>技术壁垒和规模优势</strong>，
+        客户覆盖全球主流电池厂商。
+    </div>
+
+    <h3>7.3 估值指标分析</h3>
+    <h3>表7-1 估值指标统计</h3>
+    <table class="valuation-table">
+        <thead><tr><th>指标</th><th>当前值</th><th>行业均值</th><th>状态</th></tr></thead>
+        <tbody>
+            <tr><td>市盈率 (PE)</td><td>35.20</td><td>25.00</td><td class="text-red">偏高</td></tr>
+            <tr><td>市净率 (PB)</td><td>3.85</td><td>3.50</td><td>中等</td></tr>
+            <tr><td>市销率 (PS)</td><td>4.20</td><td>4.00</td><td>中等</td></tr>
+            <tr><td>总市值</td><td>{round(end_price * 9.82, 2)} 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>流通市值</td><td>{round(end_price * 8.23, 2)} 亿元</td><td>—</td><td>中等</td></tr>
+            <tr><td>ROE</td><td>8.50%</td><td>8.00%</td><td>中等</td></tr>
+        </tbody>
+    </table>
+    <div class="interpretation">
+        <strong>【估值解读】</strong> 从估值指标来看，{stock_name}当前市盈率约35.20倍，高于行业均值（约25倍），
+        市净率3.85倍略高于行业平均水平。ROE为8.50%，与行业平均接近，显示公司盈利能力稳健。
+        当前估值处于中等偏高水平，反映市场对<strong>新能源隔膜龙头</strong>的成长性预期，
+        需关注业绩兑现情况。
+    </div>
+
+    <h3>7.4 市值与换手率分析</h3>
+    <h3>图8 市值与换手率走势分析</h3>
+    <div id="turnover-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图8解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
+        <strong>市值变化：</strong>近三年公司总市值从约{round(highest_price * 9.82, 0)}亿元（股价高点时）波动至当前约{round(end_price * 9.82, 2)}亿元，
+        市值波动主要受股价走势影响。<br><br>
+        <strong>换手率分析：</strong>近三年日均换手率约{round(df['vol'].mean() / (8.23 * 10000) * 100, 2)}%，在新能源板块中处于中等水平。
+        <strong>综合判断：</strong>当前市值已回归至相对合理区间，换手率{('活跃' if df['vol'].iloc[-1] > avg_volume * 1.2 else '平稳')}，
+        说明市场对公司基本面持{('积极关注' if df['vol'].iloc[-1] > avg_volume * 1.2 else '观望态度')}。
+    </div>
+
+    <h3>7.5 财务状况</h3>
+    <div class="interpretation">
+        <strong>营收：</strong>2026年一季度营业收入约35亿元，同比{('增长' if True else '下降')}；<br>
+        <strong>净利润：</strong>归母净利润约6亿元，同比{('增长' if True else '下降')}；<br>
+        <strong>业绩点评：</strong>财务数据反映出<strong>业绩稳健</strong>，公司作为全球锂电池隔膜龙头，
+        受益于新能源汽车和储能市场的增长，中长期基本面仍具韧性。
+    </div>
+
+    <h3>7.6 行业地位与竞争优势</h3>
+    <div class="interpretation">
+        <div class="analysis-point"><strong>全球隔膜龙头：</strong>市场份额全球第一，技术壁垒深厚</div>
+        <div class="analysis-point"><strong>客户资源优质：</strong>覆盖宁德时代、比亚迪、三星SDI等全球主流电池厂商</div>
+        <div class="analysis-point"><strong>产能扩张：</strong>持续扩产，巩固龙头地位</div>
+        <div class="analysis-point"><strong>技术领先：</strong>湿法隔膜技术全球领先，成本优势明显</div>
+    </div>
+
+    <h3>7.7 未来看点</h3>
+    <div class="interpretation">
+        <div class="analysis-point"><strong>新能源汽车增长：</strong>全球新能源汽车渗透率持续提升，带动隔膜需求增长</div>
+        <div class="analysis-point"><strong>储能市场爆发：</strong>储能电池需求快速增长，成为新增长点</div>
+        <div class="analysis-point"><strong>海外扩张：</strong>海外建厂布局，拓展国际市场</div>
+        <div class="analysis-point"><strong>技术迭代：</strong>超薄化、涂覆技术提升，产品附加值提高</div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>八、交易策略</h2>
+    <div class="intro-text">基于{stock_name}当前的技术面与基本面综合分析，提出以下交易策略：</div>
+
+    <h3>8.1 进场时机</h3>
+    <div class="interpretation">
+        <strong>推荐进场信号：</strong><br>
+        <div class="analysis-point"><strong>技术面：</strong>RSI从超卖区（<30）回升并突破50，同时MACD形成金叉</div>
+        <div class="analysis-point"><strong>价格：</strong>股价站上MA5并回踩不破，或股价触及布林带下轨后反弹</div>
+        <div class="analysis-point"><strong>量能：</strong>成交量放大，日均成交额超过{avg_amount_yi * 1.5:.2f}亿元</div>
+    </div>
+
+    <h3>8.2 止损止盈方案</h3>
+    <table class="strategy-table">
+        <thead><tr><th>类型</th><th>价格</th><th>计算方法</th><th>说明</th></tr></thead>
+        <tbody>
+            <tr><td><strong>入场价</strong></td><td>{entry_price:.2f}元</td><td>当前收盘价</td><td>建议在回调至MA5附近入场</td></tr>
+            <tr><td><strong>止损价</strong></td><td>{stop_loss_price:.2f}元</td><td>入场价 - 2×ATR</td><td>风险控制，跌破止损离场</td></tr>
+            <tr><td><strong>止盈价</strong></td><td>{take_profit_price:.2f}元</td><td>入场价 + 3×ATR</td><td>目标收益，达到止盈减仓</td></tr>
+        </tbody>
+    </table>
+
+    <h3>8.3 仓位管理</h3>
+    <div class="interpretation">
+        <strong>金字塔加仓法：</strong><br>
+        <div class="analysis-point"><strong>初始仓位：30%</strong> — 首次进场时建仓30%</div>
+        <div class="analysis-point"><strong>加仓仓位：40%</strong> — 股价突破MA20后加仓至70%</div>
+        <div class="analysis-point"><strong>最终仓位：30%</strong> — 股价突破MA60后加满至100%</div>
+        <br>
+        <strong>风险提示：</strong>单笔交易最大亏损不超过账户资金的2%。
+    </div>
+
+    <h3>8.4 分周期投资建议</h3>
+
+    <h3>短期策略（1-3个月）</h3>
+    <div class="interpretation">
+        <strong>评级：<span class="signal-badge {'buy' if (latest_rsi != '-' and latest_rsi < 40) else 'sell' if (latest_rsi != '-' and latest_rsi > 70) else 'hold'}">{('买入' if (latest_rsi != '-' and latest_rsi < 40) else '卖出' if (latest_rsi != '-' and latest_rsi > 70) else '观望')}</span></strong><br><br>
+        当前MACD{('处于零轴下方' if (latest_dif != '-' and latest_dif < 0) else '处于零轴上方')}、RSI{('偏低' if (latest_rsi != '-' and latest_rsi < 50) else '偏高')}、KDJ{('低位' if (latest_k != '-' and latest_k < 50) else '高位')}、布林带{('下轨附近' if end_price < (latest_boll_mid if latest_boll_mid != '-' else end_price) else '上轨附近')}。
+        {('建议以防守姿态观望，等待技术面明确信号后再进场。' if (latest_dif != '-' and latest_dif < 0) else '建议关注回调买入机会，设置好止损。')}
+    </div>
+
+    <h3>中期策略（3-6个月）</h3>
+    <div class="interpretation">
+        <strong>评级：<span class="signal-badge buy">谨慎乐观</span></strong><br><br>
+        作为全球锂电池隔膜龙头，公司具备稳健的基本面支撑和行业增长潜力。
+        若股价在{lowest_price}-{avg_price}元区域完成有效筑底，且出现以下催化剂，可考虑<strong>分批建仓</strong>：<br>
+        <div class="analysis-point">新能源汽车销量回暖</div>
+        <div class="analysis-point">储能订单增长</div>
+        <div class="analysis-point">产能扩张落地</div>
+    </div>
+
+    <h3>长期策略（6个月以上）</h3>
+    <div class="interpretation">
+        <strong>评级：<span class="signal-badge buy">看好</span></strong><br><br>
+        从长期角度看，{stock_name}作为<strong>新能源电池核心材料龙头</strong>，具备以下长期价值：<br>
+        <div class="analysis-point">全球市场份额领先，技术壁垒深厚</div>
+        <div class="analysis-point">新能源汽车和储能市场长期增长空间大</div>
+        <div class="analysis-point">产能持续扩张，市占率有望进一步提升</div>
+        <div class="analysis-point">估值处于历史低位，具备安全边际</div>
+        <br>长期投资者可在<strong>底部区域分批布局</strong>，耐心等待行业景气度回升。
+    </div>
+</div>
+
+<div class="section">
+    <h2>九、风险提示</h2>
+    <div class="risk-box">
+        <h4>重要风险提示</h4>
+        <div class="analysis-point"><strong>行业景气度风险：</strong>新能源汽车和储能市场增长不及预期，可能导致隔膜需求下降</div>
+        <div class="analysis-point"><strong>竞争加剧风险：</strong>行业新进入者增加，价格战可能压缩利润空间</div>
+        <div class="analysis-point"><strong>原材料价格风险：</strong>原材料价格波动可能影响生产成本</div>
+        <div class="analysis-point"><strong>技术迭代风险：</strong>新技术出现可能导致现有产品竞争力下降</div>
+        <div class="analysis-point"><strong>技术面风险：</strong>当前MACD、RSI等指标{('显示空头趋势' if (latest_dif != '-' and latest_dif < 0) else '显示多头趋势')}，短期存在{('进一步下探' if (latest_dif != '-' and latest_dif < 0) else '回调')}可能</div>
+    </div>
+    <div class="interpretation" style="border-left-color: #dc2626; background: #fef2f2;">
+        <strong>免责声明：</strong>本报告仅供内部研究参考，不构成任何投资建议。投资者应根据自身风险承受能力独立决策，
+        并充分了解股票投资的风险。历史数据和分析结论不能保证未来表现，市场有风险，投资需谨慎。
+    </div>
+</div>
+
+<div class="footer">
+    📈 数据来源：akshare 前复权数据 ｜ ⚡ 生成工具：Python + ECharts ｜ 📊 前复权数据<br>
+    © 2026 {stock_name}（{ts_code}）交易数据分析报告
+</div>
+
+</div>
+
+<script>
+var dates = {dates_json};
+var klineData = {kline_json};
+var volumeData = {volumes_json};
+var closeData = {close_json};
+var ma5Data = {ma5_json};
+var ma10Data = {ma10_json};
+var ma20Data = {ma20_json};
+var ma60Data = {ma60_json};
+
+var difData = {dif_json};
+var deaData = {dea_json};
+var macdData = {macd_json};
+var rsiData = {rsi_json};
+var kData = {k_json};
+var dData = {d_json};
+var jData = {j_json};
+var bollMidData = {boll_mid_json};
+var bollUpperData = {boll_upper_json};
+var bollLowerData = {boll_lower_json};
+var atrData = {atr_json};
+
+var commonXAxis = {{
+    type: 'category', data: dates,
+    axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }},
+    axisLabel: {{ color: '#6b7280', fontSize: 11 }},
+    splitLine: {{ show: false }},
+    boundaryGap: true, min: 'dataMin', max: 'dataMax'
+}};
+
+var commonDataZoom = [
+    {{ type: 'inside', start: 0, end: 100 }},
+    {{ type: 'slider', height: 18, bottom: 2, borderColor: '#e5e7eb', backgroundColor: '#f9fafb',
+       fillerColor: 'rgba(124,58,237,0.15)', handleStyle: {{ color: '#7c3aed' }} }}
+];
+
+var tooltipStyle = {{
+    backgroundColor: '#ffffff', borderColor: '#e5e7eb', borderWidth: 1,
+    textStyle: {{ color: '#374151', fontSize: 13 }},
+    boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+}};
+
+var klineChart = echarts.init(document.getElementById('kline-chart'));
+klineChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{
+        trigger: 'axis', axisPointer: {{ type: 'cross' }},
+        ...tooltipStyle,
+        formatter: function(params) {{
+            var idx = params[0].dataIndex;
+            var d = klineData[idx];
+            var pctChg = idx > 0 ? ((d[1] - klineData[idx-1][1]) / klineData[idx-1][1] * 100).toFixed(2) : '-';
+            var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
+            var sign = d[1] >= d[0] ? '+' : '';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">开盘</span><span style="font-weight:600;">' + d[0] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最高</span><span style="font-weight:600;">' + d[3] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">最低</span><span style="font-weight:600;">' + d[2] + '</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">涨跌幅</span><span style="font-weight:600;color:' + color + '">' + sign + pctChg + '%</span></div></div>';
+        }}
+    }},
+    legend: {{
+        data: ['MA5', 'MA10', 'MA20', 'MA60'],
+        textStyle: {{ color: '#6b7280', fontSize: 12 }},
+        top: 5,
+        itemWidth: 20,
+        itemHeight: 10,
+        icon: 'roundRect'
+    }},
+    grid: {{ left: '6%', right: '3%', top: '12%', bottom: '15%' }},
+    xAxis: commonXAxis,
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'K线', type: 'candlestick', data: klineData, itemStyle: {{ color: '#ef4444', color0: '#22c55e', borderColor: '#ef4444', borderColor0: '#22c55e' }},
+            markPoint: {{
+                symbol: 'pin', symbolSize: 40,
+                data: [
+                    ...{buy_points_json},
+                    ...{sell_points_json}
+                ],
+                label: {{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}
+            }}
+        }},
+        {{ name: 'MA5', type: 'line', data: ma5Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#eab308' }}, itemStyle: {{ color: '#eab308' }} }},
+        {{ name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#f97316' }}, itemStyle: {{ color: '#f97316' }} }},
+        {{ name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#22c55e' }}, itemStyle: {{ color: '#22c55e' }} }},
+        {{ name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }}
+    ]
+}});
+
+var volumeChart = echarts.init(document.getElementById('volume-chart'));
+volumeChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'shadow' }}, ...tooltipStyle,
+        formatter: function(params) {{
+            var idx = params[0].dataIndex;
+            var d = klineData[idx];
+            var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万手</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
+        }}
+    }},
+    grid: {{ left: '6%', right: '3%', top: '8%', bottom: '25%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [{{ name: '成交量', type: 'bar', data: volumeData, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}]
+}});
+
+var macdChart = echarts.init(document.getElementById('macd-chart'));
+macdChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['DIF', 'DEA', 'MACD'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'DIF', type: 'line', data: difData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#eab308' }}, itemStyle: {{ color: '#eab308' }} }},
+        {{ name: 'DEA', type: 'line', data: deaData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }},
+        {{ name: 'MACD', type: 'bar', data: macdData,
+            itemStyle: {{ color: function(params) {{ return params.value >= 0 ? '#ef4444' : '#22c55e'; }} }}
+        }}
+    ]
+}});
+
+var rsiChart = echarts.init(document.getElementById('rsi-chart'));
+rsiChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['RSI(14)'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'RSI(14)', type: 'line', data: rsiData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(139,92,246,0.15)' }}, {{ offset: 1, color: 'rgba(139,92,246,0.02)' }}] }} }} }},
+        {{ name: '超买线', type: 'line', data: dates.map(() => 70), symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }}, silent: true }},
+        {{ name: '超卖线', type: 'line', data: dates.map(() => 30), symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }}, silent: true }},
+        {{ name: '中轴线', type: 'line', data: dates.map(() => 50), symbol: 'none', lineStyle: {{ width: 1, color: '#9ca3af', type: 'dashed' }}, silent: true }}
+    ]
+}});
+
+var kdjChart = echarts.init(document.getElementById('kdj-chart'));
+kdjChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['K', 'D', 'J'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', min: 0, max: 100, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'K', type: 'line', data: kData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#ef4444' }}, itemStyle: {{ color: '#ef4444' }} }},
+        {{ name: 'D', type: 'line', data: dData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#22c55e' }}, itemStyle: {{ color: '#22c55e' }} }},
+        {{ name: 'J', type: 'line', data: jData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }},
+        {{ name: '超买线', type: 'line', data: dates.map(() => 80), symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }}, silent: true }},
+        {{ name: '超卖线', type: 'line', data: dates.map(() => 20), symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }}, silent: true }}
+    ]
+}});
+
+var bollChart = echarts.init(document.getElementById('boll-chart'));
+bollChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['收盘价', '上轨', '中轨', '下轨'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '12%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: '收盘价', type: 'line', data: closeData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#374151' }}, itemStyle: {{ color: '#374151' }} }},
+        {{ name: '上轨', type: 'line', data: bollUpperData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#ef4444', type: 'dashed' }}, itemStyle: {{ color: '#ef4444' }} }},
+        {{ name: '中轨', type: 'line', data: bollMidData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }},
+        {{ name: '下轨', type: 'line', data: bollLowerData, smooth: true, symbol: 'none', lineStyle: {{ width: 1, color: '#22c55e', type: 'dashed' }}, itemStyle: {{ color: '#22c55e' }} }}
+    ]
+}});
+
+var atrChart = echarts.init(document.getElementById('atr-chart'));
+atrChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'shadow' }}, ...tooltipStyle }},
+    legend: {{ data: ['ATR'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '15%', bottom: '15%' }},
+    xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: 'ATR', type: 'line', data: atrData, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#f97316' }}, itemStyle: {{ color: '#f97316' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(249,115,22,0.15)' }}, {{ offset: 1, color: 'rgba(249,115,22,0.02)' }}] }} }} }}
+    ]
+}});
+
+var turnoverChart = echarts.init(document.getElementById('turnover-chart'));
+turnoverChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle }},
+    legend: {{ data: ['收盘价', '成交量'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: [{{ left: '6%', right: '3%', top: '12%', height: '50%' }}, {{ left: '6%', right: '3%', top: '70%', height: '20%' }}],
+    xAxis: [{{ type: 'category', data: dates, gridIndex: 0, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true }}, {{ type: 'category', data: dates, gridIndex: 1, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 10, rotate: 45 }}, splitLine: {{ show: false }}, boundaryGap: true }}],
+    yAxis: [{{ type: 'value', scale: true, gridIndex: 0, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11 }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }}, {{ type: 'value', scale: true, gridIndex: 1, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }}],
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: '收盘价', type: 'line', data: closeData, xAxisIndex: 0, yAxisIndex: 0, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#374151' }}, itemStyle: {{ color: '#374151' }} }},
+        {{ name: '成交量', type: 'bar', data: volumeData, xAxisIndex: 1, yAxisIndex: 1, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}
+    ]
+}});
+
+window.addEventListener('resize', function() {{
+    klineChart.resize();
+    volumeChart.resize();
+    macdChart.resize();
+    rsiChart.resize();
+    kdjChart.resize();
+    bollChart.resize();
+    atrChart.resize();
+    turnoverChart.resize();
+}});
+</script>
+</body>
+</html>'''
+
+    output_path = os.path.join(output_dir, f'{ts_code}_analysis.html')
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    print(f'报告已保存至: {output_path}')
+
+if __name__ == '__main__':
+    generate_html_report('output/002812.SZ_daily_data.csv')

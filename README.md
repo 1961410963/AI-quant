@@ -18,11 +18,14 @@
 ```
 北大光华AI交易课程/
 ├── AI-quant/                  # 📁 作品集与分析报告
+│   ├── output/                #    数据输出目录
+│   │   ├── 002812.SZ_analysis.html    #    恩捷股份分析报告
+│   │   ├── 600967.SH_analysis.html    #    内蒙一机分析报告
+│   │   └── 601899.SH_strategy_report.html #    紫金矿业策略报告
 │   ├── index.html             #    作品集首页
-│   ├── stock-analysis-600967.html    #    内蒙一机分析报告
-│   ├── 601899.SH_strategy_report.html #    紫金矿业策略报告
-│   ├── stock-indicator-visualizer.html#    可交互指标可视化工具
-│   ├── generate_html_v3.py    #    HTML报告生成器
+│   ├── stock-indicator-visualizer.html #    可交互指标可视化工具
+│   ├── generate_enjie_analysis.py    #    恩捷股份报告生成器
+│   ├── fetch_enjie_qfq.py     #    恩捷股份前复权数据获取
 │   ├── generate_strategy_report.py    #    策略报告生成器
 │   └── stock_analysis.py      #    股票数据获取与分析
 │
@@ -32,10 +35,9 @@
 │   ├── tools/                 #    13+ 金融数据工具模块
 │   ├── cache/                 #    SQLite 版本化缓存
 │   ├── config/                #    Token 管理与配置
-│   ├── newfunction/           #    T+1 尾盘选股策略
+│   ├── strategies/            #    T+1 尾盘选股策略
 │   └── prompts/               #    提示模板
 │
-├── output/                    # 📁 数据输出
 └── .gitignore
 ```
 
@@ -59,6 +61,7 @@
 | 🧠 基本面 | PE/PB/总市值 | 价值分析 |
 
 **支持标的：**
+- 恩捷股份（002812.SZ）— 锂电池隔膜龙头
 - 内蒙一机（600967.SH）— 军工龙头
 - 紫金矿业（601899.SH）— 有色金属龙头
 
@@ -207,14 +210,14 @@ python server_http.py
 ```bash
 cd AI-quant
 
-# 生成股票分析报告
-python generate_html_v3.py
+# 获取恩捷股份前复权数据
+python fetch_enjie_qfq.py
+
+# 生成恩捷股份分析报告（项目01.2）
+python generate_enjie_analysis.py
 
 # 生成策略报告
 python generate_strategy_report.py
-
-# 批量生成
-python generate_stock_report.py
 ```
 
 ---
