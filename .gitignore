@@ -29,6 +29,7 @@ ENV/
 # IDE
 .vscode/
 .idea/
+.trae-mcp/
 *.swp
 *.swo
 *~
@@ -52,14 +53,13 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Generated files
-output/*.png
-output/*.csv
-output/*.md
-output/*.py
-!output/*_data.json
-!output/*_analysis_report.html
-!output/*_strategy_report.html
+# Archive (废弃归档)
+_archive/
+
+# Generated files - 根目录output已删除，规则移到AI-quant
+AI-quant/output/*.png
+AI-quant/output/*.md
+AI-quant/output/*.json
 
 # Documentation
 功能说明

@@ -17,26 +17,34 @@
 
 ```
 北大光华AI交易课程/
-├── AI-quant/                  # 📁 作品集与分析报告
-│   ├── output/                #    数据输出目录
-│   │   ├── 002812.SZ_analysis.html    #    恩捷股份分析报告
-│   │   ├── 600967.SH_analysis.html    #    内蒙一机分析报告
-│   │   └── 601899.SH_strategy_report.html #    紫金矿业策略报告
-│   ├── index.html             #    作品集首页
+├── index.html                # 📄 作品集入口（重定向）
+├── AI-quant/                 # 📁 作品集与分析报告
+│   ├── index.html            #    作品集首页
+│   ├── stock-analysis-600967.html     #    内蒙一机分析报告
 │   ├── stock-indicator-visualizer.html #    可交互指标可视化工具
-│   ├── generate_enjie_analysis.py    #    恩捷股份报告生成器
-│   ├── fetch_enjie_qfq.py     #    恩捷股份前复权数据获取
-│   ├── generate_strategy_report.py    #    策略报告生成器
-│   └── stock_analysis.py      #    股票数据获取与分析
+│   ├── output/               #    📊 数据输出目录
+│   │   ├── 002812.SZ_analysis.html    #    恩捷股份分析报告
+│   │   ├── 002812.SZ_daily_data.csv   #    恩捷股份数据
+│   │   ├── 601899.SH_strategy_report.html #    紫金矿业策略报告
+│   │   └── ...其他数据文件
+│   ├── scripts/              #    🔧 辅助脚本
+│   │   ├── fetch_600967_3y.py        #    内蒙一机数据获取
+│   │   ├── fetch_601899_3y.py        #    紫金矿业数据获取
+│   │   └── ...其他工具脚本
+│   ├── fetch_enjie_qfq.py    #    恩捷股份数据获取（核心）
+│   ├── generate_enjie_analysis.py   #    恩捷股份报告生成（核心）
+│   └── generate_strategy_report.py  #    策略报告生成（核心）
 │
-├── tushare_MCP/               # 📁 MCP 数据服务器
-│   ├── server.py              #    Stdio 模式入口
-│   ├── server_http.py         #    HTTP 模式入口
-│   ├── tools/                 #    13+ 金融数据工具模块
-│   ├── cache/                 #    SQLite 版本化缓存
-│   ├── config/                #    Token 管理与配置
-│   ├── strategies/            #    T+1 尾盘选股策略
-│   └── prompts/               #    提示模板
+├── tushare_MCP/              # 📁 MCP 数据服务器
+│   ├── server.py             #    Stdio 模式入口
+│   ├── server_http.py        #    HTTP 模式入口
+│   ├── strategies/           #    📈 T+1 尾盘选股策略
+│   ├── scripts/              #    分析脚本
+│   ├── tests/                #    测试文件
+│   ├── tools/                #    13+ 金融数据工具模块
+│   ├── cache/                #    SQLite 版本化缓存
+│   ├── config/               #    Token 管理与配置
+│   └── prompts/              #    提示模板
 │
 └── .gitignore
 ```
