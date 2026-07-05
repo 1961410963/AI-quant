@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables (敏感配置)
+.env
+.env.local
+.env.*.local
+
+# Cache
+.cache/
+*.db
+.tushare_mcp/
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated files
+output/
+*.png
+*.csv
+
+# Documentation
+功能说明
+实现方案确认.md
+工具功能列表.md
+数据库缓存方案设计.md
+概念板块功能使用说明.md
+概念板块功能测试报告.md
+相对强度Alpha模型策略分析.md
+缓存策略优化方案.md
+doc/
