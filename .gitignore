@@ -55,10 +55,11 @@ htmlcov/
 # Generated files
 output/*.png
 output/*.csv
-output/*.html
 output/*.md
 output/*.py
 !output/*_data.json
+!output/*_analysis_report.html
+!output/*_strategy_report.html
 
 # Documentation
 功能说明
