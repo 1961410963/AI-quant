@@ -56,30 +56,50 @@
 
         <div class="chart-section">
             <h2>1. 策略规则与参数</h2>
-            <div class="intro-text">双均线策略是经典的趋势跟踪策略，通过短期均线与长期均线的交叉信号来判断市场趋势变化。</div>
+            <div class="intro-text">双均线策略是经典的趋势跟踪策略，通过短期均线MA5与长期均线MA20的交叉信号来判断市场趋势变化。</div>
             <div class="strategy-rule">
-                <strong>信号编码：</strong>每日状态信号，非交易指令<br>
-                short_ma = close.rolling({short_period}).mean()<br>
-                long_ma = close.rolling({long_period}).mean()<br>
-                signal = 1（多头排列，短&gt;长） / -1（空头排列，短&lt;长） / 0（持平）
+                <strong>信号编码：</strong>每日收盘后计算状态信号，非交易指令<br>
+                MA5 = close.rolling(5).mean()（近5日收盘价均值）<br>
+                MA20 = close.rolling(20).mean()（近20日收盘价均值）<br>
+                signal = 1（多头排列，MA5&gt;MA20） / -1（空头排列，MA5&lt;MA20） / 0（持平）
             </div>
             <div class="strategy-rule">
-                <strong>交叉捕捉：</strong>使用差值而非直接比较，确保只在"穿越瞬间"触发<br>
-                cross_signal = signal.diff()<br>
-                cross_signal[t] = 2 → 第t-1日收盘时金叉，第t日开盘买入<br>
-                cross_signal[t] = -2 → 第t-1日收盘时死叉，第t日开盘卖出
+                <strong>交叉捕捉：</strong>使用差值捕捉均线穿越瞬间<br>
+                cross_signal[t] = signal[t-1] - signal[t-2]<br>
+                cross_signal[t] = 2 → 第t-1日收盘时金叉（MA5上穿MA20），第t日开盘买入<br>
+                cross_signal[t] = -2 → 第t-1日收盘时死叉（MA5下穿MA20），第t日开盘卖出
+            </div>
+            <div class="strategy-rule">
+                <strong>买入规则（金叉触发）：</strong><br>
+                1. 可用资金 = 当前现金 × 50%（固定仓位比例）<br>
+                2. 买入价格 = 第t日开盘价 × (1 + 0.0001)（含滑点万1）<br>
+                3. 买入数量 = floor(可用资金 / 买入价格 / 100) × 100（取整到100股）<br>
+                4. 交易成本 = 买入金额 × 佣金率(0.0003)<br>
+                5. 现金减少 = 买入金额 + 佣金<br>
+                6. 持仓增加 = 买入数量
+            </div>
+            <div class="strategy-rule">
+                <strong>卖出规则（死叉触发）：</strong><br>
+                1. 卖出价格 = 第t日开盘价 × (1 - 0.0001)（含滑点万1）<br>
+                2. 卖出数量 = 当前全部持仓（清仓）<br>
+                3. 交易成本 = 卖出金额 × 佣金率(0.0003) + 卖出金额 × 印花税(0.0005)<br>
+                4. 现金增加 = 卖出金额 - 佣金 - 印花税<br>
+                5. 持仓清零<br>
+                6. 盈亏 = 净收入 - 持仓成本（买入价 × 数量）
             </div>
             <div class="strategy-rule">
                 <strong>避免未来函数：</strong>第 t 日决策只用 t-1 日及之前的信息<br>
-                signal_t = signal.shift(1)（用前一日收盘信号，在次日开盘执行交易）
+                用第t-1日收盘计算的MA5/MA20判断交叉，在第t日开盘执行交易
             </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>50000 元</td></tr>
-                <tr><td><strong>仓位比例</strong></td><td>50%（固定比例建仓）</td></tr>
-                <tr><td><strong>佣金费率</strong></td><td>0.0003（万三）</td></tr>
-                <tr><td><strong>滑点</strong></td><td>0.0001（万分之一）</td></tr>
-                <tr><td><strong>印花税</strong></td><td>0.0005（卖出时扣除万五）</td></tr>
-                <tr><td><strong>执行价格</strong></td><td>次日开盘价 × (1±滑点)（前一日收盘信号，次日开盘执行）</td></tr>
+                <tr><td><strong>仓位比例</strong></td><td>50%（每次买入使用50%现金）</td></tr>
+                <tr><td><strong>买入佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
+                <tr><td><strong>卖出佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
+                <tr><td><strong>卖出印花税</strong></td><td>万五（0.05%），国家收取</td></tr>
+                <tr><td><strong>滑点</strong></td><td>万分之一（0.01%），买卖各扣</td></tr>
+                <tr><td><strong>执行价格</strong></td><td>次日开盘价 × (1±滑点)</td></tr>
+                <tr><td><strong>买入数量</strong></td><td>取整到100股（A股最小交易单位）</td></tr>
                 <tr><td><strong>数据类型</strong></td><td>前复权（qfq）</td></tr>
             </table>
         </div>
