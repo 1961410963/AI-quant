@@ -10,7 +10,7 @@ initial_capital = 50000
 position_ratio = 0.5
 commission_rate = 0.0003
 slippage_rate = 0.0001
-stamp_tax_rate = 0.001
+stamp_tax_rate = 0.0005
 
 df = pd.read_csv(f'output/{stock_code}_daily_data.csv')
 df['trade_date'] = pd.to_datetime(df['trade_date'])
@@ -278,7 +278,7 @@ html_template = '''<!DOCTYPE html>
                 <tr><td><strong>仓位比例</strong></td><td>POSITION_RATIO%（固定比例建仓）</td></tr>
                 <tr><td><strong>佣金费率</strong></td><td>COMMISSION_RATE（万三）</td></tr>
                 <tr><td><strong>滑点</strong></td><td>SLIPPAGE_RATE（万分之一）</td></tr>
-                <tr><td><strong>印花税</strong></td><td>STAMP_TAX_RATE（卖出时扣除千一）</td></tr>
+                <tr><td><strong>印花税</strong></td><td>STAMP_TAX_RATE（卖出时扣除万五）</td></tr>
                 <tr><td><strong>执行价格</strong></td><td>当日开盘价 × (1±滑点)</td></tr>
                 <tr><td><strong>数据类型</strong></td><td>前复权（qfq）</td></tr>
             </table>
