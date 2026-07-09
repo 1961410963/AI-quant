@@ -402,8 +402,8 @@ html_template = '''<!DOCTYPE html>
             dataZoom: commonDataZoom,
             series: [
                 { name: '收盘价', type: 'line', data: closePrices, smooth: true, lineStyle: { color: '#1a1a2e', width: 2 }, itemStyle: { color: '#1a1a2e' } },
-                { name: 'MA5', type: 'line', data: maShort, smooth: true, lineStyle: { color: '#10b981', width: 2, type: 'dashed' } },
-                { name: 'MA20', type: 'line', data: maLong, smooth: true, lineStyle: { color: '#ef4444', width: 2, type: 'dashed' } },
+                { name: 'MA5', type: 'line', data: maShort, smooth: true, lineStyle: { color: '#10b981', width: 2, type: 'dashed' }, itemStyle: { color: '#10b981' } },
+                { name: 'MA20', type: 'line', data: maLong, smooth: true, lineStyle: { color: '#ef4444', width: 2, type: 'dashed' }, itemStyle: { color: '#ef4444' } },
                 { name: '买入信号', type: 'scatter', data: buyPoints, symbol: 'triangle', symbolSize: 15, itemStyle: { color: '#10b981' } },
                 { name: '卖出信号', type: 'scatter', data: sellPoints, symbol: 'triangle', symbolSize: 15, symbolRotate: 180, itemStyle: { color: '#ef4444' } }
             ]

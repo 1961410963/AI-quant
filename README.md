@@ -26,13 +26,18 @@
 │   │   ├── 002812.SZ_analysis.html    #    恩捷股份分析报告
 │   │   ├── 002812.SZ_daily_data.csv   #    恩捷股份数据
 │   │   ├── 601899.SH_strategy_report.html #    紫金矿业策略报告
+│   │   ├── 300504.SZ_ma_strategy.html #    天邑股份双均线策略回测报告
+│   │   ├── 300504.SZ_daily_data.csv   #    天邑股份数据
 │   │   └── ...其他数据文件
 │   ├── scripts/              #    🔧 辅助脚本
 │   │   ├── fetch_600967_3y.py        #    内蒙一机数据获取
 │   │   ├── fetch_601899_3y.py        #    紫金矿业数据获取
 │   │   └── ...其他工具脚本
 │   ├── fetch_enjie_qfq.py    #    恩捷股份数据获取（核心）
+│   ├── fetch_tianyi_qfq.py   #    天邑股份数据获取（项目03）
 │   ├── generate_enjie_analysis.py   #    恩捷股份报告生成（核心）
+│   ├── generate_ma_strategy.py  #    天邑股份双均线策略报告生成（项目03）
+│   ├── update_visualizer_data.py #    可视化工具数据更新脚本
 │   └── generate_strategy_report.py  #    策略报告生成（核心）
 │
 ├── tushare_MCP/              # 📁 MCP 数据服务器
