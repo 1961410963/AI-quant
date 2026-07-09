@@ -91,6 +91,16 @@
                 <strong>避免未来函数：</strong>第 t 日决策只用 t-1 日及之前的信息<br>
                 用第t-1日收盘计算的MA5/MA20判断交叉，在第t日开盘执行交易
             </div>
+            <div class="strategy-rule">
+                <strong>完整策略思路：</strong><br>
+                <strong>第一步：数据准备</strong> — 获取天邑股份前复权日线数据（开盘价、收盘价、成交量），截取近三年数据。<br>
+                <strong>第二步：指标计算</strong> — 每日收盘后计算MA5（5日均线）和MA20（20日均线），生成多空头状态信号。<br>
+                <strong>第三步：信号识别</strong> — 通过signal.diff()捕捉均线穿越瞬间：cross_signal=2表示金叉（买入信号），cross_signal=-2表示死叉（卖出信号）。<br>
+                <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用50%现金，按开盘价×1.0001（含滑点）计算可买数量，取整到100股；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
+                <strong>第五步：成本扣除</strong> — 买入扣万三佣金，卖出扣万三佣金+万五印花税。<br>
+                <strong>第六步：资产更新</strong> — 每日收盘后计算总资产（现金+持仓市值），记录净值曲线和最大回撤。<br>
+                <strong>第七步：指标统计</strong> — 回测结束后计算累计回报、年化回报、夏普比率、胜率、盈亏比等评估指标。
+            </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>50000 元</td></tr>
                 <tr><td><strong>仓位比例</strong></td><td>50%（每次买入使用50%现金）</td></tr>
@@ -154,7 +164,7 @@
             <div class="metric-box">
                 <strong>【盈亏比（Profit/Loss Ratio）】</strong>平均盈利与平均亏损的倍数。<br>
                 公式：盈亏比 = 平均盈利 / |平均亏损|<br>
-                本策略盈亏比：0.96（&gt;2意味着每次盈利可覆盖两次亏损）。
+                本策略盈亏比：0.96（&gt;2意味着每次盈利可覆盖两次以上亏损）。
             </div>
             <div class="metric-box">
                 <strong>【期望收益（Expected Return）】</strong>每次交易的期望结果。<br>
