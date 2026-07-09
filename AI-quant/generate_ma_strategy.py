@@ -267,11 +267,12 @@ html_template = '''<!DOCTYPE html>
             <div class="strategy-rule">
                 <strong>交叉捕捉：</strong>使用差值而非直接比较，确保只在"穿越瞬间"触发<br>
                 cross_signal = signal.diff()<br>
-                cross_signal = 2 → 金叉买入 / cross_signal = -2 → 死叉卖出
+                cross_signal[t] = 2 → 第t-1日收盘时金叉，第t日开盘买入<br>
+                cross_signal[t] = -2 → 第t-1日收盘时死叉，第t日开盘卖出
             </div>
             <div class="strategy-rule">
                 <strong>避免未来函数：</strong>第 t 日决策只用 t-1 日及之前的信息<br>
-                signal_t = signal.shift(1)（用前一日信号在当日开盘执行）
+                signal_t = signal.shift(1)（用前一日收盘信号，在次日开盘执行交易）
             </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>INITIAL_CAPITAL 元</td></tr>
@@ -279,7 +280,7 @@ html_template = '''<!DOCTYPE html>
                 <tr><td><strong>佣金费率</strong></td><td>COMMISSION_RATE（万三）</td></tr>
                 <tr><td><strong>滑点</strong></td><td>SLIPPAGE_RATE（万分之一）</td></tr>
                 <tr><td><strong>印花税</strong></td><td>STAMP_TAX_RATE（卖出时扣除万五）</td></tr>
-                <tr><td><strong>执行价格</strong></td><td>当日开盘价 × (1±滑点)</td></tr>
+                <tr><td><strong>执行价格</strong></td><td>次日开盘价 × (1±滑点)（前一日收盘信号，次日开盘执行）</td></tr>
                 <tr><td><strong>数据类型</strong></td><td>前复权（qfq）</td></tr>
             </table>
         </div>
