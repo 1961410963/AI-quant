@@ -198,14 +198,14 @@ for s, l, label in MA_PERIODS:
     chart1_series.append({'combo': combo, 'vals': vals})
 chart1_series_js = json.dumps(chart1_series)
 
-# 图2：各均线周期平均累计回报与平均最大回撤对比
+# 图2：各均线周期平均累计回报与平均回撤对比（回撤为每日当前回撤的均值）
 chart2_combos = json.dumps(period_agg['ma_combo'].tolist())
 chart2_returns = json.dumps(period_agg['avg_return'].tolist())
 chart2_mdds = json.dumps(period_agg['avg_mdd'].tolist())
 chart2_sharpes = json.dumps(period_agg['avg_sharpe'].tolist())
 chart2_excess = json.dumps(period_agg['avg_excess'].tolist())
 
-# 图3：累计回报 vs 最大回撤 散点图（每个点一次回测）
+# 图3：累计回报 vs 回撤 散点图（每个点一次回测，横轴为区间最大回撤）
 chart3_points = json.dumps([[r['max_drawdown_pct'], r['final_return_pct'], r['name'], r['ma_combo'], r['type']] for _, r in results_df.iterrows()])
 
 # 图4：各标的夏普比率对比（4个周期分组）
@@ -293,7 +293,7 @@ html_template = '''<!DOCTYPE html>
         <h2>一、实验结果总览</h2>
         <p class="chart-caption">下表汇总全部32次回测的核心指标，正收益标绿，负收益标红。</p>
         <table>
-            <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
+            <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
             <tbody>RESULT_ROWS</tbody>
         </table>
     </div>
@@ -306,13 +306,13 @@ html_template = '''<!DOCTYPE html>
         <div id="chart1" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>该图反映同一标的对不同均线参数的敏感度，以及同一参数在不同标的上的表现差异。若某标的4根柱子普遍为正且较高，说明双均线策略较适合该标的；若各周期收益正负不一且波动大，说明该标的不适合趋势跟踪。</div>
 
-        <div class="chart-title">图2：各均线周期平均累计回报与平均最大回撤对比</div>
-        <p class="chart-caption">横轴为4组均线周期（跨全部8个标的取平均），左纵轴为平均累计回报(%)，右纵轴为平均最大回撤(%)。</p>
+        <div class="chart-title">图2：各均线周期平均累计回报与平均回撤对比</div>
+        <p class="chart-caption">横轴为4组均线周期（跨全部8个标的取平均），左纵轴为平均累计回报(%)，右纵轴为平均回撤(%)。注：此处"回撤"为各次回测中每日当前回撤的均值，反映该周期参数下的平均浮亏压力；区间最大回撤为该压力下的极端值。</p>
         <div id="chart2" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>该图衡量不同均线周期的整体风险收益特征。理想组合应满足"高回报+低回撤"。一般来说，长周期（MA20/MA60）信号更少、滞后更大但过滤噪音；短周期（MA5/MA10）信号频繁、反应快但易受震荡市假信号干扰。</div>
 
-        <div class="chart-title">图3：累计回报 vs 最大回撤 风险-收益散点图</div>
-        <p class="chart-caption">横轴为最大回撤(%)，纵轴为累计回报(%)，每个点代表一次回测，悬停显示标的与均线组合。</p>
+        <div class="chart-title">图3：累计回报 vs 区间最大回撤 风险-收益散点图</div>
+        <p class="chart-caption">横轴为区间最大回撤(%)（单次回测期间回撤曲线的最低点），纵轴为累计回报(%)，每个点代表一次回测，悬停显示标的与均线组合。</p>
         <div id="chart3" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>左上区域为最优区间（低回撤+高回报），右下区域为最差区间（高回撤+亏损）。点的分布可揭示"高收益往往伴随高回撤"的权衡关系，落在左上的组合最具实战价值。</div>
 
@@ -322,7 +322,7 @@ html_template = '''<!DOCTYPE html>
         <div class="interpretation"><strong>解读：</strong>夏普比率衡量单位风险下的超额回报，&gt;0说明跑赢无风险利率，越高越好。该图可识别哪些标的在哪些周期下风险收益比最优，是选择策略参数的核心依据。</div>
 
         <div class="chart-title">图5：股票 vs ETF 平均表现对比</div>
-        <p class="chart-caption">对比两类资产（股票均值 vs ETF均值）的平均累计回报、平均最大回撤、平均夏普比率。</p>
+        <p class="chart-caption">对比两类资产（股票均值 vs ETF均值）的平均累计回报、平均回撤（每日当前回撤均值）、平均夏普比率。</p>
         <div id="chart5" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>ETF通常趋势性更强、波动更小，双均线策略理论上更适合ETF；个股受消息面影响大、震荡频繁，假信号更多。该图验证这一假设，为策略选品提供依据。</div>
     </div>
@@ -339,7 +339,7 @@ html_template = '''<!DOCTYPE html>
             <strong>3. 胜率与盈亏比的反向关系：</strong>双均线策略通常<strong>胜率偏低（本次实验普遍在30%-40%）但盈亏比应较高</strong>——因为每次亏损被严格限制在死叉时的小幅回撤，而盈利时趋势能跑出大段利润。若发现胜率低且盈亏比也低于1，说明标的处于震荡市，策略失效。本次实验中部分组合盈亏比偏低，反映出近三年市场震荡特征明显。
         </div>
         <div class="insight-box">
-            <strong>4. 仓位管理的重要性：</strong>本次采用10%仓位（约1万元），即使判断错误，单次亏损对总资产影响有限（最大回撤可控）。若全仓操作，震荡市的连续假信号会造成毁灭性回撤。<strong>轻仓+分散</strong>是趋势策略存活的关键，宁可少赚也要先活下来。
+            <strong>4. 仓位管理的重要性：</strong>本次采用10%仓位（约1万元），即使判断错误，单次亏损对总资产影响有限（区间最大回撤可控）。若全仓操作，震荡市的连续假信号会造成毁灭性回撤。<strong>轻仓+分散</strong>是趋势策略存活的关键，宁可少赚也要先活下来。
         </div>
         <div class="insight-box">
             <strong>5. 应用心得总结：</strong>① 双均线策略不是"万能公式"，必须先判断市场状态（趋势/震荡）再决定是否启用；② <strong>择时不如择势</strong>——先选趋势性强的标的，再谈参数优化；③ <strong>参数不是越精细越好</strong>，过度拟合历史数据反而降低未来适应性；④ <strong>止损纪律比信号本身更重要</strong>，死叉即走，不扛单；⑤ 建议将双均线作为<strong>趋势确认工具</strong>而非唯一信号，结合成交量、MACD等指标过滤假信号效果更佳。
@@ -367,14 +367,14 @@ chart1.setOption({
     })
 });
 
-// 图2：各均线周期平均累计回报与平均最大回撤
+// 图2：各均线周期平均累计回报与平均回撤对比
 var chart2 = echarts.init(document.getElementById('chart2'));
 var c2Combos = CHART2_COMBOS;
 var c2Returns = CHART2_RETURNS;
 var c2Mdds = CHART2_MDDS;
 chart2.setOption({
     tooltip: commonTooltip,
-    legend: { data: ['平均累计回报(%)', '平均最大回撤(%)'] },
+    legend: { data: ['平均累计回报(%)', '平均回撤(%)'] },
     grid: { left: '3%', right: '5%', bottom: '12%', containLabel: true },
     xAxis: { type: 'category', data: c2Combos },
     yAxis: [
@@ -383,20 +383,20 @@ chart2.setOption({
     ],
     series: [
         { name: '平均累计回报(%)', type: 'bar', data: c2Returns, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均最大回撤(%)', type: 'bar', yAxisIndex: 1, data: c2Mdds, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } }
+        { name: '平均回撤(%)', type: 'bar', yAxisIndex: 1, data: c2Mdds, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } }
     ]
 });
 
-// 图3：累计回报 vs 最大回撤 散点图
+// 图3：累计回报 vs 区间最大回撤 散点图
 var chart3 = echarts.init(document.getElementById('chart3'));
 var c3Points = CHART3_POINTS;
 var stockPoints = c3Points.filter(function(p){return p[4]==='股票';}).map(function(p){return [p[0], p[1], p[2], p[3]];});
 var etfPoints = c3Points.filter(function(p){return p[4]==='ETF';}).map(function(p){return [p[0], p[1], p[2], p[3]];});
 chart3.setOption({
-    tooltip: { trigger: 'item', formatter: function(p){ return p.data[2]+' '+p.data[3]+'<br/>回撤: '+p.data[0].toFixed(2)+'%<br/>回报: '+p.data[1].toFixed(2)+'%'; } },
+    tooltip: { trigger: 'item', formatter: function(p){ return p.data[2]+' '+p.data[3]+'<br/>区间最大回撤: '+p.data[0].toFixed(2)+'%<br/>累计回报: '+p.data[1].toFixed(2)+'%'; } },
     legend: { data: ['股票', 'ETF'] },
     grid: { left: '3%', right: '4%', bottom: '12%', containLabel: true },
-    xAxis: { type: 'value', name: '最大回撤(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
+    xAxis: { type: 'value', name: '区间最大回撤(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     yAxis: { type: 'value', name: '累计回报(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     series: [
         { name: '股票', type: 'scatter', data: stockPoints, symbolSize: 12, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' } },
@@ -423,13 +423,13 @@ chart4.setOption({
 var chart5 = echarts.init(document.getElementById('chart5'));
 chart5.setOption({
     tooltip: commonTooltip,
-    legend: { data: ['平均累计回报(%)', '平均最大回撤(%)', '平均夏普比率'] },
+    legend: { data: ['平均累计回报(%)', '平均回撤(%)', '平均夏普比率'] },
     grid: { left: '3%', right: '4%', bottom: '12%', containLabel: true },
     xAxis: { type: 'category', data: CHART5_TYPES },
     yAxis: { type: 'value', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     series: [
         { name: '平均累计回报(%)', type: 'bar', data: CHART5_RETURNS, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均最大回撤(%)', type: 'bar', data: CHART5_MDDS, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
+        { name: '平均回撤(%)', type: 'bar', data: CHART5_MDDS, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
         { name: '平均夏普比率', type: 'line', data: CHART5_SHARPES, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
     ]
 });

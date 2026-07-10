@@ -299,7 +299,7 @@ html_template = '''<!DOCTYPE html>
                 <strong>第三步：信号识别</strong> — 通过signal.diff()捕捉均线穿越瞬间：cross_signal=2表示金叉（买入信号），cross_signal=-2表示死叉（卖出信号）。<br>
                 <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用10%现金（约1万元），按开盘价×1.0001（含滑点）计算可买数量，取整到100股；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
                 <strong>第五步：成本扣除</strong> — 买入扣万三佣金，卖出扣万三佣金+万五印花税。<br>
-                <strong>第六步：资产更新</strong> — 每日收盘后计算总资产（现金+持仓市值），记录净值曲线和最大回撤。<br>
+                <strong>第六步：资产更新</strong> — 每日收盘后计算总资产（现金+持仓市值），记录净值曲线和回撤曲线（每日当前回撤，即从当日净值到历史最高点的跌幅）。<br>
                 <strong>第七步：指标统计</strong> — 回测结束后计算累计回报、年化回报、夏普比率、胜率、盈亏比等评估指标。
             </div>
             <table class="params-table">
@@ -321,7 +321,7 @@ html_template = '''<!DOCTYPE html>
         </div>
 
         <div class="chart-section">
-            <h2>3. 资产净值曲线与最大回撤</h2>
+            <h2>3. 资产净值曲线与回撤曲线</h2>
             <div id="equityChart" class="chart-container"></div>
         </div>
 
@@ -348,7 +348,8 @@ html_template = '''<!DOCTYPE html>
                 本策略超额收益：EXCESS%，买入持有收益：HOLDING_RETURN%。若为正，说明策略创造了额外价值。
             </div>
             <div class="metric-box">
-                <strong>【最大回撤（Maximum Drawdown）】</strong>从资产峰值到谷底的最大跌幅，衡量策略"最坏情况"。<br>
+                <strong>【回撤曲线】</strong>每日当前回撤，即当日资产净值距离历史最高点的跌幅。资产创新高时回撤为0，资产下跌时回撤为负，资产反弹时回撤向0收窄。它反映策略在不同时间点的"浮亏状态"，而非最终亏损。<br>
+                <strong>【最大回撤（Maximum Drawdown）】</strong>从资产峰值到谷底的最大跌幅，衡量策略"最坏情况"，是回撤曲线中的最低点。<br>
                 公式：MDD = max_t(峰值 - 谷底) / 峰值 × 100%<br>
                 本策略最大回撤：MDD%，评级：RISK_EVAL（回撤&lt;10%风险很低，10%-20%风险适中，20%-30%风险较高，&gt;30%风险很高）。
             </div>
@@ -413,7 +414,7 @@ html_template = '''<!DOCTYPE html>
         var equityChart = echarts.init(document.getElementById('equityChart'));
         var equityOption = {
             tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
-            legend: { data: ['策略净值', '买入持有', '最大回撤'] },
+            legend: { data: ['策略净值', '买入持有', '回撤曲线'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: [
@@ -427,7 +428,7 @@ html_template = '''<!DOCTYPE html>
                     return h ? h[1] : null;
                 }), smooth: true, lineStyle: { color: '#667eea', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(102,126,234,0.3)'}, {offset: 1, color: 'rgba(102,126,234,0.05)'}]) } },
                 { name: '买入持有', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, lineStyle: { color: '#9ca3af', width: 2, type: 'dashed' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(156,163,175,0.2)'}, {offset: 1, color: 'rgba(156,163,175,0.02)'}]) } },
-                { name: '最大回撤', type: 'line', yAxisIndex: 1, data: closePrices.map(function(p, i) {
+                { name: '回撤曲线', type: 'line', yAxisIndex: 1, data: closePrices.map(function(p, i) {
                     var idx = holdingsData.findIndex(function(d) { return d[0] === i; });
                     return idx >= 0 ? drawdownData[idx] : null;
                 }), smooth: true, lineStyle: { color: '#ef4444', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(239,68,68,0.3)'}, {offset: 1, color: 'rgba(239,68,68,0.05)'}]) } }
