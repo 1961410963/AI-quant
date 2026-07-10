@@ -6,8 +6,8 @@ stock_code = '300504.SZ'
 stock_name = '天邑股份'
 short_period = 5
 long_period = 20
-initial_capital = 50000
-position_ratio = 0.2
+initial_capital = 100000
+position_ratio = 0.1
 commission_rate = 0.0003
 slippage_rate = 0.0001
 stamp_tax_rate = 0.0005
@@ -272,7 +272,7 @@ html_template = '''<!DOCTYPE html>
             </div>
             <div class="strategy-rule">
                 <strong>买入规则（金叉触发）：</strong><br>
-                1. 可用资金 = 当前现金 × 20%（约1万元）<br>
+                1. 可用资金 = 当前现金 × 10%（约1万元）<br>
                 2. 买入价格 = 第t日开盘价 × (1 + 0.0001)（含滑点万1）<br>
                 3. 买入数量 = floor(可用资金 / 买入价格 / 100) × 100（取整到100股）<br>
                 4. 交易成本 = 买入金额 × 佣金率(0.0003)<br>
@@ -297,14 +297,14 @@ html_template = '''<!DOCTYPE html>
                 <strong>第一步：数据准备</strong> — 获取天邑股份前复权日线数据（开盘价、收盘价、成交量），截取近三年数据。<br>
                 <strong>第二步：指标计算</strong> — 每日收盘后计算MA5（5日均线）和MA20（20日均线），生成多空头状态信号。<br>
                 <strong>第三步：信号识别</strong> — 通过signal.diff()捕捉均线穿越瞬间：cross_signal=2表示金叉（买入信号），cross_signal=-2表示死叉（卖出信号）。<br>
-                <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用20%现金（约1万元），按开盘价×1.0001（含滑点）计算可买数量，取整到100股；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
+                <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用10%现金（约1万元），按开盘价×1.0001（含滑点）计算可买数量，取整到100股；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
                 <strong>第五步：成本扣除</strong> — 买入扣万三佣金，卖出扣万三佣金+万五印花税。<br>
                 <strong>第六步：资产更新</strong> — 每日收盘后计算总资产（现金+持仓市值），记录净值曲线和最大回撤。<br>
                 <strong>第七步：指标统计</strong> — 回测结束后计算累计回报、年化回报、夏普比率、胜率、盈亏比等评估指标。
             </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>INITIAL_CAPITAL 元</td></tr>
-                <tr><td><strong>仓位比例</strong></td><td>POSITION_RATIO%（每次买入使用20%现金，约1万元）</td></tr>
+                <tr><td><strong>仓位比例</strong></td><td>POSITION_RATIO%（每次买入使用10%现金，约1万元）</td></tr>
                 <tr><td><strong>买入佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
                 <tr><td><strong>卖出佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
                 <tr><td><strong>卖出印花税</strong></td><td>万五（0.05%），国家收取</td></tr>
@@ -394,7 +394,7 @@ html_template = '''<!DOCTYPE html>
 
         var priceChart = echarts.init(document.getElementById('priceChart'));
         var priceOption = {
-            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
             legend: { data: ['收盘价', 'MA5', 'MA20', '买入信号', '卖出信号'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
@@ -412,13 +412,13 @@ html_template = '''<!DOCTYPE html>
 
         var equityChart = echarts.init(document.getElementById('equityChart'));
         var equityOption = {
-            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+            tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
             legend: { data: ['策略净值', '买入持有', '最大回撤'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: [
-                { type: 'value', name: '资产净值(元)', position: 'left' },
-                { type: 'value', name: '回撤(%)', position: 'right', axisLabel: { formatter: '{value}%' } }
+                { type: 'value', name: '资产净值(元)', position: 'left', axisLabel: { formatter: function(v) { return v.toFixed(2); } } },
+                { type: 'value', name: '回撤(%)', position: 'right', axisLabel: { formatter: function(v) { return v.toFixed(2) + '%'; } } }
             ],
             dataZoom: commonDataZoom,
             series: [
