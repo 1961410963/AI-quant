@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票技术指标计算方法与作用说明 - 赵展鹏</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+
+        .header .author {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 15px;
+        }
+
+        /* Indicator Card */
+        .indicator-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .indicator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .indicator-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .indicator-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .indicator-ename {
+            font-size: 13px;
+            color: #764ba2;
+            font-family: 'JetBrains Mono', monospace;
+            background: #f5f3ff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #374151;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Formula Table */
+        .formula-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 14.5px;
+        }
+
+        .formula-table th {
+            background: #f9fafb;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .formula-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        .formula-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .formula-table .formula {
+            font-family: 'JetBrains Mono', monospace;
+            color: #764ba2;
+            font-weight: 500;
+        }
+
+        .formula-table .indicator-name {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* Description Text */
+        .desc-text {
+            font-size: 15px;
+            line-height: 1.9;
+            color: #4b5563;
+            margin: 8px 0 4px 0;
+        }
+
+        /* Strategy Tags */
+        .strategy-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 12px 0 4px 0;
+        }
+
+        .strategy-tag {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 7px 16px;
+            border-radius: 16px;
+            font-size: 13.5px;
+            font-weight: 500;
+            border: 1px solid #d1fae5;
+        }
+
+        /* Tool Link */
+        .tool-link-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 36px;
+            text-align: center;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-link-card h2 {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .tool-link-card p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .tool-link-btn {
+            display: inline-block;
+            background: #ffffff;
+            color: #764ba2;
+            padding: 14px 36px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: opacity 0.3s;
+        }
+
+        .back-link:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .indicator-card {
+                padding: 24px;
+            }
+
+            .indicator-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .formula-table {
+                font-size: 13px;
+            }
+
+            .formula-table th,
+            .formula-table td {
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← 返回作品集</a>
+
+        <div class="header">
+            <h1>股票技术指标计算方法与作用说明</h1>
+            <p class="subtitle">七大经典技术指标 · 计算公式 · 实战应用</p>
+            <p class="author">赵展鹏</p>
+        </div>
+
+        <!-- 一、均线系统 -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">一、均线系统（MA）</div>
+                <div class="indicator-ename">Moving Average</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">MA5（5日均线）</td>
+                        <td class="formula">MA5 = (C₁ + C₂ + C₃ + C₄ + C₅) / 5</td>
+                        <td>最近5个交易日收盘价的算术平均值</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">MA10（10日均线）</td>
+                        <td class="formula">MA10 = (C₁ + C₂ + ... + C₁₀) / 10</td>
+                        <td>最近10个交易日收盘价的算术平均值</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">MA20（20日均线）</td>
+                        <td class="formula">MA20 = (C₁ + C₂ + ... + C₂₀) / 20</td>
+                        <td>最近20个交易日收盘价的算术平均值</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">MA60（60日均线）</td>
+                        <td class="formula">MA60 = (C₁ + C₂ + ... + C₆₀) / 60</td>
+                        <td>最近60个交易日收盘价的算术平均值</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                均线系统用于判断趋势方向。短期均线反映近期市场情绪，中长期均线代表趋势方向。
+                当短期均线上穿中长期均线形成"金叉"时通常是买入信号；反之"死叉"则预示调整。
+                均线多头排列（MA5 &gt; MA10 &gt; MA20 &gt; MA60）表示上涨趋势，空头排列则表示下跌趋势。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">趋势跟随策略</span>
+                <span class="strategy-tag">支撑与阻力判断</span>
+                <span class="strategy-tag">金叉死叉信号</span>
+            </div>
+        </div>
+
+        <!-- 二、MACD指标 -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">二、MACD 指标</div>
+                <div class="indicator-ename">Moving Average Convergence Divergence</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">EMA12（12日指数移动平均）</td>
+                        <td class="formula">EMA₁₂ = α × C + (1-α) × EMA₁₂(前)</td>
+                        <td>α = 2/(12+1) = 2/13 ≈ 0.1538</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">EMA26（26日指数移动平均）</td>
+                        <td class="formula">EMA₂₆ = α × C + (1-α) × EMA₂₆(前)</td>
+                        <td>α = 2/(26+1) = 2/27 ≈ 0.0741</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">DIF（差离值）</td>
+                        <td class="formula">DIF = EMA₁₂ - EMA₂₆</td>
+                        <td>快线，反映短期与中期均线的差值</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">DEA（异同平均数）</td>
+                        <td class="formula">DEA = EMA₉(DIF)</td>
+                        <td>慢线，对DIF进行9日指数平滑</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">MACD柱</td>
+                        <td class="formula">MACD柱 = DIF - DEA</td>
+                        <td>本站采用不乘2的计算方式，直接等于DIF减DEA</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                MACD用于判断趋势强弱和多空转换。DIF上穿DEA形成金叉为买入信号，下穿形成死叉为卖出信号。
+                MACD柱由负转正表示多头力量增强，由正转负表示空头力量增强。
+                零轴上方表示多头趋势，零轴下方表示空头趋势。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">趋势跟随策略</span>
+                <span class="strategy-tag">零轴过滤策略</span>
+                <span class="strategy-tag">动量加速/减速策略</span>
+                <span class="strategy-tag">多指标确认</span>
+            </div>
+        </div>
+
+        <!-- 三、RSI指标 -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">三、RSI 相对强弱指标</div>
+                <div class="indicator-ename">Relative Strength Index</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">平均上涨幅度</td>
+                        <td class="formula">AvgUp = Wilder平滑(当日涨幅)</td>
+                        <td>采用Wilder平滑方法，α = 1/14</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">平均下跌幅度</td>
+                        <td class="formula">AvgDown = Wilder平滑(当日跌幅)</td>
+                        <td>采用Wilder平滑方法，α = 1/14</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">RSI(14)</td>
+                        <td class="formula">RSI = 100 × AvgUp / (AvgUp + AvgDown)</td>
+                        <td>将相对强弱压缩到0-100区间</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                RSI衡量市场上涨与下跌的相对力量。70为超买观察线，30为超卖观察线。
+                RSI从低位向上穿越30关注反弹，从高位回落至70关注回调。
+                RSI既可用于反转逻辑也可用于趋势强度逻辑，指标本身不是策略。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">均值回归策略</span>
+                <span class="strategy-tag">趋势过滤策略</span>
+                <span class="strategy-tag">背离研究</span>
+            </div>
+        </div>
+
+        <!-- 四、KDJ指标 -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">四、KDJ 随机指标</div>
+                <div class="indicator-ename">Stochastic Oscillator</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">RSV（未成熟随机值）</td>
+                        <td class="formula">RSV = (C - L₉) / (H₉ - L₉) × 100</td>
+                        <td>C=收盘价，H₉=9日最高价，L₉=9日最低价</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">K值</td>
+                        <td class="formula">K = EMA₃(RSV)</td>
+                        <td>对RSV进行3日指数平滑，α=1/3（等价于SMA(RSV,3,1)）</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">D值</td>
+                        <td class="formula">D = EMA₃(K)</td>
+                        <td>对K值进行3日指数平滑，α=1/3（等价于SMA(K,3,1)）</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">J值</td>
+                        <td class="formula">J = 3K - 2D</td>
+                        <td>方向敏感线，反映K与D的差值</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                KDJ通过计算价格在高低区间的相对位置来判断超买超卖。
+                80以上为超买区，20以下为超卖区。
+                K线从下向上突破D线形成金叉且位于低位时是短期买入信号；
+                K线从上向下跌破D线形成死叉且位于高位时是短期卖出信号。
+                KDJ在震荡市中信号较为灵敏。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">超买超卖判断</span>
+                <span class="strategy-tag">金叉死叉信号</span>
+                <span class="strategy-tag">J值预警</span>
+            </div>
+        </div>
+
+        <!-- 五、布林带 -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">五、布林带（BOLL）</div>
+                <div class="indicator-ename">Bollinger Bands</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">中轨（MA20）</td>
+                        <td class="formula">中轨 = MA₂₀</td>
+                        <td>20日简单移动平均线</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">上轨</td>
+                        <td class="formula">上轨 = MA₂₀ + 2 × σ</td>
+                        <td>中轨加上2倍标准差（总体标准差，ddof=0）</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">下轨</td>
+                        <td class="formula">下轨 = MA₂₀ - 2 × σ</td>
+                        <td>中轨减去2倍标准差（总体标准差，ddof=0）</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">带宽</td>
+                        <td class="formula">带宽 = (上轨 - 下轨) / 中轨</td>
+                        <td>反映波动率大小</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                布林带反映价格的波动率和运行区间。布林带开口扩大表明波动率增加，通常伴随趋势加速；
+                布林带收窄表明波动率降低，通常是变盘前兆。
+                价格触及上轨时短期有回调压力，触及下轨时短期有反弹可能。
+                同样触及上轨，均值回归策略可能考虑反向，突破策略可能考虑顺势。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">均值回归策略</span>
+                <span class="strategy-tag">突破策略</span>
+                <span class="strategy-tag">波动率收缩策略 (Squeeze)</span>
+                <span class="strategy-tag">动态区间/止损参考</span>
+            </div>
+        </div>
+
+        <!-- 六、ATR -->
+        <div class="indicator-card">
+            <div class="indicator-header">
+                <div class="indicator-title">六、ATR 平均真实波幅</div>
+                <div class="indicator-ename">Average True Range</div>
+            </div>
+
+            <div class="section-title">计算方法</div>
+            <table class="formula-table">
+                <thead>
+                    <tr>
+                        <th>指标名称</th>
+                        <th>计算公式</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="indicator-name">TR（真实波幅）</td>
+                        <td class="formula">TR = max(H-L, |H-Cₚ|, |L-Cₚ|)</td>
+                        <td>H=最高价，L=最低价，Cₚ=前收盘价</td>
+                    </tr>
+                    <tr>
+                        <td class="indicator-name">ATR(14)</td>
+                        <td class="formula">ATR = Wilder平滑(TR, 14)</td>
+                        <td>采用Wilder平滑方法，α = 1/14</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">指标作用</div>
+            <p class="desc-text">
+                ATR衡量价格波动幅度，不判断方向。ATR越大说明单日价格摆动越大，市场波动越剧烈；
+                ATR越小说明波动越平静。ATR主要用于设置动态止损和仓位管理，
+                ATR大时减少持仓数量，ATR小时适度增加仓位。
+            </p>
+
+            <div class="section-title">策略角色</div>
+            <div class="strategy-tags">
+                <span class="strategy-tag">波动率仓位管理</span>
+                <span class="strategy-tag">动态止损策略</span>
+                <span class="strategy-tag">突破过滤策略</span>
+                <span class="strategy-tag">波动率目标/标的比较</span>
+            </div>
+        </div>
+
+        <!-- 七、参数调节工具 -->
+        <div class="tool-link-card">
+            <h2>七、参数调节工具</h2>
+            <p>交互式可视化工具，可自由调节各指标参数，实时观察指标变化</p>
+            <a href="stock-indicator-visualizer.html" class="tool-link-btn">打开可视化工具 →</a>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 赵展鹏 · AI量化交易课程</p>
+        </div>
+    </div>
+</body>
+</html>
