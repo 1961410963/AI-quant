@@ -208,6 +208,8 @@ def generate_html_report(csv_path, output_dir='output'):
 
         buy_points = []
         sell_points = []
+        bull_points = []
+        bear_points = []
         recent_signals = []
         for i in range(n):
             score = 0
@@ -222,6 +224,10 @@ def generate_html_report(csv_path, output_dir='output'):
                 buy_points.append({'name': '买入', 'coord': [dates[i], high_prices[i] + 0.5], 'value': '买入', 'itemStyle': {'color': '#ef4444'}})
             elif score <= -2:
                 sell_points.append({'name': '卖出', 'coord': [dates[i], low_prices[i] - 0.5], 'value': '卖出', 'itemStyle': {'color': '#22c55e'}})
+            elif score > 0:
+                bull_points.append({'name': '偏多', 'coord': [dates[i], high_prices[i] + 0.3], 'value': '偏多', 'itemStyle': {'color': '#f97316'}})
+            elif score < 0:
+                bear_points.append({'name': '偏空', 'coord': [dates[i], low_prices[i] - 0.3], 'value': '偏空', 'itemStyle': {'color': '#3b82f6'}})
 
             if i >= n - 30:
                 sig = '观望'
@@ -248,11 +254,112 @@ def generate_html_report(csv_path, output_dir='output'):
                     'cls': sig_cls
                 })
 
-        return buy_points, sell_points, recent_signals
+        return buy_points, sell_points, bull_points, bear_points, recent_signals, macd_signals, kdj_signals, ma_signals
 
-    buy_points, sell_points, recent_signals = calc_signals()
+    buy_points, sell_points, bull_points, bear_points, recent_signals, macd_signals, kdj_signals, ma_signals = calc_signals()
     buy_points_json = json.dumps(buy_points)
     sell_points_json = json.dumps(sell_points)
+    bull_points_json = json.dumps(bull_points)
+    bear_points_json = json.dumps(bear_points)
+
+    def backtest_strategy():
+        n = len(close_prices)
+        initial_capital = 100000
+        cash = initial_capital
+        position = 0
+        buy_price = 0
+        total_assets = []
+        trades = []
+        win_trades = 0
+        lose_trades = 0
+        total_profit = 0
+        total_loss = 0
+
+        for i in range(n):
+            score = 0
+            if macd_signals[i] == '买入': score += 2
+            if macd_signals[i] == '卖出': score -= 2
+            if kdj_signals[i] == '买入': score += 1
+            if kdj_signals[i] == '卖出': score -= 1
+            if ma_signals[i] == '买入': score += 1
+            if ma_signals[i] == '卖出': score -= 1
+
+            if score >= 2 and position == 0:
+                buy_price = close_prices[i]
+                max_shares = int(cash / buy_price / 100) * 100
+                if max_shares > 0:
+                    position = max_shares
+                    cash -= position * buy_price
+                    trades.append({'date': dates[i], 'type': '买入', 'price': buy_price, 'shares': position, 'cash': cash})
+
+            elif score <= -2 and position > 0:
+                sell_price = close_prices[i]
+                revenue = position * sell_price
+                profit = revenue - position * buy_price
+                if profit > 0:
+                    win_trades += 1
+                    total_profit += profit
+                else:
+                    lose_trades += 1
+                    total_loss += abs(profit)
+                cash += revenue
+                trades.append({'date': dates[i], 'type': '卖出', 'price': sell_price, 'shares': position, 'cash': cash, 'profit': profit})
+                position = 0
+
+            total_asset = cash + position * close_prices[i]
+            total_assets.append(total_asset)
+
+        if position > 0:
+            sell_price = close_prices[-1]
+            revenue = position * sell_price
+            profit = revenue - position * buy_price
+            if profit > 0:
+                win_trades += 1
+                total_profit += profit
+            else:
+                lose_trades += 1
+                total_loss += abs(profit)
+            cash += revenue
+            position = 0
+
+        final_asset = cash
+        total_return = (final_asset - initial_capital) / initial_capital * 100
+
+        drawdowns = []
+        max_asset = initial_capital
+        for asset in total_assets:
+            if asset > max_asset:
+                max_asset = asset
+            drawdown = (asset - max_asset) / max_asset * 100
+            drawdowns.append(drawdown)
+        max_drawdown = min(drawdowns)
+
+        buy_hold_return = (close_prices[-1] - close_prices[0]) / close_prices[0] * 100
+        excess_return = total_return - buy_hold_return
+
+        daily_returns = [0]
+        for i in range(1, len(total_assets)):
+            daily_return = (total_assets[i] - total_assets[i-1]) / total_assets[i-1]
+            daily_returns.append(daily_return)
+        daily_std = pd.Series(daily_returns).std()
+        sharpe_ratio = (pd.Series(daily_returns).mean() - 0.02/365) / daily_std * (252**0.5) if daily_std > 0 else 0
+
+        win_rate = win_trades / (win_trades + lose_trades) * 100 if (win_trades + lose_trades) > 0 else 0
+
+        return {
+            'total_return': round(total_return, 2),
+            'max_drawdown': round(max_drawdown, 2),
+            'excess_return': round(excess_return, 2),
+            'sharpe_ratio': round(sharpe_ratio, 2),
+            'win_rate': round(win_rate, 2),
+            'win_trades': win_trades,
+            'lose_trades': lose_trades,
+            'buy_hold_return': round(buy_hold_return, 2),
+            'total_assets': total_assets,
+            'trades': trades
+        }
+
+    bt_result = backtest_strategy()
 
     dates_json = json.dumps(dates)
     kline_json = json.dumps(kline_data)
@@ -586,6 +693,62 @@ tr:hover td {{ background: #f9fafb; }}
 </div>
 
 <div class="section">
+    <h2>三、综合评分策略回测</h2>
+    <div class="intro-text">
+        基于MACD（权重2）、KDJ（权重1）、MA5/MA10均线（权重1）三大指标综合评分策略的回测结果。
+        策略规则：得分≥2触发买入，得分≤-2触发卖出，初始资金10万元，全仓操作。
+    </div>
+
+    <h3>3.1 回测指标汇总</h3>
+    <div class="stats-grid">
+        <div class="stat-card"><div class="label">策略累计回报</div><div class="value {'negative' if bt_result['total_return'] < 0 else 'positive'}">{bt_result['total_return']}%</div></div>
+        <div class="stat-card"><div class="label">买入持有收益</div><div class="value {'negative' if bt_result['buy_hold_return'] < 0 else 'positive'}">{bt_result['buy_hold_return']}%</div></div>
+        <div class="stat-card"><div class="label">超额收益</div><div class="value {'negative' if bt_result['excess_return'] < 0 else 'positive'}">{bt_result['excess_return']}%</div></div>
+        <div class="stat-card"><div class="label">最大回撤</div><div class="value negative">{bt_result['max_drawdown']}%</div></div>
+        <div class="stat-card"><div class="label">夏普比率</div><div class="value {'negative' if bt_result['sharpe_ratio'] < 0 else 'positive'}">{bt_result['sharpe_ratio']}</div></div>
+        <div class="stat-card"><div class="label">胜率</div><div class="value">{bt_result['win_rate']}%</div></div>
+        <div class="stat-card"><div class="label">盈利交易</div><div class="value positive">{bt_result['win_trades']}次</div></div>
+        <div class="stat-card"><div class="label">亏损交易</div><div class="value negative">{bt_result['lose_trades']}次</div></div>
+    </div>
+
+    <h3>3.2 策略收益曲线</h3>
+    <h3>图2 策略收益曲线与买入持有对比</h3>
+    <div id="equity-chart" class="chart-box"></div>
+    <div class="interpretation">
+        <strong>【图2解读】</strong> 策略收益曲线（蓝色）与买入持有收益曲线（橙色）对比。<br><br>
+        <strong>策略表现：</strong>{('跑赢买入持有' if bt_result['excess_return'] > 0 else '跑输买入持有')}，超额收益{bt_result['excess_return']}%。{('策略有效控制回撤' if abs(bt_result['max_drawdown']) < abs((bt_result['buy_hold_return'] * 0.5)) else '策略回撤仍需优化')}。
+    </div>
+
+    <h3>3.3 交易明细</h3>
+    <table class="strategy-table">
+        <thead><tr>
+            <th>日期</th><th>类型</th><th>价格(元)</th><th>数量(股)</th><th>金额(元)</th><th>盈亏(元)</th>
+        </tr></thead>
+        <tbody>
+'''
+
+    for trade in bt_result['trades']:
+        profit = trade.get('profit', 0)
+        profit_str = f'{profit:+.2f}' if profit != 0 else '-'
+        profit_cls = 'text-red' if profit > 0 else 'text-green' if profit < 0 else ''
+        html_content += f'''            <tr>
+                <td><strong>{trade['date']}</strong></td>
+                <td><span class="{'text-red' if trade['type'] == '买入' else 'text-green'}">{trade['type']}</span></td>
+                <td>{trade['price']:.2f}</td>
+                <td>{trade['shares']}</td>
+                <td>{trade['shares'] * trade['price']:.2f}</td>
+                <td class="{profit_cls}">{profit_str}</td>
+            </tr>
+'''
+
+    html_content += f'''        </tbody>
+    </table>
+    <div class="interpretation" style="margin-top: 24px;">
+        <strong>【交易统计】</strong> 共{bt_result['win_trades'] + bt_result['lose_trades']}笔交易，盈利{bt_result['win_trades']}笔，亏损{bt_result['lose_trades']}笔，胜率{bt_result['win_rate']}%。
+    </div>
+</div>
+
+<div class="section">
     <h2>四、日线 K 线走势图</h2>
     <h3>图1 {stock_name}（{ts_code}）近三年日线K线走势与均线系统</h3>
     <div id="kline-chart" class="chart-box-lg"></div>
@@ -596,10 +759,10 @@ tr:hover td {{ background: #f9fafb; }}
 
 <div class="section">
     <h2>五、日成交量走势图</h2>
-    <h3>图2 {stock_name}（{ts_code}）近三年日成交量分布（红柱涨 / 绿柱跌）</h3>
+    <h3>图3 {stock_name}（{ts_code}）近三年日成交量分布（红柱涨 / 绿柱跌）</h3>
     <div id="volume-chart" class="chart-box-sm"></div>
     <div class="interpretation">
-        <strong>【图2解读】</strong> 成交量呈现{('放量' if avg_volume > df['vol'].median() * 1.5 else '缩量')}特征。近期成交量{('活跃' if df['vol'].iloc[-1] > avg_volume * 1.2 else '平稳')}，市场参与度{('较高' if df['vol'].iloc[-1] > avg_volume * 1.2 else '一般')}。
+        <strong>【图9解读】</strong> 成交量呈现{('放量' if avg_volume > df['vol'].median() * 1.5 else '缩量')}特征。近期成交量{('活跃' if df['vol'].iloc[-1] > avg_volume * 1.2 else '平稳')}，市场参与度{('较高' if df['vol'].iloc[-1] > avg_volume * 1.2 else '一般')}。
     </div>
 </div>
 
@@ -614,46 +777,46 @@ tr:hover td {{ background: #f9fafb; }}
     </div>
 
     <h3>6.2 MACD指标分析</h3>
-    <h3>图3 MACD指标走势图</h3>
+    <h3>图4 MACD指标走势图</h3>
     <div id="macd-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图3解读】</strong> MACD（指数平滑异同移动平均线）是判断趋势方向和动能的经典指标。<br><br>
+        <strong>【图9解读】</strong> MACD（指数平滑异同移动平均线）是判断趋势方向和动能的经典指标。<br><br>
         <strong>当前状态：</strong>DIF={latest_dif}，DEA={latest_dea}，MACD柱状={latest_macd}。<br><br>
         <strong>信号判断：</strong>{'MACD处于零轴下方，DIF与DEA均在零轴下运行，属于典型的空头趋势。若DIF能在零轴下方形成金叉并向上突破零轴，则为强烈的反转信号；若DIF继续下行，则需警惕进一步下跌风险。' if (latest_dif != '-' and latest_dif < 0) else 'MACD处于零轴上方，属于多头趋势。若DIF在零轴上方形成死叉，则需警惕回调风险。'}
     </div>
 
     <h3>6.3 RSI相对强弱指标分析</h3>
-    <h3>图4 RSI(14)相对强弱指标走势图</h3>
+    <h3>图5 RSI(14)相对强弱指标走势图</h3>
     <div id="rsi-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图4解读】</strong> RSI（Relative Strength Index）是衡量买卖双方力量对比的动量指标，取值范围0-100，通常以30为超卖线、70为超买线。<br><br>
+        <strong>【图9解读】</strong> RSI（Relative Strength Index）是衡量买卖双方力量对比的动量指标，取值范围0-100，通常以30为超卖线、70为超买线。<br><br>
         <strong>当前状态：</strong>RSI(14) = {latest_rsi}。<br><br>
         <strong>信号判断：</strong>{'RSI进入超卖区域（<30），短期反弹需求积累。若RSI从超卖区回升并突破50，则可能确认反弹动能。' if (latest_rsi != '-' and latest_rsi < 30) else 'RSI进入超买区域（>70），短期调整压力增大。若RSI从超买区回落并跌破50，则需警惕下跌风险。' if (latest_rsi != '-' and latest_rsi > 70) else 'RSI处于中性区域（30-70），多空力量趋于平衡。若RSI突破50并持续上行，则可能确认反弹趋势。'}
     </div>
 
     <h3>6.4 KDJ随机指标分析</h3>
-    <h3>图5 KDJ随机指标走势图</h3>
+    <h3>图6 KDJ随机指标走势图</h3>
     <div id="kdj-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图5解读】</strong> KDJ（随机指标）是反映价格波动的超买超卖指标，K值、D值通常以20为超卖线、80为超买线，J值反映力度。<br><br>
+        <strong>【图9解读】</strong> KDJ（随机指标）是反映价格波动的超买超卖指标，K值、D值通常以20为超卖线、80为超买线，J值反映力度。<br><br>
         <strong>当前状态：</strong>K={latest_k}，D={latest_d}，J={latest_j}。<br><br>
         <strong>信号判断：</strong>{kdj_signal}
     </div>
 
     <h3>6.5 布林带指标分析</h3>
-    <h3>图6 布林带（BOLL）指标走势图</h3>
+    <h3>图7 布林带（BOLL）指标走势图</h3>
     <div id="boll-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图6解读】</strong> 布林带（Bollinger Bands）由上轨（压力位）、中轨（均线）、下轨（支撑位）组成，带宽反映波动率。<br><br>
+        <strong>【图9解读】</strong> 布林带（Bollinger Bands）由上轨（压力位）、中轨（均线）、下轨（支撑位）组成，带宽反映波动率。<br><br>
         <strong>当前状态：</strong>中轨={latest_boll_mid}元，上轨={latest_boll_upper}元，下轨={latest_boll_lower}元。<br><br>
         <strong>信号判断：</strong>{boll_signal}
     </div>
 
     <h3>6.6 ATR指标分析</h3>
-    <h3>图7 ATR（真实波动幅度）走势图</h3>
+    <h3>图8 ATR（真实波动幅度）走势图</h3>
     <div id="atr-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图7解读】</strong> ATR（Average True Range）衡量股价的真实波动幅度，常用于设置止损止盈。<br><br>
+        <strong>【图9解读】</strong> ATR（Average True Range）衡量股价的真实波动幅度，常用于设置止损止盈。<br><br>
         <strong>当前状态：</strong>ATR={latest_atr}元，波动幅度{('较大' if (latest_atr != '-' and latest_atr / end_price > 0.02) else '适中')}。<br><br>
         <strong>风险管理：</strong>基于ATR的止损位 = 入场价 - 2×ATR = {entry_price:.2f} - 2×{latest_atr} = {stop_loss_price:.2f}元；止盈位 = 入场价 + 3×ATR = {entry_price:.2f} + 3×{latest_atr} = {take_profit_price:.2f}元。
     </div>
@@ -704,10 +867,10 @@ tr:hover td {{ background: #f9fafb; }}
     </div>
 
     <h3>7.4 市值与换手率分析</h3>
-    <h3>图8 市值与换手率走势分析</h3>
+    <h3>图9 市值与换手率走势分析</h3>
     <div id="turnover-chart" class="chart-box"></div>
     <div class="interpretation">
-        <strong>【图8解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
+        <strong>【图9解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
         <strong>市值变化：</strong>近三年公司总市值从约{round(highest_price * total_shares, 0)}亿元（股价高点时）波动至当前约{round(end_price * total_shares, 2)}亿元，
         市值波动主要受股价走势影响。<br><br>
         <strong>换手率分析：</strong>近三年日均换手率约{round(sum(turnover_rate) / len(turnover_rate), 2)}%，在通信设备板块中处于中等水平。
@@ -850,6 +1013,7 @@ var bollLowerData = {boll_lower_json};
 var atrData = {atr_json};
 var marketCapData = {market_cap_json};
 var turnoverRateData = {turnover_rate_json};
+var equityData = {json.dumps([round(x, 2) for x in bt_result['total_assets']])};
 
 var commonXAxis = {{
     type: 'category', data: dates,
@@ -909,7 +1073,9 @@ klineChart.setOption({{
                 symbol: 'pin', symbolSize: 40,
                 data: [
                     ...{buy_points_json},
-                    ...{sell_points_json}
+                    ...{sell_points_json},
+                    ...{bull_points_json},
+                    ...{bear_points_json}
                 ],
                 label: {{ color: '#fff', fontSize: 12, fontWeight: 'bold' }}
             }}
@@ -918,6 +1084,30 @@ klineChart.setOption({{
         {{ name: 'MA10', type: 'line', data: ma10Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#f97316' }}, itemStyle: {{ color: '#f97316' }} }},
         {{ name: 'MA20', type: 'line', data: ma20Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#22c55e' }}, itemStyle: {{ color: '#22c55e' }} }},
         {{ name: 'MA60', type: 'line', data: ma60Data, smooth: true, symbol: 'circle', symbolSize: 6, lineStyle: {{ width: 2, color: '#8b5cf6' }}, itemStyle: {{ color: '#8b5cf6' }} }}
+    ]
+}});
+
+var equityChart = echarts.init(document.getElementById('equity-chart'));
+equityChart.setOption({{
+    backgroundColor: 'transparent',
+    tooltip: {{ trigger: 'axis', axisPointer: {{ type: 'cross' }}, ...tooltipStyle,
+        formatter: function(params) {{
+            var idx = params[0].dataIndex;
+            var eq = params[0].value;
+            var bh = params[1].value;
+            return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">策略资产</span><span style="font-weight:600;color:#3b82f6;">' + eq.toLocaleString() + '元</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">买入持有</span><span style="font-weight:600;color:#f97316;">' + bh.toLocaleString() + '元</span></div></div>';
+        }}
+    }},
+    legend: {{ data: ['策略收益', '买入持有'], textStyle: {{ color: '#6b7280' }}, top: 5 }},
+    grid: {{ left: '6%', right: '3%', top: '12%', bottom: '25%' }},
+    xAxis: commonXAxis,
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v/10000).toFixed(0) + '万'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    dataZoom: commonDataZoom,
+    series: [
+        {{ name: '策略收益', type: 'line', data: equityData, smooth: true, symbol: 'circle', symbolSize: 4, lineStyle: {{ width: 2, color: '#3b82f6' }}, itemStyle: {{ color: '#3b82f6' }}, areaStyle: {{ color: {{ type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{{ offset: 0, color: 'rgba(59,130,246,0.15)' }}, {{ offset: 1, color: 'rgba(59,130,246,0.02)' }}] }} }} }},
+        {{ name: '买入持有', type: 'line', data: closeData.map(function(v) {{ return v / closeData[0] * 100000; }}), smooth: true, symbol: 'circle', symbolSize: 4, lineStyle: {{ width: 2, color: '#f97316' }}, itemStyle: {{ color: '#f97316' }} }}
     ]
 }});
 
