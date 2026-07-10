@@ -24,6 +24,7 @@
 │   ├── stock-indicator-visualizer.html #    可交互指标可视化工具
 │   ├── output/               #    📊 数据输出目录
 │   │   ├── 002812.SZ_analysis.html    #    恩捷股份分析报告
+│   │   ├── 300504.SZ_analysis.html    #    天邑股份分析报告（项目01.4）
 │   │   ├── 002812.SZ_daily_data.csv   #    恩捷股份数据
 │   │   ├── 601899.SH_strategy_report.html #    紫金矿业策略报告
 │   │   ├── 300504.SZ_ma_strategy.html #    天邑股份双均线策略回测报告
@@ -36,6 +37,7 @@
 │   │   ├── fetch_601899_3y.py        #    紫金矿业数据获取
 │   │   └── ...其他工具脚本
 │   ├── fetch_enjie_qfq.py    #    恩捷股份数据获取（核心）
+│   ├── generate_tianyi_analysis.py   #    天邑股份报告生成（项目01.4）
 │   ├── fetch_tianyi_qfq.py   #    天邑股份数据获取（项目03）
 │   ├── generate_enjie_analysis.py   #    恩捷股份报告生成（核心）
 │   ├── generate_ma_strategy.py  #    天邑股份双均线策略报告生成（项目03）
@@ -80,6 +82,7 @@
 - 恩捷股份（002812.SZ）— 锂电池隔膜龙头
 - 内蒙一机（600967.SH）— 军工龙头
 - 紫金矿业（601899.SH）— 有色金属龙头
+- 天邑股份（300504.SZ）— 光纤网络设备制造商
 
 ### 2️⃣ 交互式指标可视化工具
 
