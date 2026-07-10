@@ -753,7 +753,8 @@ tr:hover td {{ background: #f9fafb; }}
     <h3>图1 {stock_name}（{ts_code}）近三年日线K线走势与均线系统</h3>
     <div id="kline-chart" class="chart-box-lg"></div>
     <div class="interpretation">
-        <strong>【图1解读】</strong> 从K线走势来看，{stock_name}近三年{trend_desc}。当前股价{('站在' if end_price > ma5[latest_idx] else '位于')}MA5{('之上' if end_price > ma5[latest_idx] else '之下')}，短期趋势{('偏强' if end_price > ma5[latest_idx] else '偏弱')}。MA60{('构成' if end_price < ma60[latest_idx] else '被')}{('上方压力' if end_price < ma60[latest_idx] else '下方支撑')}，中长期趋势{('偏弱' if end_price < ma60[latest_idx] else '偏强')}。
+        <strong>【图1解读】</strong> 从K线走势来看，{stock_name}近三年{trend_desc}。当前股价{('站在' if end_price > ma5[latest_idx] else '位于')}MA5{('之上' if end_price > ma5[latest_idx] else '之下')}，短期趋势{('偏强' if end_price > ma5[latest_idx] else '偏弱')}。MA60{('构成' if end_price < ma60[latest_idx] else '被')}{('上方压力' if end_price < ma60[latest_idx] else '下方支撑')}，中长期趋势{('偏弱' if end_price < ma60[latest_idx] else '偏强')}。<br><br>
+        <strong>信号说明：</strong>图中标注的「买入」「卖出」「偏多」「偏空」标记是基于MACD（权重2）、KDJ（权重1）、MA（权重1）的综合评分策略信号，不是均线系统单独给出的判断。均线系统仅用于展示趋势方向，具体买卖决策由第三章的综合评分策略决定。
     </div>
 </div>
 
@@ -851,19 +852,20 @@ tr:hover td {{ background: #f9fafb; }}
     <table class="valuation-table">
         <thead><tr><th>指标</th><th>当前值</th><th>行业均值</th><th>状态</th></tr></thead>
         <tbody>
-            <tr><td>市盈率 (PE)</td><td>35.20</td><td>25.00</td><td class="text-red">偏高</td></tr>
-            <tr><td>市净率 (PB)</td><td>3.85</td><td>3.50</td><td>中等</td></tr>
-            <tr><td>市销率 (PS)</td><td>4.20</td><td>4.00</td><td>中等</td></tr>
+            <tr><td>市盈率 (PE)</td><td><span style="color:#ef4444;">负值</span></td><td>25.00</td><td><span style="color:#ef4444;">亏损</span></td></tr>
+            <tr><td>市净率 (PB)</td><td>2.06</td><td>2.50</td><td>偏低</td></tr>
+            <tr><td>市销率 (PS)</td><td>3.35</td><td>3.00</td><td>中等</td></tr>
             <tr><td>总市值</td><td>{round(end_price * total_shares, 2)} 亿元</td><td>—</td><td>中等</td></tr>
             <tr><td>流通市值</td><td>{round(end_price * latest_float_shares, 2)} 亿元</td><td>—</td><td>中等</td></tr>
-            <tr><td>ROE</td><td>8.50%</td><td>8.00%</td><td>中等</td></tr>
+            <tr><td>ROE</td><td>1.84%</td><td>8.00%</td><td>偏低</td></tr>
         </tbody>
     </table>
     <div class="interpretation">
-        <strong>【估值解读】</strong> 从估值指标来看，{stock_name}当前市盈率约35.20倍，高于行业均值（约25倍），
-        市净率3.85倍略高于行业平均水平。ROE为8.50%，与行业平均接近，显示公司盈利能力稳健。
-        当前估值处于中等水平，反映市场对<strong>通信设备制造商</strong>的成长性预期，
-        需关注5G网络建设和物联网应用的推进情况。
+        <strong>【估值解读】</strong> 从估值指标来看，{stock_name}2024年出现亏损，市盈率为负值无参考意义。
+        市净率2.06倍低于行业均值（约2.5倍），市销率3.35倍略高于行业平均水平。
+        ROE为1.84%，显著低于行业平均（约8%），反映公司盈利能力较弱。
+        当前估值处于中等偏低水平，主要受业绩亏损影响，
+        需关注公司在光纤接入设备和宽带终端领域的盈利能力改善情况。
     </div>
 
     <h3>7.4 市值与换手率分析</h3>
@@ -950,9 +952,9 @@ tr:hover td {{ background: #f9fafb; }}
         <strong>评级：<span class="signal-badge buy">谨慎乐观</span></strong><br><br>
         作为光纤网络设备领域的重要供应商，公司受益于5G网络建设和物联网应用的持续发展。
         若股价在{lowest_price}-{avg_price}元区域完成有效筑底，且出现以下催化剂，可考虑<strong>分批建仓</strong>：<br>
-        <div class="analysis-point">新能源汽车销量回暖</div>
-        <div class="analysis-point">储能订单增长</div>
-        <div class="analysis-point">产能扩张落地</div>
+        <div class="analysis-point">运营商集采中标金额增长</div>
+        <div class="analysis-point">FTTR光纤入户渗透率提升</div>
+        <div class="analysis-point">海外市场拓展取得突破</div>
     </div>
 
     <h3>长期策略（6个月以上）</h3>
