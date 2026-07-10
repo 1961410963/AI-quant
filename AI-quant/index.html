@@ -152,61 +152,6 @@
             margin-left: 8px;
         }
 
-        /* Large Project Card */
-        .project-card.large {
-            grid-column: span 2;
-            padding: 40px;
-        }
-
-        .project-card.large .project-title {
-            font-size: 28px;
-        }
-
-        .project-card.large .project-desc {
-            font-size: 16px;
-            line-height: 1.8;
-        }
-
-        .subproject-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .subproject-item {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .subproject-item:hover {
-            background: #f3f4f6;
-            transform: translateY(-2px);
-        }
-
-        .subproject-item .num {
-            font-size: 13px;
-            color: #764ba2;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .subproject-item .name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-
-        .subproject-item .stock {
-            font-size: 12px;
-            color: #6b7280;
-            font-family: 'SF Mono', Monaco, monospace;
-        }
-
         /* Footer */
         .footer {
             text-align: center;
@@ -261,43 +206,68 @@
 
         <!-- Projects Grid -->
         <div class="projects-grid">
-            <!-- Project 01 - Large Card -->
-            <div class="project-card large">
-                <div class="project-number">项目 01</div>
-                <h2 class="project-title">个股分析系列</h2>
+            <!-- Project 01.1 - 内蒙一机 -->
+            <div class="project-card">
+                <div class="project-number">项目 01.1</div>
+                <h2 class="project-title">内蒙一机深度分析</h2>
                 <p class="project-desc">
-                    针对不同行业代表性个股的深度分析，涵盖技术面指标研究、基本面数据解读及交易策略制定。
-                    覆盖军工制造、有色金属、新能源等多个行业，建立系统化的个股分析方法论。
+                    内蒙一机（600967.SH）军工龙头企业近三年交易数据分析报告，涵盖K线走势、技术指标（MACD/RSI/KDJ/布林带/ATR）、基本面分析及交易策略建议。
                 </p>
-                <div class="subproject-list">
-                    <div class="subproject-item">
-                        <div class="num">01.1</div>
-                        <div class="name">内蒙一机</div>
-                        <div class="stock">600967.SH</div>
-                    </div>
-                    <div class="subproject-item">
-                        <div class="num">01.2</div>
-                        <div class="name">紫金矿业</div>
-                        <div class="stock">601899.SH</div>
-                    </div>
-                    <div class="subproject-item">
-                        <div class="num">01.3</div>
-                        <div class="name">恩捷股份</div>
-                        <div class="stock">002812.SZ</div>
-                    </div>
-                    <div class="subproject-item">
-                        <div class="num">01.4</div>
-                        <div class="name">天邑股份</div>
-                        <div class="stock">300504.SZ</div>
-                    </div>
-                </div>
                 <div class="project-tags">
+                    <span class="project-tag">军工制造</span>
                     <span class="project-tag">技术面分析</span>
+                    <span class="project-tag">基本面研究</span>
                     <span class="project-tag">交易策略</span>
-                    <span class="project-tag">多行业覆盖</span>
-                    <span class="project-tag">实战导向</span>
                 </div>
-                <a href="project-01.html" class="project-link">进入项目</a>
+                <a href="stock-analysis-600967.html" class="project-link">查看报告</a>
+            </div>
+
+            <!-- Project 01.2 - 紫金矿业 -->
+            <div class="project-card">
+                <div class="project-number">项目 01.2</div>
+                <h2 class="project-title">紫金矿业深度分析</h2>
+                <p class="project-desc">
+                    紫金矿业（601899.SH）有色金属龙头企业近三年交易数据分析报告，涵盖K线走势、技术指标分析、估值评估及多策略交易方案。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">有色金属</span>
+                    <span class="project-tag">技术面分析</span>
+                    <span class="project-tag">估值分析</span>
+                    <span class="project-tag">多策略</span>
+                </div>
+                <a href="output/601899.SH_strategy_report.html" class="project-link">查看报告</a>
+            </div>
+
+            <!-- Project 01.3 - 恩捷股份 -->
+            <div class="project-card">
+                <div class="project-number">项目 01.3</div>
+                <h2 class="project-title">恩捷股份深度分析</h2>
+                <p class="project-desc">
+                    恩捷股份（002812.SZ）锂电池隔膜龙头企业近三年全景分析报告，包含8个ECharts图表、缺失值检查、描述性统计、技术面与基本面分析。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">新能源材料</span>
+                    <span class="project-tag">技术面分析</span>
+                    <span class="project-tag">基本面研究</span>
+                    <span class="project-tag">风险管理</span>
+                </div>
+                <a href="output/002812.SZ_analysis.html" class="project-link">查看报告</a>
+            </div>
+
+            <!-- Project 01.4 - 天邑股份 -->
+            <div class="project-card">
+                <div class="project-number">项目 01.4</div>
+                <h2 class="project-title">天邑股份深度分析</h2>
+                <p class="project-desc">
+                    天邑股份（300504.SZ）光纤网络设备制造商近三年全景分析报告，涵盖技术面指标研究、基本面数据解读及交易策略制定。
+                </p>
+                <div class="project-tags">
+                    <span class="project-tag">通信设备</span>
+                    <span class="project-tag">技术面分析</span>
+                    <span class="project-tag">基本面研究</span>
+                    <span class="project-tag">物联网</span>
+                </div>
+                <a href="output/300504.SZ_analysis.html" class="project-link">查看报告</a>
             </div>
 
             <!-- Project 02 -->
@@ -321,7 +291,7 @@
                 <div class="project-number">项目 03</div>
                 <h2 class="project-title">天邑股份双均线策略回测</h2>
                 <p class="project-desc">
-                    基于MA5/MA20金叉死叉信号的趋势跟踪策略回测报告，标的为天邑股份（300504.SZ），近三年前复权数据。包含完整策略规则、交易明细、资产净值曲线、最大回撤分析及多项回测指标。
+                    基于MA5/MA20金叉死叉信号的趋势跟踪策略回测报告，标的为天邑股份（300504.SZ），近三年前复权数据。包含完整策略规则、交易明细、资产净值曲线、回撤曲线分析及多项回测指标。
                 </p>
                 <div class="project-tags">
                     <span class="project-tag">双均线策略</span>
