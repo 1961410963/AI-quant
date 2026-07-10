@@ -414,20 +414,20 @@ html_template = '''<!DOCTYPE html>
         var equityChart = echarts.init(document.getElementById('equityChart'));
         var equityOption = {
             tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
-            legend: { data: ['策略净值', '买入持有', '回撤曲线'] },
+            legend: { data: ['总资产', '买入持有对照', '回撤曲线'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: [
-                { type: 'value', name: '资产净值(元)', position: 'left', axisLabel: { formatter: function(v) { return v.toFixed(2); } } },
+                { type: 'value', name: '总资产(元)', position: 'left', axisLabel: { formatter: function(v) { return v.toFixed(2); } } },
                 { type: 'value', name: '回撤(%)', position: 'right', axisLabel: { formatter: function(v) { return v.toFixed(2) + '%'; } } }
             ],
             dataZoom: commonDataZoom,
             series: [
-                { name: '策略净值', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
+                { name: '总资产', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
                     var h = holdingsData.find(function(d) { return d[0] === i; });
                     return h ? h[1] : null;
                 }), smooth: true, lineStyle: { color: '#667eea', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(102,126,234,0.3)'}, {offset: 1, color: 'rgba(102,126,234,0.05)'}]) } },
-                { name: '买入持有', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, lineStyle: { color: '#9ca3af', width: 2, type: 'dashed' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(156,163,175,0.2)'}, {offset: 1, color: 'rgba(156,163,175,0.02)'}]) } },
+                { name: '买入持有对照', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, lineStyle: { color: '#9ca3af', width: 2, type: 'dashed' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(156,163,175,0.2)'}, {offset: 1, color: 'rgba(156,163,175,0.02)'}]) } },
                 { name: '回撤曲线', type: 'line', yAxisIndex: 1, data: closePrices.map(function(p, i) {
                     var idx = holdingsData.findIndex(function(d) { return d[0] === i; });
                     return idx >= 0 ? drawdownData[idx] : null;
