@@ -102,12 +102,12 @@ def generate_html_report(csv_path, output_dir='output'):
     boll_mid, boll_upper, boll_lower = calc_boll(close_prices)
     atr = calc_atr(high_prices, low_prices, close_prices)
 
-    # 天邑股份总股本约2.67亿股，流通股本约2.2亿股
-    total_shares = 2.67
-    # 换手率估算：成交量/流通股本
-    # 流通股本约2.2亿股 = 2.2e8股
-    float_shares = 2.2e8
-    df['turnover'] = df['vol'] / float_shares  # 换手率（小数）
+    # 天邑股份总股本约2.71亿股，流通A股约2.18亿股
+    total_shares = 2.71
+    # 换手率估算：成交量(手)×100 / 流通股本
+    # 流通股本约2.18亿股 = 2.18e8股
+    float_shares = 2.18e8
+    df['turnover'] = df['vol'] * 100 / float_shares  # 换手率（小数），vol单位是手需×100
     latest_float_shares = round(float_shares / 1e8, 4)
 
     market_cap = [round(close_prices[i] * total_shares, 2) for i in range(len(close_prices))]
@@ -438,7 +438,7 @@ tr:hover td {{ background: #f9fafb; }}
         <div class="stat-card"><div class="label">期间最高价</div><div class="value">{highest_price}</div><div class="unit">元</div></div>
         <div class="stat-card"><div class="label">期间最低价</div><div class="value">{lowest_price}</div><div class="unit">元</div></div>
         <div class="stat-card"><div class="label">平均收盘价</div><div class="value">{avg_price}</div><div class="unit">元</div></div>
-        <div class="stat-card"><div class="label">日均成交量</div><div class="value">{avg_volume/1e4:.2f}</div><div class="unit">万股</div></div>
+        <div class="stat-card"><div class="label">日均成交量</div><div class="value">{avg_volume*100/1e4:.2f}</div><div class="unit">万股</div></div>
         <div class="stat-card"><div class="label">日均成交额</div><div class="value">{avg_amount_yi:.2f}</div><div class="unit">亿元</div></div>
         <div class="stat-card"><div class="label">上涨天数</div><div class="value positive">{up_days}天</div></div>
         <div class="stat-card"><div class="label">下跌天数</div><div class="value negative">{down_days}天</div></div>
@@ -454,7 +454,7 @@ tr:hover td {{ background: #f9fafb; }}
          ('涉及字段：' + '、'.join([f'{col}({val}个)' for col, val in missing_cols]) + '<br><br>' if missing_cols else '所有字段均无缺失值，数据质量优良。<br><br>')
          if total_missing > 0 else
          '<strong>缺失值总计：0 个</strong>，所有字段均无缺失值，数据质量优良，可直接用于后续分析。'}
-        <strong>检查字段：</strong>trade_date（交易日期）、open（开盘价）、high（最高价）、low（最低价）、close（收盘价）、vol（成交量）、amount（成交额）、outstanding_share（流通股本）、turnover（换手率）、ts_code（股票代码）。
+        <strong>检查字段：</strong>trade_date（交易日期）、open（开盘价）、high（最高价）、low（最低价）、close（收盘价）、vol（成交量，单位：手）、amount（成交额，单位：元）、turnover（换手率，估算值）。
     </div>
     <table>
         <thead><tr><th>字段名</th><th>含义</th><th>数据类型</th><th>非空数量</th><th>缺失数量</th><th>缺失率</th></tr></thead>
@@ -497,7 +497,7 @@ tr:hover td {{ background: #f9fafb; }}
             html_content += f'''            <tr><td><strong>{stat_labels[stat_name]}</strong></td><td>{int(row["open"])}</td><td>{int(row["high"])}</td><td>{int(row["low"])}</td><td>{int(row["close"])}</td><td>{int(row["vol"])}</td><td>{int(row["amount"])}</td><td>{int(row["turnover"])}</td></tr>
 '''
         else:
-            html_content += f'''            <tr><td><strong>{stat_labels[stat_name]}</strong></td><td>{row["open"]:.2f}</td><td>{row["high"]:.2f}</td><td>{row["low"]:.2f}</td><td>{row["close"]:.2f}</td><td>{row["vol"]/1e4:.2f}</td><td>{row["amount"]/1e8:.2f}</td><td>{row["turnover"]*100:.2f}</td></tr>
+            html_content += f'''            <tr><td><strong>{stat_labels[stat_name]}</strong></td><td>{row["open"]:.2f}</td><td>{row["high"]:.2f}</td><td>{row["low"]:.2f}</td><td>{row["close"]:.2f}</td><td>{row["vol"]*100/1e4:.2f}</td><td>{row["amount"]/1e8:.2f}</td><td>{row["turnover"]*100:.2f}</td></tr>
 '''
 
     html_content += f'''        </tbody>
@@ -507,8 +507,8 @@ tr:hover td {{ background: #f9fafb; }}
         <strong>价格分布：</strong>收盘价均值约{desc_stats.loc["mean","close"]:.2f}元，中位数约{desc_stats.loc["50%","close"]:.2f}元，
         标准差约{desc_stats.loc["std","close"]:.2f}元，价格极差为{desc_stats.loc["range","close"]:.2f}元（最低{desc_stats.loc["min","close"]:.2f}元至最高{desc_stats.loc["max","close"]:.2f}元），
         反映出近三年股价波动幅度较大。<br><br>
-        <strong>成交活跃度：</strong>日均成交量约{desc_stats.loc["mean","vol"]/1e4:.2f}万股，日均成交额约{desc_stats.loc["mean","amount"]/1e8:.2f}亿元，
-        成交量中位数{desc_stats.loc["50%","vol"]/1e4:.2f}万股，成交额分布右偏，说明存在部分交易日成交异常活跃的情况。<br><br>
+        <strong>成交活跃度：</strong>日均成交量约{desc_stats.loc["mean","vol"]*100/1e4:.2f}万股，日均成交额约{desc_stats.loc["mean","amount"]/1e8:.2f}亿元，
+        成交量中位数{desc_stats.loc["50%","vol"]*100/1e4:.2f}万股，成交额分布右偏，说明存在部分交易日成交异常活跃的情况。<br><br>
         <strong>换手率特征：</strong>日均换手率约{desc_stats.loc["mean","turnover"]*100:.2f}%，中位数约{desc_stats.loc["50%","turnover"]*100:.2f}%，
         最大换手率达{desc_stats.loc["max","turnover"]*100:.2f}%，最小仅{desc_stats.loc["min","turnover"]*100:.2f}%，
         换手率波动较大，反映市场参与度在不同时期差异显著。
@@ -533,7 +533,7 @@ tr:hover td {{ background: #f9fafb; }}
         html_content += f'''            <tr>
                 <td><strong>{ys['year']}</strong></td><td>{ys['start']}</td><td>{ys['end']}</td>
                 <td class="{change_class}">{ys['change']:+.2f}%</td><td>{ys['high']}</td><td>{ys['low']}</td>
-                <td>{ys['days']}</td><td>{ys['up']}</td><td>{ys['down']}</td><td>{ys['up_ratio']}%</td><td>{ys['avg_vol']/1e4:.2f}</td>
+                <td>{ys['days']}</td><td>{ys['up']}</td><td>{ys['down']}</td><td>{ys['up_ratio']}%</td><td>{ys['avg_vol']*100/1e4:.2f}</td>
             </tr>
 '''
 
@@ -678,9 +678,9 @@ tr:hover td {{ background: #f9fafb; }}
 
     <h3>7.2 股权结构</h3>
     <div class="interpretation">
-        公司控股股东为<strong>Paul Xiaoming Lee</strong>及其一致行动人，实际控制人为<strong>李晓明家族</strong>。
-        作为锂电池隔膜行业的绝对龙头，公司具备<strong>技术壁垒和规模优势</strong>，
-        客户覆盖全球主流电池厂商。
+        公司控股股东为<strong>四川天邑集团有限公司</strong>（持股约30.91%），实际控制人为<strong>李世宏家族</strong>（李世宏、李俊画、李俊霞）。
+        公司是国内<strong>通信设备领域重要供应商</strong>，在光纤接入网设备和宽带终端领域具有竞争优势，
+        客户覆盖中国电信、中国移动、中国联通等主流运营商。
     </div>
 
     <h3>7.3 估值指标分析</h3>
@@ -710,17 +710,18 @@ tr:hover td {{ background: #f9fafb; }}
         <strong>【图8解读】</strong> 市值与换手率是衡量市场关注度和流动性的重要指标。<br><br>
         <strong>市值变化：</strong>近三年公司总市值从约{round(highest_price * total_shares, 0)}亿元（股价高点时）波动至当前约{round(end_price * total_shares, 2)}亿元，
         市值波动主要受股价走势影响。<br><br>
-        <strong>换手率分析：</strong>近三年日均换手率约{round(sum(turnover_rate) / len(turnover_rate), 2)}%，在新能源板块中处于中等水平。
+        <strong>换手率分析：</strong>近三年日均换手率约{round(sum(turnover_rate) / len(turnover_rate), 2)}%，在通信设备板块中处于中等水平。
         <strong>综合判断：</strong>当前市值已回归至相对合理区间，最新换手率{turnover_rate[-1]}%{('，交易活跃' if turnover_rate[-1] > sum(turnover_rate) / len(turnover_rate) * 1.2 else '，交易平稳')}，
         说明市场对公司基本面持{('积极关注' if turnover_rate[-1] > sum(turnover_rate) / len(turnover_rate) * 1.2 else '观望态度')}。
     </div>
 
     <h3>7.5 财务状况</h3>
     <div class="interpretation">
-        <strong>营收：</strong>2026年一季度营业收入约8亿元，同比{('增长' if True else '下降')}；<br>
-        <strong>净利润：</strong>归母净利润约1亿元，同比{('增长' if True else '下降')}；<br>
-        <strong>业绩点评：</strong>财务数据反映出<strong>业绩平稳</strong>，公司作为光纤网络设备供应商，
-        受益于5G网络建设和物联网应用的推进，中长期基本面稳健。
+        <strong>营收：</strong>2024年营业收入约17.67亿元，同比下降30.81%，主要受宽带终端市场竞争加剧影响；<br>
+        <strong>净利润：</strong>2024年归母净利润亏损约0.26亿元，同比由盈转亏；<br>
+        <strong>业绩点评：</strong>财务数据反映出<strong>短期业绩承压</strong>，公司作为光纤网络设备供应商，
+        受运营商集采价格下降和行业竞争加剧影响，利润空间被压缩。
+        需关注公司在5G网络设备和物联网领域的新业务拓展情况。
     </div>
 
     <h3>7.6 行业地位与竞争优势</h3>
@@ -929,13 +930,13 @@ volumeChart.setOption({{
             var d = klineData[idx];
             var color = d[1] >= d[0] ? '#ef4444' : '#22c55e';
             return '<div class="tooltip-box"><div style="font-weight:700;color:#1f2937;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin-bottom:6px;">' + dates[idx] + '</div>' +
-                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value / 10000).toFixed(1) + '万股</span></div>' +
+                '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">成交量</span><span style="font-weight:600;">' + (params[0].value * 100 / 10000).toFixed(1) + '万股</span></div>' +
                 '<div style="display:flex;justify-content:space-between;gap:20px;"><span style="color:#6b7280;">收盘价</span><span style="font-weight:600;color:' + color + '">' + d[1] + '</span></div></div>';
         }}
     }},
     grid: {{ left: '6%', right: '3%', top: '8%', bottom: '25%' }},
     xAxis: {{ type: 'category', data: dates, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ show: false }}, splitLine: {{ show: false }}, boundaryGap: true, min: 'dataMin', max: 'dataMax' }},
-    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v / 10000).toFixed(0) + '万股'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
+    yAxis: {{ type: 'value', scale: true, axisLine: {{ lineStyle: {{ color: '#9ca3af' }} }}, axisLabel: {{ color: '#6b7280', fontSize: 11, formatter: function(v) {{ return (v * 100 / 10000).toFixed(0) + '万股'; }} }}, splitLine: {{ lineStyle: {{ color: '#f3f4f6', type: 'dashed' }} }} }},
     dataZoom: commonDataZoom,
     series: [{{ name: '成交量', type: 'bar', data: volumeData, itemStyle: {{ borderRadius: [2, 2, 0, 0] }} }}]
 }});
