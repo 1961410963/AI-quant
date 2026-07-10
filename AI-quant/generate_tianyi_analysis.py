@@ -608,6 +608,7 @@ tr:hover td {{ background: #f9fafb; }}
 
     <h3>6.1 均线系统分析</h3>
     <div class="interpretation">
+        <strong>均线参数说明：</strong>本报告均线系统展示MA5、MA10、MA20、MA60四条均线，其中<strong>买卖信号判断使用MA5与MA10的金叉死叉</strong>（MA5上穿MA10为金叉买入信号，MA5下穿MA10为死叉卖出信号），MA20和MA60作为中长期趋势参考。<br><br>
         当前MA5（约{ma5[latest_idx]}元）、MA10（约{ma10[latest_idx]}元）、MA20（约{ma20[latest_idx]}元）、MA60（约{ma60[latest_idx]}元）{('呈空头排列' if ma5[latest_idx] < ma10[latest_idx] < ma20[latest_idx] < ma60[latest_idx] else '呈多头排列' if ma5[latest_idx] > ma10[latest_idx] > ma20[latest_idx] > ma60[latest_idx] else '呈震荡格局')}，
         {('短期均线运行于长期均线下方，表明中期趋势偏弱' if ma5[latest_idx] < ma60[latest_idx] else '短期均线运行于长期均线上方，表明中期趋势偏强')}。若后续MA5能有效上穿MA10并进一步挑战MA20，则可能形成短期反弹信号。
     </div>
