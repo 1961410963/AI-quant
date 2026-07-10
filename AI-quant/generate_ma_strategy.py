@@ -7,7 +7,6 @@ stock_name = '天邑股份'
 short_period = 5
 long_period = 20
 initial_capital = 100000
-position_ratio = 0.1
 commission_rate = 0.0003
 slippage_rate = 0.0001
 stamp_tax_rate = 0.0005
@@ -50,10 +49,11 @@ for i in range(len(df)):
     row = df.iloc[i]
     
     if row['cross_signal'] == 2 and position == 0:
-        available_capital = cash * position_ratio
         buy_price = row['open'] * (1 + slippage_rate)
-        shares = int(available_capital / buy_price / 100) * 100
-        if shares > 0:
+        # 全仓买入：考虑佣金后计算最大可买数量，确保现金不为负
+        max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
+        if max_shares > 0:
+            shares = max_shares
             cost = shares * buy_price
             commission = cost * commission_rate
             total_cost = cost + commission
@@ -272,7 +272,7 @@ html_template = '''<!DOCTYPE html>
             </div>
             <div class="strategy-rule">
                 <strong>买入规则（金叉触发）：</strong><br>
-                1. 可用资金 = 当前现金 × 10%（约1万元）<br>
+                1. 可用资金 = 当前全部现金（全仓买入）<br>
                 2. 买入价格 = 第t日开盘价 × (1 + 0.0001)（含滑点万1）<br>
                 3. 买入数量 = floor(可用资金 / 买入价格 / 100) × 100（取整到100股）<br>
                 4. 交易成本 = 买入金额 × 佣金率(0.0003)<br>
@@ -297,14 +297,14 @@ html_template = '''<!DOCTYPE html>
                 <strong>第一步：数据准备</strong> — 获取天邑股份前复权日线数据（开盘价、收盘价、成交量），截取近三年数据。<br>
                 <strong>第二步：指标计算</strong> — 每日收盘后计算MA5（5日均线）和MA20（20日均线），生成多空头状态信号。<br>
                 <strong>第三步：信号识别</strong> — 通过signal.diff()捕捉均线穿越瞬间：cross_signal=2表示金叉（买入信号），cross_signal=-2表示死叉（卖出信号）。<br>
-                <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用10%现金（约1万元），按开盘价×1.0001（含滑点）计算可买数量，取整到100股；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
+                <strong>第四步：交易执行</strong> — 收到信号后，次日开盘执行交易。买入时用全部现金全仓买入，按开盘价×1.0001（含滑点）计算可买数量，取整到100股，确保现金不为负；卖出时清空全部持仓，按开盘价×0.9999（含滑点）计算成交价。<br>
                 <strong>第五步：成本扣除</strong> — 买入扣万三佣金，卖出扣万三佣金+万五印花税。<br>
                 <strong>第六步：资产更新</strong> — 每日收盘后计算总资产（现金+持仓市值），记录净值曲线和回撤曲线（每日当前回撤，即从当日净值到历史最高点的跌幅）。<br>
                 <strong>第七步：指标统计</strong> — 回测结束后计算累计回报、年化回报、夏普比率、胜率、盈亏比等评估指标。
             </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>INITIAL_CAPITAL 元</td></tr>
-                <tr><td><strong>仓位比例</strong></td><td>POSITION_RATIO%（每次买入使用10%现金，约1万元）</td></tr>
+                <tr><td><strong>仓位方式</strong></td><td>全仓买入/全仓卖出（每次金叉用全部现金买入，死叉清空全部持仓）</td></tr>
                 <tr><td><strong>买入佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
                 <tr><td><strong>卖出佣金</strong></td><td>万三（0.03%），券商收取</td></tr>
                 <tr><td><strong>卖出印花税</strong></td><td>万五（0.05%），国家收取</td></tr>
@@ -456,7 +456,6 @@ html_content = html_content.replace('PROFITLOSS', f'{profit_loss_ratio:.2f}')
 html_content = html_content.replace('TRADES', str(total_trades))
 html_content = html_content.replace('FINAL_ASSET', f'{final_asset:.2f}')
 html_content = html_content.replace('INITIAL_CAPITAL', str(initial_capital))
-html_content = html_content.replace('POSITION_RATIO', f'{position_ratio*100:.0f}')
 html_content = html_content.replace('COMMISSION_RATE', str(commission_rate))
 html_content = html_content.replace('SLIPPAGE_RATE', str(slippage_rate))
 html_content = html_content.replace('STAMP_TAX_RATE', str(stamp_tax_rate))

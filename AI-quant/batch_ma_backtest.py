@@ -11,7 +11,6 @@ import os
 
 # ============ 实验配置 ============
 INITIAL_CAPITAL = 100000
-POSITION_RATIO = 0.1
 COMMISSION_RATE = 0.0003
 SLIPPAGE_RATE = 0.0001
 STAMP_TAX_RATE = 0.0005
@@ -66,10 +65,11 @@ def run_backtest(df, short_period, long_period):
     for i in range(len(df)):
         row = df.iloc[i]
         if row['cross_signal'] == 2 and position == 0:
-            available_capital = cash * POSITION_RATIO
             buy_price = row['open'] * (1 + SLIPPAGE_RATE)
-            shares = int(available_capital / buy_price / 100) * 100
-            if shares > 0:
+            # 全仓买入：考虑佣金后计算最大可买数量，确保现金不为负
+            max_shares = int(cash / (buy_price * (1 + COMMISSION_RATE)) / 100) * 100
+            if max_shares > 0:
+                shares = max_shares
                 cost = shares * buy_price
                 commission = cost * COMMISSION_RATE
                 cash -= (cost + commission)
@@ -165,7 +165,10 @@ period_agg = results_df.groupby('ma_combo').agg(
     avg_sharpe=('sharpe', 'mean'),
     avg_winrate=('win_rate_pct', 'mean'),
     avg_excess=('excess_return_pct', 'mean'),
+    positive_count=('final_return_pct', lambda x: (x > 0).sum()),
+    total_count=('final_return_pct', 'count'),
 ).round(2).reset_index()
+period_agg['positive_ratio'] = (period_agg['positive_count'] / period_agg['total_count'] * 100).round(1)
 print('\n各均线周期平均表现：')
 print(period_agg.to_string(index=False))
 
@@ -203,6 +206,7 @@ chart2_combos = json.dumps(period_agg['ma_combo'].tolist())
 chart2_returns = json.dumps(period_agg['avg_return'].tolist())
 chart2_mdds = json.dumps(period_agg['avg_mdd'].tolist())
 chart2_sharpes = json.dumps(period_agg['avg_sharpe'].tolist())
+chart2_positive = json.dumps(period_agg['positive_ratio'].tolist())
 chart2_excess = json.dumps(period_agg['avg_excess'].tolist())
 
 # 图3：累计回报 vs 回撤 散点图（每个点一次回测，横轴为区间最大回撤）
@@ -277,7 +281,7 @@ html_template = '''<!DOCTYPE html>
     <div class="header">
         <h1>双均线策略批量回测与对比分析</h1>
         <p>实验矩阵：<strong>8个标的（6只股票 + 2只ETF）× 4组均线周期 = 32次回测</strong><br>
-        参数：初始资金10万元 | 仓位10%（约1万元/次）| 佣金万三 | 印花税万五（卖出）| 滑点万1 | 近三年前复权数据<br>
+        参数：初始资金10万元 | 全仓买入/全仓卖出（金叉全仓买，死叉全仓卖）| 佣金万三 | 印花税万五（卖出）| 滑点万1 | 近三年前复权数据<br>
         均线周期组合：MA5/MA10（短周期）、MA5/MA20（经典）、MA10/MA30（中周期）、MA20/MA60（长周期）</p>
         <div class="summary-grid">
             <div class="summary-card"><div class="label">最佳组合</div><div class="value">BEST_COMBO</div></div>
@@ -306,10 +310,10 @@ html_template = '''<!DOCTYPE html>
         <div id="chart1" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>该图反映同一标的对不同均线参数的敏感度，以及同一参数在不同标的上的表现差异。若某标的4根柱子普遍为正且较高，说明双均线策略较适合该标的；若各周期收益正负不一且波动大，说明该标的不适合趋势跟踪。</div>
 
-        <div class="chart-title">图2：各均线周期平均累计回报与平均回撤对比</div>
-        <p class="chart-caption">横轴为4组均线周期（跨全部8个标的取平均），左纵轴为平均累计回报(%)，右纵轴为平均回撤(%)。注：此处"回撤"为各次回测中每日当前回撤的均值，反映该周期参数下的平均浮亏压力；区间最大回撤为该压力下的极端值。</p>
+        <div class="chart-title">图2：各均线周期正收益占比与平均夏普比率对比</div>
+        <p class="chart-caption">横轴为4组均线周期，左纵轴为正收益占比(%)（该周期下盈利标的数/总标的数），右纵轴为平均夏普比率。正收益占比反映参数组合的"普适性"——越高说明该参数在越多标的上有效。</p>
         <div id="chart2" class="chart-container"></div>
-        <div class="interpretation"><strong>解读：</strong>该图衡量不同均线周期的整体风险收益特征。理想组合应满足"高回报+低回撤"。一般来说，长周期（MA20/MA60）信号更少、滞后更大但过滤噪音；短周期（MA5/MA10）信号频繁、反应快但易受震荡市假信号干扰。</div>
+        <div class="interpretation"><strong>解读：</strong>简单算术平均回报掩盖个体差异（如中材科技+15%与天邑股份-3%直接平均无意义），而<strong>正收益占比</strong>衡量该均线参数在8个标的中"有多大比例能盈利"，更具参考价值。理想组合应满足"高正收益占比+高夏普"。长周期（MA20/MA60）过滤噪音，正收益占比通常更高；短周期（MA5/MA10）反应快但对震荡市敏感，普适性较差。</div>
 
         <div class="chart-title">图3：累计回报 vs 区间最大回撤 风险-收益散点图</div>
         <p class="chart-caption">横轴为区间最大回撤(%)（单次回测期间回撤曲线的最低点），纵轴为累计回报(%)，每个点代表一次回测，悬停显示标的与均线组合。</p>
@@ -328,7 +332,42 @@ html_template = '''<!DOCTYPE html>
     </div>
 
     <div class="section">
-        <h2>三、策略适用场景与应用心得</h2>
+        <h2>三、核心指标计算逻辑</h2>
+        <div class="insight-box">
+            <strong>1. 累计回报：</strong>回测期末总资产与初始资金的差额比例。<br>
+            公式：<code>累计回报 = (期末总资产 - 初始资金) / 初始资金 × 100%</code><br>
+            例如：初始10万，期末9.5万，累计回报 = (9.5-10)/10 = <strong>-5%</strong>。
+        </div>
+        <div class="insight-box">
+            <strong>2. 买入持有收益（对照基准）：</strong>假设回测首日将全部资金一次性买入标的，之后不做任何交易、一直持有到期末的收益。<br>
+            公式：<code>买入持有收益 = (期末收盘价 - 首日收盘价) / 首日收盘价 × 100%</code><br>
+            用途：作为策略的<strong>对照基准</strong>，衡量"什么都不做"的收益水平。数据已使用前复权，分红送转已自动调整。
+        </div>
+        <div class="insight-box">
+            <strong>3. 超额收益：</strong>策略收益与买入持有收益的差额，衡量策略是否创造了额外价值。<br>
+            公式：<code>超额收益 = 累计回报 - 买入持有收益</code><br>
+            <span style="color:#ef4444;"><strong>重要提醒：</strong>超额收益为正 ≠ 策略赚钱。</span>例如策略亏-5%、持有亏-10%，超额 = (-5%) - (-10%) = <strong>+5%</strong>。这表示"虽然亏了，但比傻拿着少亏5%"，策略跑赢了基准，但绝对收益仍是负的。超额为负则表示策略连"什么都不做"都不如。
+        </div>
+        <div class="insight-box">
+            <strong>4. 区间最大回撤：</strong>整个回测期间，从资产峰值到谷底的最大跌幅。<br>
+            计算步骤：① 每日计算当前回撤 = (当日总资产 - 历史最高总资产) / 历史最高总资产 × 100%；② 取所有日回撤中的最小值（最负值）。<br>
+            例如：资产从10万涨到11万（峰值），再跌到9万，区间最大回撤 = (9-11)/11 = <strong>-18.18%</strong>。
+        </div>
+        <div class="insight-box">
+            <strong>5. 夏普比率：</strong>衡量每承担一单位风险所获得的超额收益（相对无风险利率）。<br>
+            公式：<code>Sharpe = (年化收益率 - 无风险利率) / 年化波动率</code><br>
+            无风险利率取2%（近似一年期存款利率）。夏普 &gt; 0 说明策略跑赢无风险理财，&lt; 0 说明不如存银行。
+        </div>
+        <div class="insight-box">
+            <strong>6. 胜率与盈亏比：</strong><br>
+            胜率 = 盈利交易次数 / 总交易次数 × 100%<br>
+            盈亏比 = 平均盈利金额 / 平均亏损金额<br>
+            趋势策略通常<strong>胜率低（30%-40%）但盈亏比高（&gt;1）</strong>——亏的时候小亏（死叉止损），赚的时候大赚（趋势延续）。若盈亏比 &lt; 1，说明每次盈利覆盖不了亏损，策略在震荡市中失效。
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>四、策略适用场景与应用心得</h2>
         <div class="insight-box">
             <strong>1. 适用场景：</strong>双均线策略本质是<strong>趋势跟踪</strong>策略，其盈利前提是标的走出持续的单边趋势。从实验结果看，<strong>趋势性强的标的（如黄金ETF等）更适合</strong>，因为价格能持续创新高/新低，金叉后能持续运行；而<strong>震荡市中双均线策略会反复触发假信号</strong>，导致高胜率亏损——金叉买入后立即死叉卖出，来回吃佣金和滑点。
         </div>
@@ -339,7 +378,7 @@ html_template = '''<!DOCTYPE html>
             <strong>3. 胜率与盈亏比的反向关系：</strong>双均线策略通常<strong>胜率偏低（本次实验普遍在30%-40%）但盈亏比应较高</strong>——因为每次亏损被严格限制在死叉时的小幅回撤，而盈利时趋势能跑出大段利润。若发现胜率低且盈亏比也低于1，说明标的处于震荡市，策略失效。本次实验中部分组合盈亏比偏低，反映出近三年市场震荡特征明显。
         </div>
         <div class="insight-box">
-            <strong>4. 仓位管理的重要性：</strong>本次采用10%仓位（约1万元），即使判断错误，单次亏损对总资产影响有限（区间最大回撤可控）。若全仓操作，震荡市的连续假信号会造成毁灭性回撤。<strong>轻仓+分散</strong>是趋势策略存活的关键，宁可少赚也要先活下来。
+            <strong>4. 全仓策略的风险特征：</strong>本次采用全仓买入/全仓卖出，金叉时All in，死叉时清仓。这种方式在趋势明确时收益最大化，但在震荡市中连续假信号会导致较大回撤——金叉买入后马上死叉卖出，每次都要承担佣金+滑点+印花税成本。<strong>全仓策略对择时要求极高</strong>，一旦趋势判断错误，单次亏损幅度远大于轻仓策略。建议在实盘前先确认标的处于趋势市而非震荡市。
         </div>
         <div class="insight-box">
             <strong>5. 应用心得总结：</strong>① 双均线策略不是"万能公式"，必须先判断市场状态（趋势/震荡）再决定是否启用；② <strong>择时不如择势</strong>——先选趋势性强的标的，再谈参数优化；③ <strong>参数不是越精细越好</strong>，过度拟合历史数据反而降低未来适应性；④ <strong>止损纪律比信号本身更重要</strong>，死叉即走，不扛单；⑤ 建议将双均线作为<strong>趋势确认工具</strong>而非唯一信号，结合成交量、MACD等指标过滤假信号效果更佳。
@@ -367,23 +406,23 @@ chart1.setOption({
     })
 });
 
-// 图2：各均线周期平均累计回报与平均回撤对比
+// 图2：各均线周期正收益占比与平均夏普比率对比
 var chart2 = echarts.init(document.getElementById('chart2'));
 var c2Combos = CHART2_COMBOS;
-var c2Returns = CHART2_RETURNS;
-var c2Mdds = CHART2_MDDS;
+var c2Positive = CHART2_POSITIVE;
+var c2Sharpes = CHART2_SHARPES;
 chart2.setOption({
     tooltip: commonTooltip,
-    legend: { data: ['平均累计回报(%)', '平均回撤(%)'] },
+    legend: { data: ['正收益占比(%)', '平均夏普比率'] },
     grid: { left: '3%', right: '5%', bottom: '12%', containLabel: true },
     xAxis: { type: 'category', data: c2Combos },
     yAxis: [
-        { type: 'value', name: '回报(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
-        { type: 'value', name: '回撤(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } }
+        { type: 'value', name: '正收益占比(%)', min: 0, max: 100, axisLabel: { formatter: function(v){return v.toFixed(1);} } },
+        { type: 'value', name: '夏普比率', axisLabel: { formatter: function(v){return v.toFixed(2);} } }
     ],
     series: [
-        { name: '平均累计回报(%)', type: 'bar', data: c2Returns, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均回撤(%)', type: 'bar', yAxisIndex: 1, data: c2Mdds, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } }
+        { name: '正收益占比(%)', type: 'bar', data: c2Positive, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(1)+'%';} } },
+        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
     ]
 });
 
@@ -468,8 +507,8 @@ html_content = html_content.replace('RESULT_ROWS', ''.join(result_rows))
 html_content = html_content.replace('CHART1_NAMES', chart1_names)
 html_content = html_content.replace('CHART1_SERIES', chart1_series_js)
 html_content = html_content.replace('CHART2_COMBOS', chart2_combos)
-html_content = html_content.replace('CHART2_RETURNS', chart2_returns)
-html_content = html_content.replace('CHART2_MDDS', chart2_mdds)
+html_content = html_content.replace('CHART2_POSITIVE', chart2_positive)
+html_content = html_content.replace('CHART2_SHARPES', chart2_sharpes)
 html_content = html_content.replace('CHART3_POINTS', chart3_points)
 html_content = html_content.replace('CHART4_SERIES', chart4_series_js)
 html_content = html_content.replace('CHART5_TYPES', chart5_types)

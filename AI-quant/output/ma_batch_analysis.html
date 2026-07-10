@@ -38,15 +38,15 @@
     <div class="header">
         <h1>双均线策略批量回测与对比分析</h1>
         <p>实验矩阵：<strong>8个标的（6只股票 + 2只ETF）× 4组均线周期 = 32次回测</strong><br>
-        参数：初始资金10万元 | 仓位10%（约1万元/次）| 佣金万三 | 印花税万五（卖出）| 滑点万1 | 近三年前复权数据<br>
+        参数：初始资金10万元 | 全仓买入/全仓卖出（金叉全仓买，死叉全仓卖）| 佣金万三 | 印花税万五（卖出）| 滑点万1 | 近三年前复权数据<br>
         均线周期组合：MA5/MA10（短周期）、MA5/MA20（经典）、MA10/MA30（中周期）、MA20/MA60（长周期）</p>
         <div class="summary-grid">
             <div class="summary-card"><div class="label">最佳组合</div><div class="value">中材科技 MA20/MA60</div></div>
-            <div class="summary-card"><div class="label">最佳累计回报</div><div class="value">20.87%</div></div>
+            <div class="summary-card"><div class="label">最佳累计回报</div><div class="value">346.12%</div></div>
             <div class="summary-card"><div class="label">最差组合</div><div class="value">天邑股份 MA5/MA20</div></div>
-            <div class="summary-card"><div class="label">最差累计回报</div><div class="value">-5.36%</div></div>
+            <div class="summary-card"><div class="label">最差累计回报</div><div class="value">-47.01%</div></div>
             <div class="summary-card"><div class="label">最高夏普组合</div><div class="value">中材科技 MA20/MA60</div></div>
-            <div class="summary-card"><div class="label">最高夏普</div><div class="value">0.86</div></div>
+            <div class="summary-card"><div class="label">最高夏普</div><div class="value">1.38</div></div>
         </div>
     </div>
 
@@ -55,7 +55,7 @@
         <p class="chart-caption">下表汇总全部32次回测的核心指标，正收益标绿，负收益标红。</p>
         <table>
             <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
-            <tbody><tr><td>天邑股份</td><td>股票</td><td>MA5/MA10</td><td class="neg">-3.77</td><td>-1.27</td><td>-7.53</td><td>-0.71</td><td>35.71</td><td>1.30</td><td>21</td><td>-7.57</td><td>3.79</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA5/MA20</td><td class="neg">-5.36</td><td>-1.82</td><td>-6.87</td><td>-0.90</td><td>28.57</td><td>0.96</td><td>10</td><td>-7.57</td><td>2.21</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA10/MA30</td><td class="neg">-2.13</td><td>-0.71</td><td>-5.32</td><td>-0.66</td><td>50.00</td><td>0.44</td><td>7</td><td>-7.57</td><td>5.44</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA20/MA60</td><td class="neg">-3.11</td><td>-1.05</td><td>-5.77</td><td>-0.74</td><td>33.33</td><td>0.52</td><td>3</td><td>-7.57</td><td>4.46</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA5/MA10</td><td class="neg">-1.03</td><td>-0.34</td><td>-5.09</td><td>-0.76</td><td>28.95</td><td>2.22</td><td>19</td><td>-27.46</td><td>26.43</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA5/MA20</td><td class="pos">2.65</td><td>0.88</td><td>-3.90</td><td>-0.32</td><td>33.33</td><td>3.15</td><td>9</td><td>-27.46</td><td>30.11</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA10/MA30</td><td class="pos">0.51</td><td>0.17</td><td>-4.07</td><td>-0.55</td><td>20.00</td><td>4.54</td><td>5</td><td>-27.46</td><td>27.97</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA20/MA60</td><td class="pos">4.76</td><td>1.56</td><td>-4.74</td><td>-0.07</td><td>20.00</td><td>13.47</td><td>2</td><td>-27.46</td><td>32.22</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA5/MA10</td><td class="pos">4.73</td><td>1.55</td><td>-4.11</td><td>-0.09</td><td>35.29</td><td>2.83</td><td>17</td><td>22.07</td><td>-17.34</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA5/MA20</td><td class="pos">10.14</td><td>3.28</td><td>-3.67</td><td>0.35</td><td>44.44</td><td>3.32</td><td>9</td><td>22.07</td><td>-11.92</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA10/MA30</td><td class="pos">5.75</td><td>1.88</td><td>-6.71</td><td>0.01</td><td>44.44</td><td>4.09</td><td>4</td><td>22.07</td><td>-16.31</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA20/MA60</td><td class="pos">11.78</td><td>3.79</td><td>-10.31</td><td>0.33</td><td>25.00</td><td>19.91</td><td>2</td><td>22.07</td><td>-10.28</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA5/MA10</td><td class="pos">0.72</td><td>0.24</td><td>-4.17</td><td>-0.67</td><td>43.18</td><td>1.44</td><td>22</td><td>150.18</td><td>-149.46</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA5/MA20</td><td class="pos">4.63</td><td>1.52</td><td>-3.82</td><td>-0.12</td><td>39.13</td><td>2.65</td><td>11</td><td>150.18</td><td>-145.55</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA10/MA30</td><td class="pos">7.25</td><td>2.36</td><td>-4.43</td><td>0.15</td><td>30.77</td><td>6.18</td><td>6</td><td>150.18</td><td>-142.93</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA20/MA60</td><td class="pos">10.92</td><td>3.52</td><td>-6.44</td><td>0.40</td><td>50.00</td><td>6.17</td><td>2</td><td>150.18</td><td>-139.26</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA5/MA10</td><td class="pos">2.94</td><td>0.97</td><td>-2.38</td><td>-0.38</td><td>34.38</td><td>2.90</td><td>16</td><td>32.94</td><td>-29.99</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA5/MA20</td><td class="pos">0.75</td><td>0.25</td><td>-2.94</td><td>-0.71</td><td>38.89</td><td>1.84</td><td>9</td><td>32.94</td><td>-32.18</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA10/MA30</td><td class="neg">-1.40</td><td>-0.47</td><td>-4.63</td><td>-1.06</td><td>30.77</td><td>1.61</td><td>7</td><td>32.94</td><td>-34.33</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA20/MA60</td><td class="pos">3.70</td><td>1.22</td><td>-3.55</td><td>-0.25</td><td>60.00</td><td>4.83</td><td>2</td><td>32.94</td><td>-29.24</td></tr><tr><td>中材科技</td><td>股票</td><td>MA5/MA10</td><td class="pos">10.91</td><td>3.52</td><td>-3.23</td><td>0.44</td><td>54.05</td><td>1.83</td><td>19</td><td>334.80</td><td>-323.89</td></tr><tr><td>中材科技</td><td>股票</td><td>MA5/MA20</td><td class="pos">10.57</td><td>3.41</td><td>-3.01</td><td>0.38</td><td>43.48</td><td>3.98</td><td>12</td><td>334.80</td><td>-324.23</td></tr><tr><td>中材科技</td><td>股票</td><td>MA10/MA30</td><td class="pos">18.39</td><td>5.79</td><td>-4.73</td><td>0.74</td><td>75.00</td><td>4.46</td><td>4</td><td>334.80</td><td>-316.41</td></tr><tr><td>中材科技</td><td>股票</td><td>MA20/MA60</td><td class="pos">20.87</td><td>6.53</td><td>-4.72</td><td>0.86</td><td>60.00</td><td>24.16</td><td>3</td><td>334.80</td><td>-313.93</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA5/MA10</td><td class="pos">4.28</td><td>1.73</td><td>-5.62</td><td>-0.04</td><td>37.93</td><td>2.70</td><td>14</td><td>105.86</td><td>-101.58</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA5/MA20</td><td class="pos">1.54</td><td>0.63</td><td>-4.72</td><td>-0.40</td><td>33.33</td><td>2.66</td><td>9</td><td>105.86</td><td>-104.32</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA10/MA30</td><td class="pos">3.23</td><td>1.31</td><td>-4.34</td><td>-0.18</td><td>41.67</td><td>2.54</td><td>6</td><td>105.86</td><td>-102.62</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA20/MA60</td><td class="pos">5.17</td><td>2.08</td><td>-5.01</td><td>0.06</td><td>33.33</td><td>11.79</td><td>1</td><td>105.86</td><td>-100.69</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA5/MA10</td><td class="pos">0.05</td><td>0.02</td><td>-1.39</td><td>-1.72</td><td>53.85</td><td>0.91</td><td>13</td><td>9.05</td><td>-9.00</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA5/MA20</td><td class="neg">-1.18</td><td>-0.46</td><td>-2.43</td><td>-2.12</td><td>25.00</td><td>1.56</td><td>10</td><td>9.05</td><td>-10.22</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA10/MA30</td><td class="neg">-0.43</td><td>-0.17</td><td>-1.32</td><td>-2.22</td><td>41.67</td><td>0.95</td><td>6</td><td>9.05</td><td>-9.47</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA20/MA60</td><td class="neg">-0.26</td><td>-0.10</td><td>-1.07</td><td>-2.79</td><td>25.00</td><td>2.10</td><td>2</td><td>9.05</td><td>-9.31</td></tr></tbody>
+            <tbody><tr><td>天邑股份</td><td>股票</td><td>MA5/MA10</td><td class="neg">-40.89</td><td>-16.08</td><td>-56.43</td><td>-0.24</td><td>35.71</td><td>1.27</td><td>21</td><td>-7.57</td><td>-33.33</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA5/MA20</td><td class="neg">-47.01</td><td>-19.08</td><td>-55.00</td><td>-0.36</td><td>28.57</td><td>0.87</td><td>10</td><td>-7.57</td><td>-39.44</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA10/MA30</td><td class="neg">-21.40</td><td>-7.71</td><td>-42.41</td><td>-0.04</td><td>50.00</td><td>0.42</td><td>7</td><td>-7.57</td><td>-13.83</td></tr><tr><td>天邑股份</td><td>股票</td><td>MA20/MA60</td><td class="neg">-32.95</td><td>-12.48</td><td>-47.55</td><td>-0.17</td><td>33.33</td><td>0.46</td><td>3</td><td>-7.57</td><td>-25.39</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA5/MA10</td><td class="neg">-13.18</td><td>-4.61</td><td>-48.51</td><td>-0.02</td><td>28.95</td><td>2.14</td><td>19</td><td>-27.46</td><td>14.28</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA5/MA20</td><td class="pos">14.97</td><td>4.77</td><td>-41.51</td><td>0.26</td><td>33.33</td><td>2.57</td><td>9</td><td>-27.46</td><td>42.43</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA10/MA30</td><td class="neg">-3.17</td><td>-1.07</td><td>-42.90</td><td>0.08</td><td>20.00</td><td>3.73</td><td>5</td><td>-27.46</td><td>24.29</td></tr><tr><td>恩捷股份</td><td>股票</td><td>MA20/MA60</td><td class="pos">36.38</td><td>10.92</td><td>-31.09</td><td>0.43</td><td>20.00</td><td>9.46</td><td>2</td><td>-27.46</td><td>63.84</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA5/MA10</td><td class="pos">36.22</td><td>10.86</td><td>-35.48</td><td>0.43</td><td>35.29</td><td>2.43</td><td>17</td><td>22.07</td><td>14.15</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA5/MA20</td><td class="pos">89.85</td><td>23.85</td><td>-25.38</td><td>0.78</td><td>44.44</td><td>2.47</td><td>9</td><td>22.07</td><td>67.78</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA10/MA30</td><td class="pos">58.41</td><td>16.59</td><td>-32.79</td><td>0.57</td><td>44.44</td><td>4.00</td><td>4</td><td>22.07</td><td>36.35</td></tr><tr><td>内蒙一机</td><td>股票</td><td>MA20/MA60</td><td class="pos">98.51</td><td>25.71</td><td>-42.08</td><td>0.79</td><td>25.00</td><td>12.57</td><td>2</td><td>22.07</td><td>76.45</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA5/MA10</td><td class="pos">0.52</td><td>0.17</td><td>-40.06</td><td>0.07</td><td>43.18</td><td>1.34</td><td>22</td><td>150.18</td><td>-149.66</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA5/MA20</td><td class="pos">34.63</td><td>10.43</td><td>-33.51</td><td>0.43</td><td>39.13</td><td>2.15</td><td>11</td><td>150.18</td><td>-115.55</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA10/MA30</td><td class="pos">71.67</td><td>19.76</td><td>-38.52</td><td>0.72</td><td>30.77</td><td>5.33</td><td>6</td><td>150.18</td><td>-78.51</td></tr><tr><td>紫金矿业</td><td>股票</td><td>MA20/MA60</td><td class="pos">116.56</td><td>29.41</td><td>-32.81</td><td>0.99</td><td>50.00</td><td>4.81</td><td>2</td><td>150.18</td><td>-33.62</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA5/MA10</td><td class="pos">24.31</td><td>7.53</td><td>-23.58</td><td>0.34</td><td>34.38</td><td>2.60</td><td>16</td><td>32.94</td><td>-8.62</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA5/MA20</td><td class="neg">-1.32</td><td>-0.44</td><td>-27.13</td><td>0.02</td><td>38.89</td><td>1.54</td><td>9</td><td>32.94</td><td>-34.26</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA10/MA30</td><td class="neg">-16.59</td><td>-5.87</td><td>-39.66</td><td>-0.23</td><td>30.77</td><td>1.49</td><td>7</td><td>32.94</td><td>-49.52</td></tr><tr><td>恒力石化</td><td>股票</td><td>MA20/MA60</td><td class="pos">41.35</td><td>12.24</td><td>-24.17</td><td>0.54</td><td>60.00</td><td>4.44</td><td>2</td><td>32.94</td><td>8.41</td></tr><tr><td>中材科技</td><td>股票</td><td>MA5/MA10</td><td class="pos">153.52</td><td>36.39</td><td>-29.55</td><td>0.95</td><td>54.05</td><td>1.67</td><td>19</td><td>334.80</td><td>-181.28</td></tr><tr><td>中材科技</td><td>股票</td><td>MA5/MA20</td><td class="pos">154.32</td><td>36.54</td><td>-30.78</td><td>0.95</td><td>43.48</td><td>4.08</td><td>12</td><td>334.80</td><td>-180.48</td></tr><tr><td>中材科技</td><td>股票</td><td>MA10/MA30</td><td class="pos">279.80</td><td>56.08</td><td>-26.59</td><td>1.24</td><td>75.00</td><td>4.31</td><td>4</td><td>334.80</td><td>-55.00</td></tr><tr><td>中材科技</td><td>股票</td><td>MA20/MA60</td><td class="pos">346.12</td><td>64.70</td><td>-26.06</td><td>1.38</td><td>60.00</td><td>25.15</td><td>3</td><td>334.80</td><td>11.32</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA5/MA10</td><td class="pos">38.08</td><td>14.10</td><td>-40.78</td><td>0.52</td><td>37.93</td><td>2.29</td><td>14</td><td>105.86</td><td>-67.78</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA5/MA20</td><td class="pos">9.05</td><td>3.61</td><td>-34.27</td><td>0.20</td><td>33.33</td><td>2.36</td><td>9</td><td>105.86</td><td>-96.80</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA10/MA30</td><td class="pos">27.02</td><td>10.27</td><td>-32.24</td><td>0.43</td><td>41.67</td><td>2.23</td><td>6</td><td>105.86</td><td>-78.84</td></tr><tr><td>华夏黄金ETF</td><td>ETF</td><td>MA20/MA60</td><td class="pos">46.46</td><td>16.88</td><td>-36.04</td><td>0.64</td><td>33.33</td><td>10.27</td><td>1</td><td>105.86</td><td>-59.40</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA5/MA10</td><td class="neg">-0.06</td><td>-0.02</td><td>-13.04</td><td>-0.12</td><td>53.85</td><td>0.89</td><td>13</td><td>9.05</td><td>-9.11</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA5/MA20</td><td class="neg">-11.62</td><td>-4.72</td><td>-21.96</td><td>-0.56</td><td>25.00</td><td>1.52</td><td>10</td><td>9.05</td><td>-20.66</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA10/MA30</td><td class="neg">-4.44</td><td>-1.76</td><td>-12.42</td><td>-0.35</td><td>41.67</td><td>0.93</td><td>6</td><td>9.05</td><td>-13.49</td></tr><tr><td>易方达红利低波ETF</td><td>ETF</td><td>MA20/MA60</td><td class="neg">-2.90</td><td>-1.15</td><td>-10.11</td><td>-0.39</td><td>25.00</td><td>2.02</td><td>2</td><td>9.05</td><td>-11.95</td></tr></tbody>
         </table>
     </div>
 
@@ -67,10 +67,10 @@
         <div id="chart1" class="chart-container"></div>
         <div class="interpretation"><strong>解读：</strong>该图反映同一标的对不同均线参数的敏感度，以及同一参数在不同标的上的表现差异。若某标的4根柱子普遍为正且较高，说明双均线策略较适合该标的；若各周期收益正负不一且波动大，说明该标的不适合趋势跟踪。</div>
 
-        <div class="chart-title">图2：各均线周期平均累计回报与平均回撤对比</div>
-        <p class="chart-caption">横轴为4组均线周期（跨全部8个标的取平均），左纵轴为平均累计回报(%)，右纵轴为平均回撤(%)。注：此处"回撤"为各次回测中每日当前回撤的均值，反映该周期参数下的平均浮亏压力；区间最大回撤为该压力下的极端值。</p>
+        <div class="chart-title">图2：各均线周期正收益占比与平均夏普比率对比</div>
+        <p class="chart-caption">横轴为4组均线周期，左纵轴为正收益占比(%)（该周期下盈利标的数/总标的数），右纵轴为平均夏普比率。正收益占比反映参数组合的"普适性"——越高说明该参数在越多标的上有效。</p>
         <div id="chart2" class="chart-container"></div>
-        <div class="interpretation"><strong>解读：</strong>该图衡量不同均线周期的整体风险收益特征。理想组合应满足"高回报+低回撤"。一般来说，长周期（MA20/MA60）信号更少、滞后更大但过滤噪音；短周期（MA5/MA10）信号频繁、反应快但易受震荡市假信号干扰。</div>
+        <div class="interpretation"><strong>解读：</strong>简单算术平均回报掩盖个体差异（如中材科技+15%与天邑股份-3%直接平均无意义），而<strong>正收益占比</strong>衡量该均线参数在8个标的中"有多大比例能盈利"，更具参考价值。理想组合应满足"高正收益占比+高夏普"。长周期（MA20/MA60）过滤噪音，正收益占比通常更高；短周期（MA5/MA10）反应快但对震荡市敏感，普适性较差。</div>
 
         <div class="chart-title">图3：累计回报 vs 区间最大回撤 风险-收益散点图</div>
         <p class="chart-caption">横轴为区间最大回撤(%)（单次回测期间回撤曲线的最低点），纵轴为累计回报(%)，每个点代表一次回测，悬停显示标的与均线组合。</p>
@@ -89,7 +89,42 @@
     </div>
 
     <div class="section">
-        <h2>三、策略适用场景与应用心得</h2>
+        <h2>三、核心指标计算逻辑</h2>
+        <div class="insight-box">
+            <strong>1. 累计回报：</strong>回测期末总资产与初始资金的差额比例。<br>
+            公式：<code>累计回报 = (期末总资产 - 初始资金) / 初始资金 × 100%</code><br>
+            例如：初始10万，期末9.5万，累计回报 = (9.5-10)/10 = <strong>-5%</strong>。
+        </div>
+        <div class="insight-box">
+            <strong>2. 买入持有收益（对照基准）：</strong>假设回测首日将全部资金一次性买入标的，之后不做任何交易、一直持有到期末的收益。<br>
+            公式：<code>买入持有收益 = (期末收盘价 - 首日收盘价) / 首日收盘价 × 100%</code><br>
+            用途：作为策略的<strong>对照基准</strong>，衡量"什么都不做"的收益水平。数据已使用前复权，分红送转已自动调整。
+        </div>
+        <div class="insight-box">
+            <strong>3. 超额收益：</strong>策略收益与买入持有收益的差额，衡量策略是否创造了额外价值。<br>
+            公式：<code>超额收益 = 累计回报 - 买入持有收益</code><br>
+            <span style="color:#ef4444;"><strong>重要提醒：</strong>超额收益为正 ≠ 策略赚钱。</span>例如策略亏-5%、持有亏-10%，超额 = (-5%) - (-10%) = <strong>+5%</strong>。这表示"虽然亏了，但比傻拿着少亏5%"，策略跑赢了基准，但绝对收益仍是负的。超额为负则表示策略连"什么都不做"都不如。
+        </div>
+        <div class="insight-box">
+            <strong>4. 区间最大回撤：</strong>整个回测期间，从资产峰值到谷底的最大跌幅。<br>
+            计算步骤：① 每日计算当前回撤 = (当日总资产 - 历史最高总资产) / 历史最高总资产 × 100%；② 取所有日回撤中的最小值（最负值）。<br>
+            例如：资产从10万涨到11万（峰值），再跌到9万，区间最大回撤 = (9-11)/11 = <strong>-18.18%</strong>。
+        </div>
+        <div class="insight-box">
+            <strong>5. 夏普比率：</strong>衡量每承担一单位风险所获得的超额收益（相对无风险利率）。<br>
+            公式：<code>Sharpe = (年化收益率 - 无风险利率) / 年化波动率</code><br>
+            无风险利率取2%（近似一年期存款利率）。夏普 &gt; 0 说明策略跑赢无风险理财，&lt; 0 说明不如存银行。
+        </div>
+        <div class="insight-box">
+            <strong>6. 胜率与盈亏比：</strong><br>
+            胜率 = 盈利交易次数 / 总交易次数 × 100%<br>
+            盈亏比 = 平均盈利金额 / 平均亏损金额<br>
+            趋势策略通常<strong>胜率低（30%-40%）但盈亏比高（&gt;1）</strong>——亏的时候小亏（死叉止损），赚的时候大赚（趋势延续）。若盈亏比 &lt; 1，说明每次盈利覆盖不了亏损，策略在震荡市中失效。
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>四、策略适用场景与应用心得</h2>
         <div class="insight-box">
             <strong>1. 适用场景：</strong>双均线策略本质是<strong>趋势跟踪</strong>策略，其盈利前提是标的走出持续的单边趋势。从实验结果看，<strong>趋势性强的标的（如黄金ETF等）更适合</strong>，因为价格能持续创新高/新低，金叉后能持续运行；而<strong>震荡市中双均线策略会反复触发假信号</strong>，导致高胜率亏损——金叉买入后立即死叉卖出，来回吃佣金和滑点。
         </div>
@@ -100,7 +135,7 @@
             <strong>3. 胜率与盈亏比的反向关系：</strong>双均线策略通常<strong>胜率偏低（本次实验普遍在30%-40%）但盈亏比应较高</strong>——因为每次亏损被严格限制在死叉时的小幅回撤，而盈利时趋势能跑出大段利润。若发现胜率低且盈亏比也低于1，说明标的处于震荡市，策略失效。本次实验中部分组合盈亏比偏低，反映出近三年市场震荡特征明显。
         </div>
         <div class="insight-box">
-            <strong>4. 仓位管理的重要性：</strong>本次采用10%仓位（约1万元），即使判断错误，单次亏损对总资产影响有限（区间最大回撤可控）。若全仓操作，震荡市的连续假信号会造成毁灭性回撤。<strong>轻仓+分散</strong>是趋势策略存活的关键，宁可少赚也要先活下来。
+            <strong>4. 全仓策略的风险特征：</strong>本次采用全仓买入/全仓卖出，金叉时All in，死叉时清仓。这种方式在趋势明确时收益最大化，但在震荡市中连续假信号会导致较大回撤——金叉买入后马上死叉卖出，每次都要承担佣金+滑点+印花税成本。<strong>全仓策略对择时要求极高</strong>，一旦趋势判断错误，单次亏损幅度远大于轻仓策略。建议在实盘前先确认标的处于趋势市而非震荡市。
         </div>
         <div class="insight-box">
             <strong>5. 应用心得总结：</strong>① 双均线策略不是"万能公式"，必须先判断市场状态（趋势/震荡）再决定是否启用；② <strong>择时不如择势</strong>——先选趋势性强的标的，再谈参数优化；③ <strong>参数不是越精细越好</strong>，过度拟合历史数据反而降低未来适应性；④ <strong>止损纪律比信号本身更重要</strong>，死叉即走，不扛单；⑤ 建议将双均线作为<strong>趋势确认工具</strong>而非唯一信号，结合成交量、MACD等指标过滤假信号效果更佳。
@@ -114,7 +149,7 @@ var commonTooltip = { trigger: 'axis', axisPointer: { type: 'cross' }, valueForm
 // 图1：各标的在不同均线周期下的累计回报
 var chart1 = echarts.init(document.getElementById('chart1'));
 var c1Names = ["\u4e2d\u6750\u79d1\u6280", "\u6069\u6377\u80a1\u4efd", "\u534e\u590f\u9ec4\u91d1ETF", "\u5929\u9091\u80a1\u4efd", "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "\u6052\u529b\u77f3\u5316", "\u5185\u8499\u4e00\u673a", "\u7d2b\u91d1\u77ff\u4e1a"];
-var c1Series = [{"combo": "MA5/MA10", "vals": [10.91, -1.03, 4.28, -3.77, 0.05, 2.94, 4.73, 0.72]}, {"combo": "MA5/MA20", "vals": [10.57, 2.65, 1.54, -5.36, -1.18, 0.75, 10.14, 4.63]}, {"combo": "MA10/MA30", "vals": [18.39, 0.51, 3.23, -2.13, -0.43, -1.4, 5.75, 7.25]}, {"combo": "MA20/MA60", "vals": [20.87, 4.76, 5.17, -3.11, -0.26, 3.7, 11.78, 10.92]}];
+var c1Series = [{"combo": "MA5/MA10", "vals": [153.52, -13.18, 38.08, -40.89, -0.06, 24.31, 36.22, 0.52]}, {"combo": "MA5/MA20", "vals": [154.32, 14.97, 9.05, -47.01, -11.62, -1.32, 89.85, 34.63]}, {"combo": "MA10/MA30", "vals": [279.8, -3.17, 27.02, -21.4, -4.44, -16.59, 58.41, 71.67]}, {"combo": "MA20/MA60", "vals": [346.12, 36.38, 46.46, -32.95, -2.9, 41.35, 98.51, 116.56]}];
 var c1Colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666'];
 chart1.setOption({
     tooltip: commonTooltip,
@@ -128,29 +163,29 @@ chart1.setOption({
     })
 });
 
-// 图2：各均线周期平均累计回报与平均回撤对比
+// 图2：各均线周期正收益占比与平均夏普比率对比
 var chart2 = echarts.init(document.getElementById('chart2'));
 var c2Combos = ["MA10/MA30", "MA20/MA60", "MA5/MA10", "MA5/MA20"];
-var c2Returns = [3.9, 6.73, 2.35, 2.97];
-var c2Mdds = [-4.44, -5.2, -4.19, -3.92];
+var c2Positive = [50.0, 75.0, 62.5, 62.5];
+var c2Sharpes = [0.3, 0.53, 0.24, 0.22];
 chart2.setOption({
     tooltip: commonTooltip,
-    legend: { data: ['平均累计回报(%)', '平均回撤(%)'] },
+    legend: { data: ['正收益占比(%)', '平均夏普比率'] },
     grid: { left: '3%', right: '5%', bottom: '12%', containLabel: true },
     xAxis: { type: 'category', data: c2Combos },
     yAxis: [
-        { type: 'value', name: '回报(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
-        { type: 'value', name: '回撤(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } }
+        { type: 'value', name: '正收益占比(%)', min: 0, max: 100, axisLabel: { formatter: function(v){return v.toFixed(1);} } },
+        { type: 'value', name: '夏普比率', axisLabel: { formatter: function(v){return v.toFixed(2);} } }
     ],
     series: [
-        { name: '平均累计回报(%)', type: 'bar', data: c2Returns, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均回撤(%)', type: 'bar', yAxisIndex: 1, data: c2Mdds, itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } }
+        { name: '正收益占比(%)', type: 'bar', data: c2Positive, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(1)+'%';} } },
+        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
     ]
 });
 
 // 图3：累计回报 vs 区间最大回撤 散点图
 var chart3 = echarts.init(document.getElementById('chart3'));
-var c3Points = [[-7.53, -3.77, "\u5929\u9091\u80a1\u4efd", "MA5/MA10", "\u80a1\u7968"], [-6.87, -5.36, "\u5929\u9091\u80a1\u4efd", "MA5/MA20", "\u80a1\u7968"], [-5.32, -2.13, "\u5929\u9091\u80a1\u4efd", "MA10/MA30", "\u80a1\u7968"], [-5.77, -3.11, "\u5929\u9091\u80a1\u4efd", "MA20/MA60", "\u80a1\u7968"], [-5.09, -1.03, "\u6069\u6377\u80a1\u4efd", "MA5/MA10", "\u80a1\u7968"], [-3.9, 2.65, "\u6069\u6377\u80a1\u4efd", "MA5/MA20", "\u80a1\u7968"], [-4.07, 0.51, "\u6069\u6377\u80a1\u4efd", "MA10/MA30", "\u80a1\u7968"], [-4.74, 4.76, "\u6069\u6377\u80a1\u4efd", "MA20/MA60", "\u80a1\u7968"], [-4.11, 4.73, "\u5185\u8499\u4e00\u673a", "MA5/MA10", "\u80a1\u7968"], [-3.67, 10.14, "\u5185\u8499\u4e00\u673a", "MA5/MA20", "\u80a1\u7968"], [-6.71, 5.75, "\u5185\u8499\u4e00\u673a", "MA10/MA30", "\u80a1\u7968"], [-10.31, 11.78, "\u5185\u8499\u4e00\u673a", "MA20/MA60", "\u80a1\u7968"], [-4.17, 0.72, "\u7d2b\u91d1\u77ff\u4e1a", "MA5/MA10", "\u80a1\u7968"], [-3.82, 4.63, "\u7d2b\u91d1\u77ff\u4e1a", "MA5/MA20", "\u80a1\u7968"], [-4.43, 7.25, "\u7d2b\u91d1\u77ff\u4e1a", "MA10/MA30", "\u80a1\u7968"], [-6.44, 10.92, "\u7d2b\u91d1\u77ff\u4e1a", "MA20/MA60", "\u80a1\u7968"], [-2.38, 2.94, "\u6052\u529b\u77f3\u5316", "MA5/MA10", "\u80a1\u7968"], [-2.94, 0.75, "\u6052\u529b\u77f3\u5316", "MA5/MA20", "\u80a1\u7968"], [-4.63, -1.4, "\u6052\u529b\u77f3\u5316", "MA10/MA30", "\u80a1\u7968"], [-3.55, 3.7, "\u6052\u529b\u77f3\u5316", "MA20/MA60", "\u80a1\u7968"], [-3.23, 10.91, "\u4e2d\u6750\u79d1\u6280", "MA5/MA10", "\u80a1\u7968"], [-3.01, 10.57, "\u4e2d\u6750\u79d1\u6280", "MA5/MA20", "\u80a1\u7968"], [-4.73, 18.39, "\u4e2d\u6750\u79d1\u6280", "MA10/MA30", "\u80a1\u7968"], [-4.72, 20.87, "\u4e2d\u6750\u79d1\u6280", "MA20/MA60", "\u80a1\u7968"], [-5.62, 4.28, "\u534e\u590f\u9ec4\u91d1ETF", "MA5/MA10", "ETF"], [-4.72, 1.54, "\u534e\u590f\u9ec4\u91d1ETF", "MA5/MA20", "ETF"], [-4.34, 3.23, "\u534e\u590f\u9ec4\u91d1ETF", "MA10/MA30", "ETF"], [-5.01, 5.17, "\u534e\u590f\u9ec4\u91d1ETF", "MA20/MA60", "ETF"], [-1.39, 0.05, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA5/MA10", "ETF"], [-2.43, -1.18, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA5/MA20", "ETF"], [-1.32, -0.43, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA10/MA30", "ETF"], [-1.07, -0.26, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA20/MA60", "ETF"]];
+var c3Points = [[-56.43, -40.89, "\u5929\u9091\u80a1\u4efd", "MA5/MA10", "\u80a1\u7968"], [-55.0, -47.01, "\u5929\u9091\u80a1\u4efd", "MA5/MA20", "\u80a1\u7968"], [-42.41, -21.4, "\u5929\u9091\u80a1\u4efd", "MA10/MA30", "\u80a1\u7968"], [-47.55, -32.95, "\u5929\u9091\u80a1\u4efd", "MA20/MA60", "\u80a1\u7968"], [-48.51, -13.18, "\u6069\u6377\u80a1\u4efd", "MA5/MA10", "\u80a1\u7968"], [-41.51, 14.97, "\u6069\u6377\u80a1\u4efd", "MA5/MA20", "\u80a1\u7968"], [-42.9, -3.17, "\u6069\u6377\u80a1\u4efd", "MA10/MA30", "\u80a1\u7968"], [-31.09, 36.38, "\u6069\u6377\u80a1\u4efd", "MA20/MA60", "\u80a1\u7968"], [-35.48, 36.22, "\u5185\u8499\u4e00\u673a", "MA5/MA10", "\u80a1\u7968"], [-25.38, 89.85, "\u5185\u8499\u4e00\u673a", "MA5/MA20", "\u80a1\u7968"], [-32.79, 58.41, "\u5185\u8499\u4e00\u673a", "MA10/MA30", "\u80a1\u7968"], [-42.08, 98.51, "\u5185\u8499\u4e00\u673a", "MA20/MA60", "\u80a1\u7968"], [-40.06, 0.52, "\u7d2b\u91d1\u77ff\u4e1a", "MA5/MA10", "\u80a1\u7968"], [-33.51, 34.63, "\u7d2b\u91d1\u77ff\u4e1a", "MA5/MA20", "\u80a1\u7968"], [-38.52, 71.67, "\u7d2b\u91d1\u77ff\u4e1a", "MA10/MA30", "\u80a1\u7968"], [-32.81, 116.56, "\u7d2b\u91d1\u77ff\u4e1a", "MA20/MA60", "\u80a1\u7968"], [-23.58, 24.31, "\u6052\u529b\u77f3\u5316", "MA5/MA10", "\u80a1\u7968"], [-27.13, -1.32, "\u6052\u529b\u77f3\u5316", "MA5/MA20", "\u80a1\u7968"], [-39.66, -16.59, "\u6052\u529b\u77f3\u5316", "MA10/MA30", "\u80a1\u7968"], [-24.17, 41.35, "\u6052\u529b\u77f3\u5316", "MA20/MA60", "\u80a1\u7968"], [-29.55, 153.52, "\u4e2d\u6750\u79d1\u6280", "MA5/MA10", "\u80a1\u7968"], [-30.78, 154.32, "\u4e2d\u6750\u79d1\u6280", "MA5/MA20", "\u80a1\u7968"], [-26.59, 279.8, "\u4e2d\u6750\u79d1\u6280", "MA10/MA30", "\u80a1\u7968"], [-26.06, 346.12, "\u4e2d\u6750\u79d1\u6280", "MA20/MA60", "\u80a1\u7968"], [-40.78, 38.08, "\u534e\u590f\u9ec4\u91d1ETF", "MA5/MA10", "ETF"], [-34.27, 9.05, "\u534e\u590f\u9ec4\u91d1ETF", "MA5/MA20", "ETF"], [-32.24, 27.02, "\u534e\u590f\u9ec4\u91d1ETF", "MA10/MA30", "ETF"], [-36.04, 46.46, "\u534e\u590f\u9ec4\u91d1ETF", "MA20/MA60", "ETF"], [-13.04, -0.06, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA5/MA10", "ETF"], [-21.96, -11.62, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA5/MA20", "ETF"], [-12.42, -4.44, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA10/MA30", "ETF"], [-10.11, -2.9, "\u6613\u65b9\u8fbe\u7ea2\u5229\u4f4e\u6ce2ETF", "MA20/MA60", "ETF"]];
 var stockPoints = c3Points.filter(function(p){return p[4]==='股票';}).map(function(p){return [p[0], p[1], p[2], p[3]];});
 var etfPoints = c3Points.filter(function(p){return p[4]==='ETF';}).map(function(p){return [p[0], p[1], p[2], p[3]];});
 chart3.setOption({
@@ -167,7 +202,7 @@ chart3.setOption({
 
 // 图4：各标的夏普比率对比
 var chart4 = echarts.init(document.getElementById('chart4'));
-var c4Series = [{"combo": "MA5/MA10", "vals": [0.44, -0.76, -0.04, -0.71, -1.72, -0.38, -0.09, -0.67]}, {"combo": "MA5/MA20", "vals": [0.38, -0.32, -0.4, -0.9, -2.12, -0.71, 0.35, -0.12]}, {"combo": "MA10/MA30", "vals": [0.74, -0.55, -0.18, -0.66, -2.22, -1.06, 0.01, 0.15]}, {"combo": "MA20/MA60", "vals": [0.86, -0.07, 0.06, -0.74, -2.79, -0.25, 0.33, 0.4]}];
+var c4Series = [{"combo": "MA5/MA10", "vals": [0.95, -0.02, 0.52, -0.24, -0.12, 0.34, 0.43, 0.07]}, {"combo": "MA5/MA20", "vals": [0.95, 0.26, 0.2, -0.36, -0.56, 0.02, 0.78, 0.43]}, {"combo": "MA10/MA30", "vals": [1.24, 0.08, 0.43, -0.04, -0.35, -0.23, 0.57, 0.72]}, {"combo": "MA20/MA60", "vals": [1.38, 0.43, 0.64, -0.17, -0.39, 0.54, 0.79, 0.99]}];
 chart4.setOption({
     tooltip: commonTooltip,
     legend: { data: c4Series.map(function(s){return s.combo;}) },
@@ -189,9 +224,9 @@ chart5.setOption({
     xAxis: { type: 'category', data: ["ETF", "\u80a1\u7968"] },
     yAxis: { type: 'value', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     series: [
-        { name: '平均累计回报(%)', type: 'bar', data: [1.55, 4.8], itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均回撤(%)', type: 'bar', data: [-3.24, -4.84], itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
-        { name: '平均夏普比率', type: 'line', data: [-1.18, -0.18], lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
+        { name: '平均累计回报(%)', type: 'bar', data: [12.7, 57.53], itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
+        { name: '平均回撤(%)', type: 'bar', data: [-25.11, -36.4], itemStyle: { color: '#ee6666' }, lineStyle: { color: '#ee6666' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(2);} } },
+        { name: '平均夏普比率', type: 'line', data: [0.05, 0.41], lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
     ]
 });
 
