@@ -4,8 +4,10 @@ import json
 
 stock_code = '300504.SZ'
 stock_name = '天邑股份'
-channel_period_s1 = 20
-channel_period_s2 = 55
+entry_channel_period_s1 = 20
+entry_channel_period_s2 = 55
+exit_channel_period_s1 = 10
+exit_channel_period_s2 = 20
 atr_period = 14
 initial_capital = 100000
 commission_rate = 0.0003
@@ -13,6 +15,8 @@ slippage_rate = 0.0001
 stamp_tax_rate = 0.0005
 stop_loss_multiplier = 2
 risk_per_unit = 0.01
+max_units = 4
+add_on_atr = 0.5
 
 df = pd.read_csv(f'output/{stock_code}_daily_data.csv')
 df['trade_date'] = pd.to_datetime(df['trade_date'])
@@ -25,37 +29,36 @@ df = df[df['trade_date'] >= start_date].reset_index(drop=True)
 print(f'数据量: {len(df)}条')
 print(f'时间范围: {df["trade_date"].min().strftime("%Y-%m-%d")} ~ {df["trade_date"].max().strftime("%Y-%m-%d")}')
 
-df['high_channel_s1'] = df['high'].rolling(window=channel_period_s1).max()
-df['low_channel_s1'] = df['low'].rolling(window=channel_period_s1).min()
-df['mid_channel_s1'] = (df['high_channel_s1'] + df['low_channel_s1']) / 2
+df['entry_high_s1'] = df['high'].rolling(window=entry_channel_period_s1).max()
+df['entry_low_s1'] = df['low'].rolling(window=entry_channel_period_s1).min()
+df['entry_high_s2'] = df['high'].rolling(window=entry_channel_period_s2).max()
+df['entry_low_s2'] = df['low'].rolling(window=entry_channel_period_s2).min()
 
-df['high_channel_s2'] = df['high'].rolling(window=channel_period_s2).max()
-df['low_channel_s2'] = df['low'].rolling(window=channel_period_s2).min()
+df['exit_low_s1'] = df['low'].rolling(window=exit_channel_period_s1).min()
+df['exit_low_s2'] = df['low'].rolling(window=exit_channel_period_s2).min()
 
 df['tr1'] = df['high'] - df['low']
 df['tr2'] = abs(df['high'] - df['close'].shift(1))
 df['tr3'] = abs(df['low'] - df['close'].shift(1))
 df['tr'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-
 df['atr'] = df['tr'].rolling(window=atr_period).mean()
 
-df['prev_high_s1'] = df['high_channel_s1'].shift(1)
-df['prev_low_s1'] = df['low_channel_s1'].shift(1)
-df['prev_high_s2'] = df['high_channel_s2'].shift(1)
-df['prev_low_s2'] = df['low_channel_s2'].shift(1)
+df['prev_entry_high_s1'] = df['entry_high_s1'].shift(1)
+df['prev_entry_high_s2'] = df['entry_high_s2'].shift(1)
+df['prev_exit_low_s1'] = df['exit_low_s1'].shift(1)
+df['prev_exit_low_s2'] = df['exit_low_s2'].shift(1)
 
-df['buy_signal_s1'] = (df['close'] > df['prev_high_s1']).astype(int)
-df['sell_signal_s1'] = (df['close'] < df['prev_low_s1']).astype(int)
-df['buy_signal_s2'] = (df['close'] > df['prev_high_s2']).astype(int)
-df['sell_signal_s2'] = (df['close'] < df['prev_low_s2']).astype(int)
+df['buy_signal_s1'] = (df['close'] > df['prev_entry_high_s1']).astype(int)
+df['buy_signal_s2'] = (df['close'] > df['prev_entry_high_s2']).astype(int)
+df['sell_signal_s1'] = (df['close'] < df['prev_exit_low_s1']).astype(int)
+df['sell_signal_s2'] = (df['close'] < df['prev_exit_low_s2']).astype(int)
 
 df['buy_signal'] = df[['buy_signal_s1', 'buy_signal_s2']].max(axis=1)
 df['sell_signal'] = df[['sell_signal_s1', 'sell_signal_s2']].max(axis=1)
 
-df['signal'] = np.where(df['buy_signal'] == 1, 1, np.where(df['sell_signal'] == 1, -1, 0))
-
 cash = initial_capital
 position = 0
+current_units = 0
 holdings = []
 trades = []
 win_trades = 0
@@ -64,6 +67,7 @@ total_profit = 0
 total_loss = 0
 entry_price = 0
 stop_loss_price = 0
+current_system = None
 
 for i in range(len(df)):
     row = df.iloc[i]
@@ -87,8 +91,9 @@ for i in range(len(df)):
             position = shares
             cash -= total_cost
             entry_price = buy_price
+            current_units = 1
             
-            system_trigger = '系统一(S1)' if row['buy_signal_s1'] == 1 else '系统二(S2)'
+            current_system = '系统一(S1)' if row['buy_signal_s1'] == 1 else '系统二(S2)'
             
             trades.append({
                 'date': row['trade_date'].strftime('%Y-%m-%d'),
@@ -101,31 +106,71 @@ for i in range(len(df)):
                 'cash_after': round(cash, 2),
                 'stop_loss': round(stop_loss_price, 2),
                 'atr_at_entry': round(atr_value, 2),
-                'system': system_trigger,
+                'system': current_system,
+                'units': current_units,
                 'risk_per_unit': f'{risk_per_unit*100}%'
             })
     
     elif position > 0:
         current_low = row['low']
+        atr_value = row['atr']
         
         stop_loss_triggered = current_low <= stop_loss_price
-        sell_signal_triggered = row['sell_signal'] == 1
+        
+        sell_signal_s1_triggered = row['sell_signal_s1'] == 1 and current_system == '系统一(S1)'
+        sell_signal_s2_triggered = row['sell_signal_s2'] == 1 and current_system == '系统二(S2)'
+        sell_signal_triggered = sell_signal_s1_triggered or sell_signal_s2_triggered
         
         if stop_loss_triggered:
             sell_price = stop_loss_price * (1 - slippage_rate)
             exit_type = '止损卖出'
         elif sell_signal_triggered:
             sell_price = row['open'] * (1 - slippage_rate)
-            exit_type = '突破卖出'
+            exit_type = '止盈卖出（反向突破）'
         else:
-            stop_loss_price = max(stop_loss_price, entry_price - stop_loss_multiplier * row['atr']) if not np.isnan(row['atr']) else stop_loss_price
+            if not np.isnan(atr_value) and current_units < max_units:
+                add_on_price = entry_price + current_units * add_on_atr * atr_value
+                if row['high'] >= add_on_price:
+                    buy_price = add_on_price * (1 + slippage_rate)
+                    risk_amount = current_total_asset * risk_per_unit
+                    shares_per_unit = int(risk_amount / atr_value / 100) * 100
+                    
+                    max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
+                    shares = min(shares_per_unit, max_shares)
+                    
+                    if shares > 0:
+                        cost = shares * buy_price
+                        commission = cost * commission_rate
+                        total_cost = cost + commission
+                        position += shares
+                        cash -= total_cost
+                        current_units += 1
+                        
+                        trades.append({
+                            'date': row['trade_date'].strftime('%Y-%m-%d'),
+                            'type': '加仓',
+                            'price': round(buy_price, 2),
+                            'shares': shares,
+                            'amount': round(cost, 2),
+                            'commission': round(commission, 2),
+                            'slippage': round(shares * buy_price * slippage_rate, 2),
+                            'cash_after': round(cash, 2),
+                            'stop_loss': round(stop_loss_price, 2),
+                            'atr_at_entry': round(atr_value, 2),
+                            'system': current_system,
+                            'units': current_units,
+                            'add_on_level': f'+{current_units * add_on_atr}ATR'
+                        })
+            
+            stop_loss_price = max(stop_loss_price, entry_price - stop_loss_multiplier * atr_value) if not np.isnan(atr_value) else stop_loss_price
             holdings.append({
                 'date': row['trade_date'].strftime('%Y-%m-%d'),
                 'total_asset': round(current_total_asset, 2),
                 'cash': round(cash, 2),
                 'position': position,
                 'position_value': round(position * row['close'], 2),
-                'stop_loss': round(stop_loss_price, 2)
+                'stop_loss': round(stop_loss_price, 2),
+                'units': current_units
             })
             continue
         
@@ -155,9 +200,12 @@ for i in range(len(df)):
             'slippage': round(position * row['open'] * slippage_rate, 2),
             'cash_after': round(cash, 2),
             'profit': round(trade_profit, 2),
-            'exit_reason': exit_type
+            'exit_reason': exit_type,
+            'system': current_system,
+            'units': current_units
         })
         position = 0
+        current_units = 0
     
     else:
         holdings.append({
@@ -165,7 +213,8 @@ for i in range(len(df)):
             'total_asset': round(current_total_asset, 2),
             'cash': round(cash, 2),
             'position': position,
-            'position_value': round(position * row['close'], 2)
+            'position_value': round(position * row['close'], 2),
+            'units': current_units
         })
 
 if position > 0:
@@ -196,9 +245,12 @@ if position > 0:
         'slippage': round(position * df['close'].iloc[-1] * slippage_rate, 2),
         'cash_after': round(cash, 2),
         'profit': round(trade_profit, 2),
-        'exit_reason': '期末平仓'
+        'exit_reason': '期末平仓',
+        'system': current_system,
+        'units': current_units
     })
     position = 0
+    current_units = 0
 
 holdings_df = pd.DataFrame(holdings)
 holdings_df['return'] = holdings_df['total_asset'] / initial_capital - 1
@@ -220,7 +272,7 @@ sharpe_ratio = np.sqrt(252) * excess_daily_returns.mean() / excess_daily_returns
 max_drawdown = holdings_df['drawdown'].min()
 final_return = holdings_df['return'].iloc[-1]
 final_asset = holdings_df['total_asset'].iloc[-1]
-total_trades = len(trades) // 2
+total_trades = sum(1 for t in trades if t['type'] in ['买入', '止损卖出', '止盈卖出（反向突破）', '期末平仓'])
 
 holding_return = (df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0]
 excess_return = final_return - holding_return
@@ -248,10 +300,12 @@ print(f'持有收益: {holding_return*100:.2f}%')
 
 dates = [d.strftime('%Y-%m-%d') for d in df['trade_date']]
 close_prices = [round(p, 2) for p in df['close'].tolist()]
-high_channel_s1 = [round(p, 2) if not np.isnan(p) else None for p in df['high_channel_s1'].tolist()]
-low_channel_s1 = [round(p, 2) if not np.isnan(p) else None for p in df['low_channel_s1'].tolist()]
-high_channel_s2 = [round(p, 2) if not np.isnan(p) else None for p in df['high_channel_s2'].tolist()]
-low_channel_s2 = [round(p, 2) if not np.isnan(p) else None for p in df['low_channel_s2'].tolist()]
+entry_high_s1 = [round(p, 2) if not np.isnan(p) else None for p in df['entry_high_s1'].tolist()]
+entry_low_s1 = [round(p, 2) if not np.isnan(p) else None for p in df['entry_low_s1'].tolist()]
+entry_high_s2 = [round(p, 2) if not np.isnan(p) else None for p in df['entry_high_s2'].tolist()]
+entry_low_s2 = [round(p, 2) if not np.isnan(p) else None for p in df['entry_low_s2'].tolist()]
+exit_low_s1 = [round(p, 2) if not np.isnan(p) else None for p in df['exit_low_s1'].tolist()]
+exit_low_s2 = [round(p, 2) if not np.isnan(p) else None for p in df['exit_low_s2'].tolist()]
 atr_values = [round(p, 2) if not np.isnan(p) else None for p in df['atr'].tolist()]
 
 buy_points = []
@@ -281,7 +335,7 @@ for p in close_prices:
 
 trade_rows = []
 for t in trades:
-    row_class = 'buy-row' if t['type'] == '买入' else 'sell-row'
+    row_class = 'buy-row' if t['type'] in ['买入', '加仓'] else 'sell-row'
     slippage_val = t.get('slippage', '-')
     stamp_tax_val = t.get('stamp_tax', '-')
     profit_val = t.get('profit', '-')
@@ -289,7 +343,9 @@ for t in trades:
     exit_reason_val = t.get('exit_reason', '-')
     atr_val = t.get('atr_at_entry', '-')
     system_val = t.get('system', '-')
-    trade_rows.append(f'<tr class="{row_class}"><td>{t["date"]}</td><td>{t["type"]}</td><td>{t["price"]}</td><td>{t["shares"]}</td><td>{t["amount"]:.2f}</td><td>{t["commission"]:.2f}</td><td>{slippage_val}</td><td>{stamp_tax_val}</td><td>{profit_val}</td><td>{stop_loss_val}</td><td>{atr_val}</td><td>{system_val}</td><td>{exit_reason_val}</td><td>{t["cash_after"]:.2f}</td></tr>')
+    units_val = t.get('units', '-')
+    add_on_val = t.get('add_on_level', '-')
+    trade_rows.append(f'<tr class="{row_class}"><td>{t["date"]}</td><td>{t["type"]}</td><td>{t["price"]}</td><td>{t["shares"]}</td><td>{t["amount"]:.2f}</td><td>{t["commission"]:.2f}</td><td>{slippage_val}</td><td>{stamp_tax_val}</td><td>{profit_val}</td><td>{stop_loss_val}</td><td>{atr_val}</td><td>{system_val}</td><td>{units_val}</td><td>{add_on_val}</td><td>{exit_reason_val}</td><td>{t["cash_after"]:.2f}</td></tr>')
 
 strategy_eval = '优秀' if annualized_return > 0.1 else '良好' if annualized_return > 0.05 else '一般' if annualized_return >= 0 else '亏损'
 risk_eval = '风险很低（绿色）' if abs(max_drawdown) < 10 else '风险适中（浅绿）' if abs(max_drawdown) < 20 else '风险较高（橙色）' if abs(max_drawdown) < 30 else '风险很高（红色）'
@@ -345,13 +401,18 @@ html_template = '''<!DOCTYPE html>
         .system-box.s2 { border-top: 4px solid #2196f3; }
         .system-box h4 { margin-bottom: 10px; }
         .system-box ul { padding-left: 20px; font-size: 13px; line-height: 1.8; }
+        .pyramid-box { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; border-top: 4px solid #9c27b0; }
+        .pyramid-box h4 { color: #7b1fa2; margin-bottom: 15px; }
+        .pyramid-list { counter-reset: step; }
+        .pyramid-list li { counter-increment: step; padding: 10px; border-bottom: 1px solid #eee; }
+        .pyramid-list li::before { content: counter(step); background: #9c27b0; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>NAME</h1>
-            <p>策略参数：系统一{S1}日突破，系统二{S2}日突破，ATR周期{atr_period}日，止损倍数{stop_loss_multiplier}×ATR，单单位风险{risk_pct}% | 数据周期：近三年（前复权）</p>
+            <p>策略参数：系统一{entry_S1}日突破/{exit_S1}日离场，系统二{entry_S2}日突破/{exit_S2}日离场，ATR周期{atr_period}日，止损倍数{stop_loss_multiplier}×ATR，单单位风险{risk_pct}%，金字塔加仓{max_units}单位（每涨{add_on_atr}ATR加仓）| 数据周期：近三年（前复权）</p>
             <div class="stats-grid">
                 <div class="stat-card"><div class="label">累计回报</div><div class="value">RETURN%</div><div class="unit">vs 初始资金</div></div>
                 <div class="stat-card"><div class="label">年化回报</div><div class="value">ANNUAL%</div><div class="unit">年化</div></div>
@@ -436,6 +497,11 @@ html_template = '''<!DOCTYPE html>
                 <strong>可买股数 = (账户资金 × {risk_pct}%) / ATR</strong><br>
                 一个单位的头寸，如果价格波动1个ATR，账户损失{risk_pct}%。这种方法确保了在不同波动性的市场中，每单位头寸承担相同的风险。
             </div>
+
+            <div class="concept-box">
+                <strong>【金字塔加仓（Pyramid Adding）】</strong><br>
+                海龟策略在盈利时采用金字塔式加仓：首次入场建立1个单位，之后每上涨{add_on_atr}ATR再加仓1个单位，最多持有{max_units}个单位。核心逻辑是"让盈利头寸贡献更多收益"，同时控制总风险（最多{max_units}个单位 = {risk_pct_max}%风险）。
+            </div>
         </div>
 
         <div class="chart-section">
@@ -443,18 +509,20 @@ html_template = '''<!DOCTYPE html>
             
             <div class="system-compare">
                 <div class="system-box s1">
-                    <h4>系统一（S1）— {S1}日突破</h4>
+                    <h4>系统一（S1）— {entry_S1}日突破 / {exit_S1}日离场</h4>
                     <ul>
-                        <li><strong>触发条件：</strong>突破{S1}日最高价 → 买入</li>
+                        <li><strong>入场条件：</strong>突破{entry_S1}日最高价 → 买入</li>
+                        <li><strong>离场条件：</strong>跌破{exit_S1}日最低价 → 卖出</li>
                         <li><strong>特点：</strong>更敏感，更快捕捉趋势启动</li>
                         <li><strong>优势：</strong>交易信号更多，入场时机更早</li>
                         <li><strong>劣势：</strong>假突破多，容易受到市场噪音干扰</li>
                     </ul>
                 </div>
                 <div class="system-box s2">
-                    <h4>系统二（S2）— {S2}日突破</h4>
+                    <h4>系统二（S2）— {entry_S2}日突破 / {exit_S2}日离场</h4>
                     <ul>
-                        <li><strong>触发条件：</strong>突破{S2}日最高价 → 买入</li>
+                        <li><strong>入场条件：</strong>突破{entry_S2}日最高价 → 买入</li>
+                        <li><strong>离场条件：</strong>跌破{exit_S2}日最低价 → 卖出</li>
                         <li><strong>特点：</strong>更稳健，过滤更多噪音</li>
                         <li><strong>优势：</strong>趋势更确认，大趋势捕捉能力更强</li>
                         <li><strong>劣势：</strong>交易信号更少，入场时机稍晚</li>
@@ -466,14 +534,37 @@ html_template = '''<!DOCTYPE html>
         </div>
 
         <div class="chart-section">
-            <h2>4. 策略规则与参数</h2>
+            <h2>4. 金字塔加仓规则</h2>
+            <div class="pyramid-box">
+                <h4>盈利时金字塔加仓（最多{max_units}个单位）</h4>
+                <ul class="pyramid-list">
+                    <li><strong>首次入场：</strong>建立1个单位，止损价 = 入场价 - {stop_loss_multiplier}×ATR</li>
+                    <li><strong>价格上涨{add_on_atr}ATR：</strong>加仓1个单位，止损价保持不变</li>
+                    <li><strong>再上涨{add_on_atr}ATR：</strong>再加仓1个单位，累计3个单位</li>
+                    <li><strong>再上涨{add_on_atr}ATR：</strong>再加仓1个单位，累计{max_units}个单位（最大）</li>
+                </ul>
+            </div>
+            <div class="strategy-rule">
+                <strong>加仓核心逻辑：</strong><br>
+                - 在盈利时加仓，而非亏损时摊平成本（顺势而为）<br>
+                - 让盈利头寸贡献更多收益（趋势越强，收益越大）<br>
+                - 控制总风险（最多{max_units}个单位 = {risk_pct_max}%账户资金风险）<br>
+                - <strong>禁止在亏损时加仓！</strong>不摊平成本，不放大亏损
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <h2>5. 策略规则与参数</h2>
             <div class="intro-text">海龟策略通过突破高低点通道来识别趋势方向，结合ATR进行动态风险控制和仓位管理。</div>
             <div class="strategy-rule">
-                <strong>高低点通道计算：</strong><br>
-                high_channel_S1 = high.rolling({S1}).max()（前{S1}日最高价）<br>
-                low_channel_S1 = low.rolling({S1}).min()（前{S1}日最低价）<br>
-                high_channel_S2 = high.rolling({S2}).max()（前{S2}日最高价）<br>
-                low_channel_S2 = low.rolling({S2}).min()（前{S2}日最低价）
+                <strong>入场通道计算：</strong><br>
+                entry_high_S1 = high.rolling({entry_S1}).max()（前{entry_S1}日最高价）<br>
+                entry_high_S2 = high.rolling({entry_S2}).max()（前{entry_S2}日最高价）
+            </div>
+            <div class="strategy-rule">
+                <strong>离场通道计算：</strong><br>
+                exit_low_S1 = low.rolling({exit_S1}).min()（前{exit_S1}日最低价）<br>
+                exit_low_S2 = low.rolling({exit_S2}).min()（前{exit_S2}日最低价）
             </div>
             <div class="strategy-rule">
                 <strong>ATR计算（Wilder平滑法）：</strong><br>
@@ -482,30 +573,52 @@ html_template = '''<!DOCTYPE html>
             </div>
             <div class="strategy-rule">
                 <strong>买入规则（双系统突破）：</strong><br>
-                1. 系统一：收盘价突破前一日{S1}日上轨时产生买入信号<br>
-                2. 系统二：收盘价突破前一日{S2}日上轨时产生买入信号<br>
+                1. 系统一：收盘价突破前一日{entry_S1}日上轨时产生买入信号<br>
+                2. 系统二：收盘价突破前一日{entry_S2}日上轨时产生买入信号<br>
                 3. 任一系统触发即买入，次日开盘执行<br>
                 4. 计算止损价 = 买入价 - {stop_loss_multiplier}×ATR<br>
-                5. 计算仓位 = (账户资金 × {risk_pct}%) / ATR（取整到100股）
+                5. 计算仓位 = (账户资金 × {risk_pct}%) / ATR（取整到100股），建立1个单位
+            </div>
+            <div class="strategy-rule">
+                <strong>加仓规则（金字塔）：</strong><br>
+                1. 持仓期间，若当前单位数 &lt; {max_units}，且价格上涨到入场价 + 当前单位数 × {add_on_atr} × ATR<br>
+                2. 以该价格加仓1个单位<br>
+                3. 止损价保持不变（不扩大风险）<br>
+                4. 最多加仓到{max_units}个单位
             </div>
             <div class="strategy-rule">
                 <strong>卖出规则（双重退出机制）：</strong><br>
                 1. <strong>止损卖出：</strong>当日最低价跌破止损价时，以止损价卖出<br>
-                2. <strong>突破卖出：</strong>收盘价突破前一日下轨时，次日开盘卖出<br>
-                优先级：止损 > 突破信号
+                2. <strong>止盈卖出：</strong>收盘价跌破对应系统的离场通道下轨时，次日开盘卖出<br>
+                   - 系统一入场 → 跌破{exit_S1}日低点离场<br>
+                   - 系统二入场 → 跌破{exit_S2}日低点离场<br>
+                3. 优先级：止损 &gt; 止盈信号<br>
+                4. 离场逻辑体现"让利润奔跑"理念，不轻易卖出
             </div>
             <div class="strategy-rule">
                 <strong>移动止损调整：</strong><br>
                 在持仓期间，若ATR下降，止损价会上移（锁定更多利润）；若ATR上升，止损价保持不变（不扩大风险）。
             </div>
+            <div class="strategy-rule">
+                <strong>风险控制规则：</strong><br>
+                1. 单个市场最多{max_units}个单位，最大风险{risk_pct_max}%<br>
+                2. 同一方向所有头寸合计不超过12个单位<br>
+                3. 高度相关市场合计不超过6个单位<br>
+                4. 账户总风险不超过12%<br>
+                5. 触发止损必须立即执行，不能犹豫
+            </div>
             <table class="params-table">
                 <tr><td><strong>初始资金</strong></td><td>INITIAL_CAPITAL 元</td></tr>
-                <tr><td><strong>仓位方式</strong></td><td>基于ATR的单位仓位管理</td></tr>
-                <tr><td><strong>系统一通道周期</strong></td><td>{S1}日</td></tr>
-                <tr><td><strong>系统二通道周期</strong></td><td>{S2}日</td></tr>
+                <tr><td><strong>仓位方式</strong></td><td>基于ATR的单位仓位管理+金字塔加仓</td></tr>
+                <tr><td><strong>系统一入场周期</strong></td><td>{entry_S1}日突破</td></tr>
+                <tr><td><strong>系统一离场周期</strong></td><td>{exit_S1}日低点</td></tr>
+                <tr><td><strong>系统二入场周期</strong></td><td>{entry_S2}日突破</td></tr>
+                <tr><td><strong>系统二离场周期</strong></td><td>{exit_S2}日低点</td></tr>
                 <tr><td><strong>ATR周期</strong></td><td>{atr_period}日</td></tr>
                 <tr><td><strong>止损倍数</strong></td><td>{stop_loss_multiplier}×ATR</td></tr>
                 <tr><td><strong>单单位风险</strong></td><td>{risk_pct}%账户资金</td></tr>
+                <tr><td><strong>最大单位数</strong></td><td>{max_units}个</td></tr>
+                <tr><td><strong>加仓间隔</strong></td><td>每上涨{add_on_atr}ATR加仓1单位</td></tr>
                 <tr><td><strong>买入佣金</strong></td><td>万三（0.03%）</td></tr>
                 <tr><td><strong>卖出佣金</strong></td><td>万三（0.03%）</td></tr>
                 <tr><td><strong>卖出印花税</strong></td><td>万五（0.05%）</td></tr>
@@ -515,18 +628,18 @@ html_template = '''<!DOCTYPE html>
         </div>
 
         <div class="chart-section">
-            <h2>5. 股价与高低点通道走势（含交易信号）</h2>
+            <h2>6. 股价与高低点通道走势（含交易信号）</h2>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图1 天邑股份（300504.SZ）近三年股价与唐奇安通道</h3>
             <div id="priceChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
-                <strong>【图1解读】</strong> 图中黑色线为收盘价，红色线为{S1}日上轨，绿色线为{S1}日下轨，蓝色线为{S2}日上轨，青色线为{S2}日下轨，绿色三角为买入信号，红色三角为卖出信号。<br><br>
-                <strong>通道特征：</strong>{S1}日通道（红色/绿色）更敏感，通道宽度较窄；{S2}日通道（蓝色/青色）更稳健，通道宽度较宽。通道上轨和下轨形成了天然的支撑和阻力位。<br><br>
-                <strong>信号触发：</strong>买入信号出现在价格突破任一系统上轨时，表明上升趋势确立；卖出信号出现在价格跌破下轨时，表明下降趋势确立。
+                <strong>【图1解读】</strong> 图中黑色线为收盘价，红色线为{entry_S1}日入场上轨，绿色线为{exit_S1}日离场下轨，蓝色线为{entry_S2}日入场上轨，青色线为{exit_S2}日离场下轨，绿色三角为买入信号，红色三角为卖出信号。<br><br>
+                <strong>通道特征：</strong>{entry_S1}日通道（红色）更敏感，通道宽度较窄；{entry_S2}日通道（蓝色）更稳健，通道宽度较宽。离场通道（绿色/青色）周期更短，允许更早锁定利润。<br><br>
+                <strong>信号触发：</strong>买入信号出现在价格突破任一系统入场上轨时，表明上升趋势确立；卖出信号出现在价格跌破对应系统离场下轨时，表明趋势反转。
             </div>
         </div>
 
         <div class="chart-section">
-            <h2>6. ATR指标走势</h2>
+            <h2>7. ATR指标走势</h2>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图2 天邑股份（300504.SZ）{atr_period}日ATR指标</h3>
             <div id="atrChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
@@ -536,23 +649,23 @@ html_template = '''<!DOCTYPE html>
         </div>
 
         <div class="chart-section">
-            <h2>7. 资产净值曲线与回撤曲线</h2>
+            <h2>8. 资产净值曲线与回撤曲线</h2>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图3 海龟策略资产净值曲线与回撤曲线</h3>
             <div id="equityChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
                 <strong>【图3解读】</strong> 图中左侧Y轴为总资产（蓝色区域），灰色虚线为买入持有对照；右侧Y轴为回撤曲线（红色区域）。<br><br>
-                <strong>净值走势：</strong>策略净值反映了海龟策略在天邑股份上的表现。通过ATR动态止损和仓位管理，策略能够控制风险并捕捉趋势利润。<br><br>
-                <strong>回撤特征：</strong>回撤曲线反映了策略在不同时间点的浮亏状态。海龟策略的单位风险控制机制有助于限制最大回撤幅度。
+                <strong>净值走势：</strong>策略净值反映了海龟策略在天邑股份上的表现。通过ATR动态止损、金字塔加仓和单位风险控制，策略能够在趋势行情中放大收益。<br><br>
+                <strong>回撤特征：</strong>回撤曲线反映了策略在不同时间点的浮亏状态。海龟策略的单位风险控制和最大回撤限制机制有助于保护账户安全。
             </div>
         </div>
 
         <div class="chart-section">
-            <h2>8. 交易明细</h2>
+            <h2>9. 交易明细</h2>
             TRADE_TABLE
         </div>
 
         <div class="chart-section">
-            <h2>9. 策略评估指标详解</h2>
+            <h2>10. 策略评估指标详解</h2>
             <div class="metric-box">
                 <strong>【最大回撤（Maximum Drawdown, MDD）】</strong>从资产峰值到谷底的最大跌幅，衡量策略承受的最大亏损。<br>
                 公式：MDD = min_t((当日资产 - 历史最高资产) / 历史最高资产) × 100%<br>
@@ -596,36 +709,37 @@ html_template = '''<!DOCTYPE html>
         </div>
 
         <div class="chart-section">
-            <h2>10. 总结分析</h2>
+            <h2>11. 总结分析</h2>
 
-            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:20px;">10.1 核心结论</h3>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:20px;">11.1 核心结论</h3>
             <div class="interpretation">
                 <strong>一句话结论：</strong>海龟策略在天邑股份上3年累计回报SUMMARY_RET_PCT，与买入持有（BUYHOLD_PCT2）相比超额收益EXCESS_RETURN2%，策略表现STRATEGY_EVAL。<br><br>
                 <strong>策略 vs 持有：</strong>策略累计回报SUMMARY_RET_PCT，买入持有BUYHOLD_PCT2，超额收益EXCESS_RETURN2%。SUMMARY_TRADES笔交易中仅SUMMARY_WINS笔盈利（胜率WINRATE2%），盈亏比PROFITLOSS2，每次交易期望EXPECTED_RETURN2元。<br><br>
-                <strong>最大回撤：</strong>策略最大回撤MDD2%，ATR动态止损和单位风险控制机制有效控制了单次亏损幅度。
+                <strong>最大回撤：</strong>策略最大回撤MDD2%，ATR动态止损、金字塔加仓和单位风险控制机制有效控制了风险。
             </div>
 
-            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">10.2 收获与反思</h3>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">11.2 收获与反思</h3>
             <div class="interpretation">
                 <strong>收获一：理解了海龟策略的五大核心要素。</strong>完整的交易系统必须包含市场选择、头寸规模、入场规则、止损规则和离场规则五个要素，缺一不可。海龟策略的精髓在于将这些要素系统化、规则化，避免情绪化操作。<br><br>
-                <strong>收获二：体验了双系统突破的优势。</strong>同时运行系统一（{S1}日）和系统二（{S2}日）可以分散风险。系统一更敏感，能快速捕捉趋势启动；系统二更稳健，过滤噪音能力更强。两者结合提高了策略的稳定性。<br><br>
+                <strong>收获二：体验了双系统突破的优势。</strong>同时运行系统一（{entry_S1}日/{exit_S1}日）和系统二（{entry_S2}日/{exit_S2}日）可以分散风险。系统一更敏感，能快速捕捉趋势启动；系统二更稳健，过滤噪音能力更强。两者结合提高了策略的稳定性。<br><br>
                 <strong>收获三：掌握了基于ATR的仓位管理方法。</strong>通过"单位"概念，每单位头寸承担相同的风险（{risk_pct}%账户资金），确保在不同波动性市场中风险一致。这是海龟策略最精妙的设计之一。<br><br>
-                <strong>收获四：认识到ATR动态止损的价值。</strong>与固定百分比止损相比，ATR止损能够根据市场波动性自动调整止损距离，在波动大时给策略更多呼吸空间，在波动小时更紧密地保护利润。<br><br>
-                <strong>反思一：通道周期的选择。</strong>标准{S1}日和{S2}日周期在天邑股份上的表现取决于其趋势特征。如果标的长期处于震荡格局，较短周期的通道可能产生过多假信号。<br><br>
+                <strong>收获四：认识到金字塔加仓的价值。</strong>在盈利时加仓而非亏损时摊平成本，符合"顺势而为"理念。最多{max_units}个单位的限制确保了总风险可控（{risk_pct_max}%）。<br><br>
+                <strong>收获五：理解了"让利润奔跑"的离场哲学。</strong>反向突破离场而非固定止盈，能够捕捉完整趋势。系统一用{exit_S1}日低点、系统二用{exit_S2}日低点作为离场信号，既保护利润又不提前出局。<br><br>
+                <strong>反思一：通道周期的选择。</strong>标准{entry_S1}日/{entry_S2}日入场周期和{exit_S1}日/{exit_S2}日离场周期在天邑股份上的表现取决于其趋势特征。如果标的长期处于震荡格局，较短周期的通道可能产生过多假信号。<br><br>
                 <strong>反思二：单单位风险的设定。</strong>{risk_pct}%的单单位风险是标准设定，但可以根据个人风险承受能力调整。风险偏好低的投资者可以降低此比例。<br><br>
                 <strong>反思三：缺乏趋势过滤。</strong>策略在所有市场状态下都执行相同逻辑。如果能先判断市场是否处于趋势状态（如用ADX指标），在震荡市中暂停交易，可以减少假信号亏损。
             </div>
 
-            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">10.3 后续优化计划</h3>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">11.3 后续优化计划</h3>
             <div class="interpretation">
                 <strong>优化方向一：引入趋势过滤指标。</strong>在突破信号基础上增加ADX指标过滤。当ADX&lt;25（无明显趋势）时不产生交易信号，避免在震荡市中频繁操作。<br><br>
-                <strong>优化方向二：调整通道周期参数。</strong>尝试不同的通道周期组合，找到最适合天邑股份的参数组合。<br><br>
-                <strong>优化方向三：优化仓位管理。</strong>可以考虑在趋势确认后增加单位数量（加仓），提高在大趋势中的收益能力。<br><br>
+                <strong>优化方向二：调整通道周期参数。</strong>尝试不同的入场/离场通道周期组合，找到最适合天邑股份的参数组合。<br><br>
+                <strong>优化方向三：优化加仓策略。</strong>可以考虑根据趋势强度动态调整加仓间隔，趋势越强加仓越频繁。<br><br>
                 <strong>优化方向四：引入移动止盈。</strong>当价格上涨一定幅度后，动态调整止损线为移动止损，锁定更多利润。<br><br>
                 <strong>优化方向五：结合基本面分析。</strong>在技术面信号基础上，结合公司基本面进行过滤，避免在基本面恶化的标的上交易。
             </div>
 
-            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">10.4 适用场景总结</h3>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">11.4 适用场景总结</h3>
             <div class="interpretation">
                 <strong>适合海龟策略的场景：</strong><br>
                 1. 处于明显上升或下降趋势的标的<br>
@@ -645,10 +759,10 @@ html_template = '''<!DOCTYPE html>
     <script>
         var dates = DATES;
         var closePrices = CLOSE_PRICES;
-        var highChannelS1 = HIGH_CHANNEL_S1;
-        var lowChannelS1 = LOW_CHANNEL_S1;
-        var highChannelS2 = HIGH_CHANNEL_S2;
-        var lowChannelS2 = LOW_CHANNEL_S2;
+        var entryHighS1 = ENTRY_HIGH_S1;
+        var exitLowS1 = EXIT_LOW_S1;
+        var entryHighS2 = ENTRY_HIGH_S2;
+        var exitLowS2 = EXIT_LOW_S2;
         var atrValues = ATR_VALUES;
         var buyPoints = BUY_POINTS;
         var sellPoints = SELL_POINTS;
@@ -665,17 +779,17 @@ html_template = '''<!DOCTYPE html>
         var priceChart = echarts.init(document.getElementById('priceChart'));
         var priceOption = {
             tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
-            legend: { data: ['收盘价', '{S1}日上轨', '{S1}日下轨', '{S2}日上轨', '{S2}日下轨', '买入信号', '卖出信号'] },
+            legend: { data: ['收盘价', '{entry_S1}日入场上轨', '{exit_S1}日离场下轨', '{entry_S2}日入场上轨', '{exit_S2}日离场下轨', '买入信号', '卖出信号'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: { type: 'value', axisLabel: { formatter: function(v) { return v.toFixed(2); } } },
             dataZoom: commonDataZoom,
             series: [
                 { name: '收盘价', type: 'line', data: closePrices, smooth: true, lineStyle: { color: '#1a1a2e', width: 2 }, itemStyle: { color: '#1a1a2e' } },
-                { name: '{S1}日上轨', type: 'line', data: highChannelS1, smooth: true, lineStyle: { color: '#ef4444', width: 2, type: 'dashed' }, itemStyle: { color: '#ef4444' } },
-                { name: '{S1}日下轨', type: 'line', data: lowChannelS1, smooth: true, lineStyle: { color: '#10b981', width: 2, type: 'dashed' }, itemStyle: { color: '#10b981' } },
-                { name: '{S2}日上轨', type: 'line', data: highChannelS2, smooth: true, lineStyle: { color: '#2196f3', width: 2, type: 'dotted' }, itemStyle: { color: '#2196f3' } },
-                { name: '{S2}日下轨', type: 'line', data: lowChannelS2, smooth: true, lineStyle: { color: '#00bcd4', width: 2, type: 'dotted' }, itemStyle: { color: '#00bcd4' } },
+                { name: '{entry_S1}日入场上轨', type: 'line', data: entryHighS1, smooth: true, lineStyle: { color: '#ef4444', width: 2, type: 'dashed' }, itemStyle: { color: '#ef4444' } },
+                { name: '{exit_S1}日离场下轨', type: 'line', data: exitLowS1, smooth: true, lineStyle: { color: '#10b981', width: 2, type: 'dashed' }, itemStyle: { color: '#10b981' } },
+                { name: '{entry_S2}日入场上轨', type: 'line', data: entryHighS2, smooth: true, lineStyle: { color: '#2196f3', width: 2, type: 'dotted' }, itemStyle: { color: '#2196f3' } },
+                { name: '{exit_S2}日离场下轨', type: 'line', data: exitLowS2, smooth: true, lineStyle: { color: '#00bcd4', width: 2, type: 'dotted' }, itemStyle: { color: '#00bcd4' } },
                 { name: '买入信号', type: 'scatter', data: buyPoints, symbol: 'triangle', symbolSize: 15, itemStyle: { color: '#10b981' } },
                 { name: '卖出信号', type: 'scatter', data: sellPoints, symbol: 'triangle', symbolSize: 15, symbolRotate: 180, itemStyle: { color: '#ef4444' } }
             ]
@@ -732,11 +846,16 @@ html_template = '''<!DOCTYPE html>
 
 html_content = html_template.replace('TITLE', f'{stock_name}({stock_code}) 海龟策略回测报告')
 html_content = html_content.replace('NAME', f'{stock_name}({stock_code}) 海龟策略回测报告')
-html_content = html_content.replace('{S1}', str(channel_period_s1))
-html_content = html_content.replace('{S2}', str(channel_period_s2))
+html_content = html_content.replace('{entry_S1}', str(entry_channel_period_s1))
+html_content = html_content.replace('{exit_S1}', str(exit_channel_period_s1))
+html_content = html_content.replace('{entry_S2}', str(entry_channel_period_s2))
+html_content = html_content.replace('{exit_S2}', str(exit_channel_period_s2))
 html_content = html_content.replace('{atr_period}', str(atr_period))
 html_content = html_content.replace('{stop_loss_multiplier}', str(stop_loss_multiplier))
 html_content = html_content.replace('{risk_pct}', f'{risk_per_unit*100}')
+html_content = html_content.replace('{risk_pct_max}', f'{risk_per_unit*max_units*100}')
+html_content = html_content.replace('{max_units}', str(max_units))
+html_content = html_content.replace('{add_on_atr}', str(add_on_atr))
 
 html_content = html_content.replace('SUMMARY_RET_PCT', f'{final_return*100:.2f}%')
 html_content = html_content.replace('EXCESS_RETURN2%', f'{excess_return*100:.2f}%')
@@ -764,17 +883,17 @@ html_content = html_content.replace('STRATEGY_EVAL', strategy_eval)
 html_content = html_content.replace('RISK_EVAL', risk_eval)
 
 if trades:
-    trade_table = f'<table class="trade-table"><thead><tr><th>日期</th><th>类型</th><th>价格(元)</th><th>数量(股)</th><th>金额(元)</th><th>佣金(元)</th><th>滑点(元)</th><th>印花税(元)</th><th>盈亏(元)</th><th>止损价(元)</th><th>入场ATR</th><th>触发系统</th><th>退出原因</th><th>交易后现金(元)</th></tr></thead><tbody>{"".join(trade_rows)}</tbody></table>'
+    trade_table = f'<table class="trade-table"><thead><tr><th>日期</th><th>类型</th><th>价格(元)</th><th>数量(股)</th><th>金额(元)</th><th>佣金(元)</th><th>滑点(元)</th><th>印花税(元)</th><th>盈亏(元)</th><th>止损价(元)</th><th>入场ATR</th><th>触发系统</th><th>单位数</th><th>加仓档位</th><th>退出原因</th><th>交易后现金(元)</th></tr></thead><tbody>{"".join(trade_rows)}</tbody></table>'
 else:
     trade_table = '<p style="color:#999;">暂无交易记录</p>'
 html_content = html_content.replace('TRADE_TABLE', trade_table)
 
 html_content = html_content.replace('DATES', json.dumps(dates))
 html_content = html_content.replace('CLOSE_PRICES', json.dumps(close_prices))
-html_content = html_content.replace('HIGH_CHANNEL_S1', json.dumps(high_channel_s1))
-html_content = html_content.replace('LOW_CHANNEL_S1', json.dumps(low_channel_s1))
-html_content = html_content.replace('HIGH_CHANNEL_S2', json.dumps(high_channel_s2))
-html_content = html_content.replace('LOW_CHANNEL_S2', json.dumps(low_channel_s2))
+html_content = html_content.replace('ENTRY_HIGH_S1', json.dumps(entry_high_s1))
+html_content = html_content.replace('EXIT_LOW_S1', json.dumps(exit_low_s1))
+html_content = html_content.replace('ENTRY_HIGH_S2', json.dumps(entry_high_s2))
+html_content = html_content.replace('EXIT_LOW_S2', json.dumps(exit_low_s2))
 html_content = html_content.replace('ATR_VALUES', json.dumps(atr_values))
 html_content = html_content.replace('BUY_POINTS', json.dumps(buy_points))
 html_content = html_content.replace('SELL_POINTS', json.dumps(sell_points))
