@@ -272,8 +272,8 @@ html_template = '''<!DOCTYPE html>
         th, td { padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
         th { background: #f8f9fa; color: #666; font-weight: 600; }
         tr:hover { background: #f8f9fa; }
-        .pos { color: #10b981; font-weight: 600; }
-        .neg { color: #ef4444; font-weight: 600; }
+        .pos { color: #ef4444; font-weight: 600; }
+        .neg { color: #10b981; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -295,7 +295,7 @@ html_template = '''<!DOCTYPE html>
 
     <div class="section">
         <h2>一、实验结果总览</h2>
-        <p class="chart-caption">下表汇总全部32次回测的核心指标，正收益标绿，负收益标红。</p>
+        <p class="chart-caption">下表汇总全部32次回测的核心指标，正收益标红，负收益标绿。</p>
         <table>
             <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
             <tbody>RESULT_ROWS</tbody>
@@ -414,7 +414,7 @@ var c2Sharpes = CHART2_SHARPES;
 chart2.setOption({
     tooltip: commonTooltip,
     legend: { data: ['正收益占比(%)', '平均夏普比率'] },
-    grid: { left: '3%', right: '5%', bottom: '12%', containLabel: true },
+    grid: { left: '3%', right: '10%', bottom: '12%', containLabel: true },
     xAxis: { type: 'category', data: c2Combos },
     yAxis: [
         { type: 'value', name: '正收益占比(%)', min: 0, max: 100, axisLabel: { formatter: function(v){return v.toFixed(1);} } },
@@ -422,7 +422,7 @@ chart2.setOption({
     ],
     series: [
         { name: '正收益占比(%)', type: 'bar', data: c2Positive, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(1)+'%';} } },
-        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, formatter: function(p){return p.value.toFixed(2);} } }
+        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, position: 'bottom', formatter: function(p){return p.value.toFixed(2);}, backgroundColor: '#fff', padding: [2, 4], borderRadius: 3 } }
     ]
 });
 
@@ -434,7 +434,7 @@ var etfPoints = c3Points.filter(function(p){return p[4]==='ETF';}).map(function(
 chart3.setOption({
     tooltip: { trigger: 'item', formatter: function(p){ return p.data[2]+' '+p.data[3]+'<br/>区间最大回撤: '+p.data[0].toFixed(2)+'%<br/>累计回报: '+p.data[1].toFixed(2)+'%'; } },
     legend: { data: ['股票', 'ETF'] },
-    grid: { left: '3%', right: '4%', bottom: '12%', containLabel: true },
+    grid: { left: '3%', right: '10%', bottom: '12%', containLabel: true },
     xAxis: { type: 'value', name: '区间最大回撤(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     yAxis: { type: 'value', name: '累计回报(%)', axisLabel: { formatter: function(v){return v.toFixed(2);} } },
     series: [
