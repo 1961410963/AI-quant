@@ -597,7 +597,7 @@ document.querySelectorAll('.period-tab').forEach(tab => {
 
 // ===== 数据加载 =====
 async function loadData(code) {
-    const res = await fetch(`output/${code}_daily_data.csv`);
+    const res = await fetch(`../output/${code}_daily_data.csv`);
     const text = await res.text();
     const lines = text.split('\n').filter(l => l.trim());
     const data = [];
@@ -920,30 +920,47 @@ async function run() {
         capital: +document.getElementById('pCapital').value
     };
 
-    if (!raw_data || raw_code !== code) {
-        raw_data = await loadData(code);
-        raw_code = code;
+    try {
+        if (!raw_data || raw_code !== code) {
+            raw_data = await loadData(code);
+            raw_code = code;
+        }
+
+        if (!raw_data || raw_data.length === 0) {
+            alert('数据加载失败，请检查数据文件是否存在');
+            document.getElementById('loadingMask').classList.remove('show');
+            return;
+        }
+
+        let data = raw_data;
+        const lastDate = new Date(data[data.length-1].trade_date);
+        let days;
+        if (period === '3y') days = 3*365;
+        else if (period === '1y') days = 365;
+        else if (period === '6m') days = 180;
+        else days = 90;
+        const start = new Date(lastDate.getTime() - days * 86400000);
+        data = data.filter(d => new Date(d.trade_date) >= start);
+
+        if (data.length < 30) {
+            alert('数据量不足，请选择更长的时段');
+            document.getElementById('loadingMask').classList.remove('show');
+            return;
+        }
+
+        const r = backtest(data, p);
+
+        document.getElementById('topbar-stock').textContent = `${STOCK_MAP[code]} · ${code}`;
+        document.getElementById('topbar-date').textContent = `${data[0].trade_date} ~ ${data[data.length-1].trade_date}`;
+        document.getElementById('dateRange').textContent = `${data[0].trade_date} → ${data[data.length-1].trade_date} (${data.length}条)`;
+
+        updateMetrics(r);
+        renderCharts(data, r, p);
+        renderTrades(r.trades);
+    } catch (e) {
+        console.error('回测出错:', e);
+        alert('回测出错: ' + e.message);
     }
-
-    let data = raw_data;
-    const lastDate = new Date(data[data.length-1].trade_date);
-    let days;
-    if (period === '3y') days = 3*365;
-    else if (period === '1y') days = 365;
-    else if (period === '6m') days = 180;
-    else days = 90;
-    const start = new Date(lastDate.getTime() - days * 86400000);
-    data = data.filter(d => new Date(d.trade_date) >= start);
-
-    const r = backtest(data, p);
-
-    document.getElementById('topbar-stock').textContent = `${STOCK_MAP[code]} · ${code}`;
-    document.getElementById('topbar-date').textContent = `${data[0].trade_date} ~ ${data[data.length-1].trade_date}`;
-    document.getElementById('dateRange').textContent = `${data[0].trade_date} → ${data[data.length-1].trade_date} (${data.length}条)`;
-
-    updateMetrics(r);
-    renderCharts(data, r, p);
-    renderTrades(r.trades);
 
     document.getElementById('loadingMask').classList.remove('show');
 }
