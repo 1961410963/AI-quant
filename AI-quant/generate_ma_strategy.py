@@ -357,7 +357,7 @@ html_template = '''<!DOCTYPE html>
             <div class="metric-box">
                 <strong>【超额收益（Excess Return）】</strong>策略收益与简单买入持有相比的差异。<br>
                 公式：超额收益 = 策略收益率 - 买入持有收益率<br>
-                本策略超额收益：EXCESS%，买入持有收益：HOLDING_RETURN%。若为正，说明策略创造了额外价值。
+                本策略超额收益：EXCESS%，买入持有收益：BUYHOLD_PCT。若为正，说明策略创造了额外价值。
             </div>
             <div class="metric-box">
                 <strong>【回撤曲线】</strong>每日当前回撤，即当日资产净值距离历史最高点的跌幅。资产创新高时回撤为0，资产下跌时回撤为负，资产反弹时回撤向0收窄。它反映策略在不同时间点的"浮亏状态"，而非最终亏损。<br>
@@ -392,8 +392,8 @@ html_template = '''<!DOCTYPE html>
 
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:20px;">6.1 核心结论</h3>
             <div class="interpretation">
-                <strong>一句话结论：</strong>MA5/MA20双均线策略在天邑股份上3年亏损SUMMARY_RETURN%，大幅跑输买入持有（HOLDING_RETURN2%），根本原因是天邑股份近三年呈震荡格局，双均线策略的"追涨杀跌"特性在震荡市中被反复收割。<br><br>
-                <strong>策略 vs 持有：</strong>策略累计回报SUMMARY_RETURN%，买入持有HOLDING_RETURN2%，超额收益EXCESS_RETURN2%。SUMMARY_TRADES笔交易中仅SUMMARY_WINS笔盈利（胜率WINRATE2%），盈亏比PROFITLOSS2，每次交易期望亏损EXPECTED_RETURN2元。策略不仅没有创造额外价值，反而放大了亏损。<br><br>
+                <strong>一句话结论：</strong>MA5/MA20双均线策略在天邑股份上3年亏损SUMMARY_RET_PCT，大幅跑输买入持有（BUYHOLD_PCT2），根本原因是天邑股份近三年呈震荡格局，双均线策略的"追涨杀跌"特性在震荡市中被反复收割。<br><br>
+                <strong>策略 vs 持有：</strong>策略累计回报SUMMARY_RET_PCT，买入持有BUYHOLD_PCT2，超额收益EXCESS_RETURN2%。SUMMARY_TRADES笔交易中仅SUMMARY_WINS笔盈利（胜率WINRATE2%），盈亏比PROFITLOSS2，每次交易期望亏损EXPECTED_RETURN2元。策略不仅没有创造额外价值，反而放大了亏损。<br><br>
                 <strong>最大回撤：</strong>策略最大回撤MDD2%，全仓操作导致每笔交易都暴露在最大风险下，单笔最大亏损严重侵蚀本金。
             </div>
 
@@ -501,6 +501,20 @@ html_template = '''<!DOCTYPE html>
 
 html_content = html_template.replace('TITLE', f'{stock_name}({stock_code}) 双均线策略回测报告')
 html_content = html_content.replace('NAME', f'{stock_name}({stock_code}) 双均线策略回测报告')
+# 第六章总结分析占位符替换（必须先于短占位符替换，避免子串冲突：SUMMARY_TRADES含TRADES，PROFITLOSS2含PROFITLOSS）
+html_content = html_content.replace('SUMMARY_RET_PCT', f'{final_return*100:.2f}%')
+html_content = html_content.replace('EXCESS_RETURN2%', f'{excess_return*100:.2f}%')
+html_content = html_content.replace('SUMMARY_TRADES', str(total_trades))
+html_content = html_content.replace('SUMMARY_WINS', str(win_trades))
+html_content = html_content.replace('WINRATE2%', f'{win_rate:.2f}%')
+html_content = html_content.replace('PROFITLOSS2', f'{profit_loss_ratio:.2f}')
+html_content = html_content.replace('MDD2%', f'{max_drawdown:.2f}%')
+# 买入持有收益占位符（使用独特名称避免与RETURN%子串冲突）
+html_content = html_content.replace('BUYHOLD_PCT2', f'{holding_return*100:.2f}%')
+html_content = html_content.replace('BUYHOLD_PCT', f'{holding_return*100:.2f}%')
+html_content = html_content.replace('EXPECTED_RETURN2', f'{abs(expected_return):.2f}')
+html_content = html_content.replace('EXPECTED_RETURN', f'{expected_return:.2f}')
+# 短占位符替换
 html_content = html_content.replace('RETURN%', f'{final_return*100:.2f}%')
 html_content = html_content.replace('ANNUAL%', f'{annualized_return*100:.2f}%')
 html_content = html_content.replace('EXCESS%', f'{excess_return*100:.2f}%')
@@ -516,21 +530,6 @@ html_content = html_content.replace('SLIPPAGE_RATE', str(slippage_rate))
 html_content = html_content.replace('STAMP_TAX_RATE', str(stamp_tax_rate))
 html_content = html_content.replace('STRATEGY_EVAL', strategy_eval)
 html_content = html_content.replace('RISK_EVAL', risk_eval)
-
-# 先替换长占位符，再替换短占位符（避免HOLDING_RETURN匹配到HOLDING_RETURN2%中的子串）
-html_content = html_content.replace('HOLDING_RETURN2%', f'{holding_return*100:.2f}%')
-html_content = html_content.replace('HOLDING_RETURN', f'{holding_return*100:.2f}')
-html_content = html_content.replace('EXPECTED_RETURN2', f'{abs(expected_return):.2f}')
-html_content = html_content.replace('EXPECTED_RETURN', f'{expected_return:.2f}')
-
-# 第六章总结分析占位符替换
-html_content = html_content.replace('SUMMARY_RETURN%', f'{final_return*100:.2f}%')
-html_content = html_content.replace('EXCESS_RETURN2%', f'{excess_return*100:.2f}%')
-html_content = html_content.replace('SUMMARY_TRADES', str(total_trades))
-html_content = html_content.replace('SUMMARY_WINS', str(win_trades))
-html_content = html_content.replace('WINRATE2%', f'{win_rate:.2f}%')
-html_content = html_content.replace('PROFITLOSS2', f'{profit_loss_ratio:.2f}')
-html_content = html_content.replace('MDD2%', f'{max_drawdown:.2f}%')
 
 if trades:
     trade_table = f'<table class="trade-table"><thead><tr><th>日期</th><th>类型</th><th>价格(元)</th><th>数量(股)</th><th>金额(元)</th><th>佣金(元)</th><th>滑点(元)</th><th>印花税(元)</th><th>盈亏(元)</th><th>交易后现金(元)</th></tr></thead><tbody>{"".join(trade_rows)}</tbody></table>'
