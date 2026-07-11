@@ -374,6 +374,49 @@ html_template = '''<!DOCTYPE html>
                 本策略期望收益：EXPECTED_RETURN元/次交易。
             </div>
         </div>
+
+        <div class="chart-section">
+            <h2>6. 总结分析</h2>
+
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:20px;">6.1 核心结论</h3>
+            <div class="interpretation">
+                <strong>一句话结论：</strong>MA5/MA20双均线策略在天邑股份上3年亏损SUMMARY_RETURN%，大幅跑输买入持有（HOLDING_RETURN2%），根本原因是天邑股份近三年呈震荡格局，双均线策略的"追涨杀跌"特性在震荡市中被反复收割。<br><br>
+                <strong>策略 vs 持有：</strong>策略累计回报SUMMARY_RETURN%，买入持有HOLDING_RETURN2%，超额收益EXCESS_RETURN2%。SUMMARY_TRADES笔交易中仅SUMMARY_WINS笔盈利（胜率WINRATE2%），盈亏比PROFITLOSS2，每次交易期望亏损EXPECTED_RETURN2元。策略不仅没有创造额外价值，反而放大了亏损。<br><br>
+                <strong>最大回撤：</strong>策略最大回撤MDD2%，全仓操作导致每笔交易都暴露在最大风险下，单笔最大亏损严重侵蚀本金。
+            </div>
+
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">6.2 收获与反思</h3>
+            <div class="interpretation">
+                <strong>收获一：验证了"策略适用性"的重要性。</strong>双均线策略是趋势跟踪策略，只在趋势市有效。天邑股份近三年价格在11~20元区间反复震荡，没有形成持续上升或下降趋势，MA5/MA20频繁交叉产生大量假信号。这验证了项目03.2批量回测的结论：双均线策略适合趋势市，不适合震荡市。<br><br>
+                <strong>收获二：理解了交易成本的累积效应。</strong>21笔交易的佣金+印花税+滑点合计约5600元，占初始资金5.6%。在胜率仅28.57%的情况下，交易越多亏损越大。频繁交易不仅不能分散风险，反而成了亏损的加速器。<br><br>
+                <strong>收获三：全仓操作的风险暴露。</strong>全仓买入意味着每笔交易都押注全部资金，一次判断错误就可能造成10%以上的单笔亏损。第10笔交易（2024-10-08追高19.58元买入，11-04跌到15.70元卖出）单笔亏损15974元，占总资产16.7%，这一笔就几乎决定了全年的亏损格局。<br><br>
+                <strong>反思一：信号频率过高。</strong>3年21笔交易，平均1.7个月就买卖一次，说明MA5/MA20参数对天邑股份过于敏感。短周期均线在中低价股上容易产生噪音信号。<br><br>
+                <strong>反思二：没有止损机制。</strong>策略只有金叉买入、死叉卖出两个规则，没有设置止损线。当买入后价格快速下跌时，只能等到死叉信号才卖出，而此时往往已经跌了10%以上。<br><br>
+                <strong>反思三：缺少市场状态过滤。</strong>策略不区分趋势市和震荡市，在所有市场状态下都执行相同逻辑。如果能先判断市场状态（如用ADX指标或波动率），在震荡市中暂停交易或降低仓位，可以大幅减少假信号亏损。
+            </div>
+
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">6.3 后续优化计划</h3>
+            <div class="interpretation">
+                <strong>优化方向一：引入市场状态过滤。</strong>在MA5/MA20信号基础上，增加ADX（平均趋向指标）或ATR（平均真实波幅）作为过滤条件。当ADX&lt;25（无明显趋势）时不产生交易信号，避免在震荡市中频繁操作。<br><br>
+                <strong>优化方向二：增加止损止盈机制。</strong>买入后设置-5%硬止损线和+15%止盈线，在死叉信号触发前就主动平仓，控制单笔最大亏损。同时可引入移动止损（trailing stop），在盈利时锁定部分收益。<br><br>
+                <strong>优化方向三：调整均线参数。</strong>将MA5/MA20改为MA10/MA30或MA20/MA60，降低信号频率，减少假信号。更长周期的均线交叉次数更少，每次信号更可靠，但响应速度也会降低，需要在信号质量和时效性之间找平衡。<br><br>
+                <strong>优化方向四：分仓位操作。</strong>将全仓改为3~4批建仓，金叉时先买入1/3仓位，确认趋势后再加仓。这样即使第一笔判断错误，也有资金在更好价位补仓或止损，降低平均成本。<br><br>
+                <strong>优化方向五：结合基本面过滤。</strong>天邑股份2024年亏损，PE为负，ROE仅1.84%。对于基本面恶化的标的，应在策略层面降低权重或排除。技术面策略不应脱离基本面独立运行。
+            </div>
+
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:25px;">6.4 适用场景总结</h3>
+            <div class="interpretation">
+                <strong>适合双均线策略的场景：</strong><br>
+                1. 处于明显上升或下降趋势的标的（如2020年的白酒、2023年的AI概念股）<br>
+                2. 价格波动较大、趋势持续时间较长的标的<br>
+                3. 日均成交额大于5亿元、流动性好的标的<br><br>
+                <strong>不适合双均线策略的场景：</strong><br>
+                1. 震荡市中横盘整理的标的（如天邑股份近三年）<br>
+                2. 日均成交额小于2亿元、流动性不足的小盘股<br>
+                3. 受事件驱动波动剧烈、缺乏技术规律的标的<br><br>
+                <strong>天邑股份定位：</strong>基于近三年数据，天邑股份更适合低仓位波段操作，在支撑位附近买入、阻力位附近卖出，而非使用趋势跟踪策略。
+            </div>
+        </div>
     </div>
 
     <script>
@@ -463,6 +506,17 @@ html_content = html_content.replace('STRATEGY_EVAL', strategy_eval)
 html_content = html_content.replace('RISK_EVAL', risk_eval)
 html_content = html_content.replace('HOLDING_RETURN', f'{holding_return*100:.2f}')
 html_content = html_content.replace('EXPECTED_RETURN', f'{expected_return:.2f}')
+
+# 第六章总结分析占位符替换
+html_content = html_content.replace('SUMMARY_RETURN%', f'{final_return*100:.2f}%')
+html_content = html_content.replace('HOLDING_RETURN2%', f'{holding_return*100:.2f}%')
+html_content = html_content.replace('EXCESS_RETURN2%', f'{excess_return*100:.2f}%')
+html_content = html_content.replace('SUMMARY_TRADES', str(total_trades))
+html_content = html_content.replace('SUMMARY_WINS', str(win_trades))
+html_content = html_content.replace('WINRATE2%', f'{win_rate:.2f}%')
+html_content = html_content.replace('PROFITLOSS2', f'{profit_loss_ratio:.2f}')
+html_content = html_content.replace('EXPECTED_RETURN2', f'{abs(expected_return):.2f}')
+html_content = html_content.replace('MDD2%', f'{max_drawdown:.2f}%')
 
 if trades:
     trade_table = f'<table class="trade-table"><thead><tr><th>日期</th><th>类型</th><th>价格(元)</th><th>数量(股)</th><th>金额(元)</th><th>佣金(元)</th><th>滑点(元)</th><th>印花税(元)</th><th>盈亏(元)</th><th>交易后现金(元)</th></tr></thead><tbody>{"".join(trade_rows)}</tbody></table>'
