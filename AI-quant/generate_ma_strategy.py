@@ -320,7 +320,7 @@ html_template = '''<!DOCTYPE html>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图1 天邑股份（300504.SZ）近三年股价与MA5/MA20均线走势</h3>
             <div id="priceChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
-                <strong>【图1解读】</strong> 图中蓝色线为收盘价，绿色虚线为MA5（5日均线），红色虚线为MA20（20日均线），绿色三角为买入信号，红色三角为卖出信号。<br><br>
+                <strong>【图1解读】</strong> 图中黑色线为收盘价，绿色虚线为MA5（5日均线），红色虚线为MA20（20日均线），绿色三角为买入信号，红色三角为卖出信号。<br><br>
                 <strong>走势特征：</strong>天邑股份近三年价格在11~20元区间反复震荡，MA5与MA20频繁交叉，说明市场缺乏明确趋势方向。信号分布显示买入点多集中在阶段性高点附近（金叉时价格已上涨），卖出点多集中在阶段性低点附近（死叉时价格已下跌），呈现典型的"追涨杀跌"特征。<br><br>
                 <strong>信号质量：</strong>部分信号间隔仅2~3个交易日（如2023-08-09买入、2023-08-10卖出），属于典型的假信号，在震荡市中MA5/MA20的敏感性导致频繁发出交易指令。
             </div>
@@ -516,18 +516,20 @@ html_content = html_content.replace('SLIPPAGE_RATE', str(slippage_rate))
 html_content = html_content.replace('STAMP_TAX_RATE', str(stamp_tax_rate))
 html_content = html_content.replace('STRATEGY_EVAL', strategy_eval)
 html_content = html_content.replace('RISK_EVAL', risk_eval)
+
+# 先替换长占位符，再替换短占位符（避免HOLDING_RETURN匹配到HOLDING_RETURN2%中的子串）
+html_content = html_content.replace('HOLDING_RETURN2%', f'{holding_return*100:.2f}%')
 html_content = html_content.replace('HOLDING_RETURN', f'{holding_return*100:.2f}')
+html_content = html_content.replace('EXPECTED_RETURN2', f'{abs(expected_return):.2f}')
 html_content = html_content.replace('EXPECTED_RETURN', f'{expected_return:.2f}')
 
 # 第六章总结分析占位符替换
 html_content = html_content.replace('SUMMARY_RETURN%', f'{final_return*100:.2f}%')
-html_content = html_content.replace('HOLDING_RETURN2%', f'{holding_return*100:.2f}%')
 html_content = html_content.replace('EXCESS_RETURN2%', f'{excess_return*100:.2f}%')
 html_content = html_content.replace('SUMMARY_TRADES', str(total_trades))
 html_content = html_content.replace('SUMMARY_WINS', str(win_trades))
 html_content = html_content.replace('WINRATE2%', f'{win_rate:.2f}%')
 html_content = html_content.replace('PROFITLOSS2', f'{profit_loss_ratio:.2f}')
-html_content = html_content.replace('EXPECTED_RETURN2', f'{abs(expected_return):.2f}')
 html_content = html_content.replace('MDD2%', f'{max_drawdown:.2f}%')
 
 if trades:
