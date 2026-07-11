@@ -176,11 +176,11 @@ chart2.setOption({
     xAxis: { type: 'category', data: c2Combos },
     yAxis: [
         { type: 'value', name: '正收益占比(%)', min: 0, max: 100, axisLabel: { formatter: function(v){return v.toFixed(1);} } },
-        { type: 'value', name: '夏普比率', axisLabel: { formatter: function(v){return v.toFixed(2);} } }
+        { type: 'value', name: '夏普比率', alignTicks: true, axisLabel: { formatter: function(v){return v.toFixed(2);} } }
     ],
     series: [
         { name: '正收益占比(%)', type: 'bar', data: c2Positive, itemStyle: { color: '#5470c6' }, lineStyle: { color: '#5470c6' }, label: { show: true, position: 'top', formatter: function(p){return p.value.toFixed(1)+'%';} } },
-        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, position: 'bottom', formatter: function(p){return p.value.toFixed(2);}, backgroundColor: '#fff', padding: [2, 4], borderRadius: 3 } }
+        { name: '平均夏普比率', type: 'line', yAxisIndex: 1, data: c2Sharpes, lineStyle: { color: '#fac858', width: 2 }, itemStyle: { color: '#fac858' }, label: { show: true, position: 'right', formatter: function(p){return p.value.toFixed(2);}, backgroundColor: '#fff', padding: [2, 4], borderRadius: 3 } }
     ]
 });
 
