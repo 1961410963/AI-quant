@@ -241,6 +241,19 @@ best = results_df.loc[results_df['final_return_pct'].idxmax()]
 worst = results_df.loc[results_df['final_return_pct'].idxmin()]
 best_sharpe = results_df.loc[results_df['sharpe'].idxmax()]
 
+# 计算各标的数据时间范围
+date_ranges = []
+for code, name, itype in INSTRUMENTS:
+    csv_path = f'output/{code}_daily_data.csv'
+    if os.path.exists(csv_path):
+        df_tmp = pd.read_csv(csv_path)
+        df_tmp['trade_date'] = pd.to_datetime(df_tmp['trade_date'])
+        dmin = df_tmp['trade_date'].min().strftime('%Y-%m-%d')
+        dmax = df_tmp['trade_date'].max().strftime('%Y-%m-%d')
+        adj_label = '前复权' if itype == '股票' else '不复权'
+        date_ranges.append(f'{name} {dmin}~{dmax}（{adj_label}）')
+date_range_str = '；'.join(date_ranges)
+
 html_template = '''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -281,7 +294,8 @@ html_template = '''<!DOCTYPE html>
     <div class="header">
         <h1>双均线策略批量回测与对比分析</h1>
         <p>实验矩阵：<strong>8个标的（6只股票 + 2只ETF）× 4组均线周期 = 32次回测</strong><br>
-        参数：初始资金10万元 | 全仓买入/全仓卖出（金叉全仓买，死叉全仓卖）| 佣金万三 | 印花税万五（卖出）| 滑点万1 | 近三年前复权数据<br>
+        参数：初始资金10万元 | 全仓买入/全仓卖出（金叉全仓买，死叉全仓卖）| 佣金万三 | 印花税万五（卖出）| 滑点万1<br>
+        数据时间范围：DATE_RANGE_STR<br>
         均线周期组合：MA5/MA10（短周期）、MA5/MA20（经典）、MA10/MA30（中周期）、MA20/MA60（长周期）</p>
         <div class="summary-grid">
             <div class="summary-card"><div class="label">最佳组合</div><div class="value">BEST_COMBO</div></div>
@@ -295,7 +309,7 @@ html_template = '''<!DOCTYPE html>
 
     <div class="section">
         <h2>一、实验结果总览</h2>
-        <p class="chart-caption">下表汇总全部32次回测的核心指标，正收益标红，负收益标绿。</p>
+        <p class="chart-caption">下表汇总全部32次回测的核心指标。累计回报与超额收益：正值标红，负值标绿。</p>
         <table>
             <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
             <tbody>RESULT_ROWS</tbody>
@@ -484,6 +498,7 @@ window.addEventListener('resize', function() {
 result_rows = []
 for _, r in results_df.iterrows():
     ret_cls = 'pos' if r['final_return_pct'] > 0 else 'neg'
+    excess_cls = 'pos' if r['excess_return_pct'] > 0 else 'neg'
     row = (f'<tr><td>{r["name"]}</td><td>{r["type"]}</td><td>{r["ma_combo"]}</td>'
            f'<td class="{ret_cls}">{r["final_return_pct"]:.2f}</td>'
            f'<td>{r["annualized_return_pct"]:.2f}</td>'
@@ -493,7 +508,7 @@ for _, r in results_df.iterrows():
            f'<td>{r["profit_loss_ratio"]:.2f}</td>'
            f'<td>{r["total_trades"]}</td>'
            f'<td>{r["holding_return_pct"]:.2f}</td>'
-           f'<td>{r["excess_return_pct"]:.2f}</td></tr>')
+           f'<td class="{excess_cls}">{r["excess_return_pct"]:.2f}</td></tr>')
     result_rows.append(row)
 
 html_content = html_template
@@ -504,6 +519,7 @@ html_content = html_content.replace('WORST_RETURN', f'{worst["final_return_pct"]
 html_content = html_content.replace('BEST_SHARPE_COMBO', f'{best_sharpe["name"]} {best_sharpe["ma_combo"]}')
 html_content = html_content.replace('BEST_SHARPE', f'{best_sharpe["sharpe"]:.2f}')
 html_content = html_content.replace('RESULT_ROWS', ''.join(result_rows))
+html_content = html_content.replace('DATE_RANGE_STR', date_range_str)
 html_content = html_content.replace('CHART1_NAMES', chart1_names)
 html_content = html_content.replace('CHART1_SERIES', chart1_series_js)
 html_content = html_content.replace('CHART2_COMBOS', chart2_combos)
