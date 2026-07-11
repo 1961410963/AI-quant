@@ -311,7 +311,7 @@ html_template = '''<!DOCTYPE html>
         <h2>一、实验结果总览</h2>
         <p class="chart-caption">下表汇总全部32次回测的核心指标。累计回报与超额收益：正值标红，负值标绿。</p>
         <table>
-            <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>持有收益(%)</th><th>超额(%)</th></tr></thead>
+            <thead><tr><th>标的</th><th>类型</th><th>均线组合</th><th>累计回报(%)</th><th>年化(%)</th><th>区间最大回撤(%)</th><th>夏普</th><th>胜率(%)</th><th>盈亏比</th><th>交易次数</th><th>仅持有收益(%)</th><th>超额(%)</th></tr></thead>
             <tbody>RESULT_ROWS</tbody>
         </table>
     </div>
