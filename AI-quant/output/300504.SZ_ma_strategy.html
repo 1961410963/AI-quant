@@ -116,12 +116,24 @@
 
         <div class="chart-section">
             <h2>2. 股价与均线走势（含交易信号）</h2>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图1 天邑股份（300504.SZ）近三年股价与MA5/MA20均线走势</h3>
             <div id="priceChart" class="chart-container"></div>
+            <div class="interpretation" style="margin-top:15px;">
+                <strong>【图1解读】</strong> 图中蓝色线为收盘价，绿色虚线为MA5（5日均线），红色虚线为MA20（20日均线），绿色三角为买入信号，红色三角为卖出信号。<br><br>
+                <strong>走势特征：</strong>天邑股份近三年价格在11~20元区间反复震荡，MA5与MA20频繁交叉，说明市场缺乏明确趋势方向。信号分布显示买入点多集中在阶段性高点附近（金叉时价格已上涨），卖出点多集中在阶段性低点附近（死叉时价格已下跌），呈现典型的"追涨杀跌"特征。<br><br>
+                <strong>信号质量：</strong>部分信号间隔仅2~3个交易日（如2023-08-09买入、2023-08-10卖出），属于典型的假信号，在震荡市中MA5/MA20的敏感性导致频繁发出交易指令。
+            </div>
         </div>
 
         <div class="chart-section">
             <h2>3. 资产净值曲线与回撤曲线</h2>
+            <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图2 双均线策略资产净值曲线与回撤曲线</h3>
             <div id="equityChart" class="chart-container"></div>
+            <div class="interpretation" style="margin-top:15px;">
+                <strong>【图2解读】</strong> 图中左侧Y轴为总资产（蓝色区域），灰色虚线为买入持有对照；右侧Y轴为回撤曲线（红色区域）。<br><br>
+                <strong>净值走势：</strong>策略净值从10万元持续下滑至约5.3万元，期间经历多次大幅波动。最大回撤55%出现在净值最低点，说明全仓操作导致策略无法承受单笔大幅亏损。对比买入持有曲线（灰色虚线），策略净值明显低于持有收益，说明策略操作不仅没有创造价值，反而放大了亏损。<br><br>
+                <strong>回撤特征：</strong>回撤曲线在大部分时间处于深度负值区域（-20%~-50%），说明策略长期处于浮亏状态。回撤曲线的急剧下降对应重大亏损交易（如2024年10月的单笔-19.90%亏损），而回升过程缓慢，反映策略缺乏快速恢复能力。
+            </div>
         </div>
 
         <div class="chart-section">
