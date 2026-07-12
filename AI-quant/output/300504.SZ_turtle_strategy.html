@@ -463,7 +463,7 @@
         var equityChart = echarts.init(document.getElementById('equityChart'));
         var equityOption = {
             tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
-            legend: { data: ['总资产', '买入持有对照', '回撤曲线', '持仓区间', '空仓区间'] },
+            legend: { data: ['总资产', '买入持有对照', '回撤曲线'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: [
@@ -472,8 +472,6 @@
             ],
             dataZoom: commonDataZoom,
             series: [
-                { name: '空仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(180,180,180,0.06)' }, data: emptyAreas } },
-                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(37,99,235,0.03)' }, data: holdingAreas } },
                 { name: '总资产', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
                     var h = holdingsData.find(function(d) { return d[0] === i; });
                     return h ? h[1] : null;
