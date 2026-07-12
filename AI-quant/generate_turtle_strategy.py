@@ -698,7 +698,7 @@ html_template = '''<!DOCTYPE html>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图3 海龟策略资产净值曲线与回撤曲线</h3>
             <div id="equityChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
-                <strong>【图3解读】</strong> 图中左侧Y轴为总资产（红色区域），灰色虚线为买入持有对照；右侧Y轴为回撤曲线（红色区域）。背景浅红色区域为持仓区间，浅灰色区域为空仓区间。<br><br>
+                <strong>【图3解读】</strong> 图中蓝色区域为总资产（左Y轴），灰色虚线为买入持有对照，红色区域为回撤曲线（右Y轴）。背景浅蓝色为持仓区间，浅灰色为空仓区间。<br><br>
                 <strong>净值走势：</strong>策略净值反映了海龟策略在天邑股份上的表现。空仓区间（浅灰背景）表示策略等待突破信号，总资产保持不变，曲线呈水平线——这是趋势跟踪策略的正常特征，在震荡市中主动空仓以避免假突破亏损。<br><br>
                 <strong>回撤特征：</strong>回撤曲线反映了策略相对于历史最高资产的浮亏状态。空仓期间回撤不变（因为没有持仓盈亏），持仓期间回撤随资产波动。
             </div>
@@ -870,16 +870,16 @@ html_template = '''<!DOCTYPE html>
             dataZoom: commonDataZoom,
             series: [
                 { name: '空仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(156,163,175,0.08)' }, data: emptyAreas } },
-                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(255,107,107,0.06)' }, data: holdingAreas } },
+                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(37,99,235,0.05)' }, data: holdingAreas } },
                 { name: '总资产', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
                     var h = holdingsData.find(function(d) { return d[0] === i; });
                     return h ? h[1] : null;
-                }), smooth: true, lineStyle: { color: '#ff6b6b', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(255,107,107,0.3)'}, {offset: 1, color: 'rgba(255,107,107,0.05)'}]) } },
-                { name: '买入持有对照', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, lineStyle: { color: '#9ca3af', width: 2, type: 'dashed' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(156,163,175,0.2)'}, {offset: 1, color: 'rgba(156,163,175,0.02)'}]) } },
+                }), smooth: true, symbol: 'none', lineStyle: { color: '#2563eb', width: 2.5 }, itemStyle: { color: '#2563eb' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(37,99,235,0.25)'}, {offset: 1, color: 'rgba(37,99,235,0.02)'}]) } },
+                { name: '买入持有对照', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, symbol: 'none', lineStyle: { color: '#9ca3af', width: 1.5, type: 'dashed' }, itemStyle: { color: '#9ca3af' } },
                 { name: '回撤曲线', type: 'line', yAxisIndex: 1, data: closePrices.map(function(p, i) {
                     var idx = holdingsData.findIndex(function(d) { return d[0] === i; });
                     return idx >= 0 ? drawdownData[idx] : null;
-                }), smooth: true, lineStyle: { color: '#ef4444', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(239,68,68,0.3)'}, {offset: 1, color: 'rgba(239,68,68,0.05)'}]) } }
+                }), smooth: true, symbol: 'none', lineStyle: { color: '#ef4444', width: 2 }, itemStyle: { color: '#ef4444' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(239,68,68,0.2)'}, {offset: 1, color: 'rgba(239,68,68,0.02)'}]) } }
             ]
         };
         equityChart.setOption(equityOption);
