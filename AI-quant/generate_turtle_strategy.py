@@ -869,17 +869,17 @@ html_template = '''<!DOCTYPE html>
             ],
             dataZoom: commonDataZoom,
             series: [
-                { name: '空仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(156,163,175,0.08)' }, data: emptyAreas } },
-                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(37,99,235,0.05)' }, data: holdingAreas } },
+                { name: '空仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(180,180,180,0.06)' }, data: emptyAreas } },
+                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(37,99,235,0.03)' }, data: holdingAreas } },
                 { name: '总资产', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
                     var h = holdingsData.find(function(d) { return d[0] === i; });
                     return h ? h[1] : null;
-                }), smooth: true, symbol: 'none', lineStyle: { color: '#2563eb', width: 2.5 }, itemStyle: { color: '#2563eb' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(37,99,235,0.25)'}, {offset: 1, color: 'rgba(37,99,235,0.02)'}]) } },
+                }), smooth: true, symbol: 'none', lineStyle: { color: '#2563eb', width: 2.5 }, itemStyle: { color: '#2563eb' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(37,99,235,0.15)'}, {offset: 1, color: 'rgba(37,99,235,0.01)'}]) } },
                 { name: '买入持有对照', type: 'line', yAxisIndex: 0, data: holdingLine, smooth: true, symbol: 'none', lineStyle: { color: '#9ca3af', width: 1.5, type: 'dashed' }, itemStyle: { color: '#9ca3af' } },
                 { name: '回撤曲线', type: 'line', yAxisIndex: 1, data: closePrices.map(function(p, i) {
                     var idx = holdingsData.findIndex(function(d) { return d[0] === i; });
                     return idx >= 0 ? drawdownData[idx] : null;
-                }), smooth: true, symbol: 'none', lineStyle: { color: '#ef4444', width: 2 }, itemStyle: { color: '#ef4444' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(239,68,68,0.2)'}, {offset: 1, color: 'rgba(239,68,68,0.02)'}]) } }
+                }), smooth: true, symbol: 'none', lineStyle: { color: '#ef4444', width: 2 }, itemStyle: { color: '#ef4444' }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{offset: 0, color: 'rgba(239,68,68,0.12)'}, {offset: 1, color: 'rgba(239,68,68,0.01)'}]) } }
             ]
         };
         equityChart.setOption(equityOption);
