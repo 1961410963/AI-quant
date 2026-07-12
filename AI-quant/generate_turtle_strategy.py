@@ -57,139 +57,191 @@ df['buy_signal'] = df[['buy_signal_s1', 'buy_signal_s2']].max(axis=1)
 df['sell_signal'] = df[['sell_signal_s1', 'sell_signal_s2']].max(axis=1)
 
 cash = initial_capital
-position = 0
-current_units = 0
 holdings = []
 trades = []
 win_trades = 0
 lose_trades = 0
 total_profit = 0
 total_loss = 0
-entry_price = 0
-stop_loss_price = 0
-current_system = None
+
+# 双系统独立运行：S1和S2各自持有独立仓位
+systems = {
+    'S1': {
+        'name': '系统一(S1)',
+        'position': 0,
+        'entry_price': 0,
+        'stop_loss_price': 0,
+        'current_units': 0,
+        'buy_signal_col': 'buy_signal_s1',
+        'sell_signal_col': 'sell_signal_s1',
+    },
+    'S2': {
+        'name': '系统二(S2)',
+        'position': 0,
+        'entry_price': 0,
+        'stop_loss_price': 0,
+        'current_units': 0,
+        'buy_signal_col': 'buy_signal_s2',
+        'sell_signal_col': 'sell_signal_s2',
+    }
+}
+
+def get_total_position():
+    return systems['S1']['position'] + systems['S2']['position']
 
 for i in range(len(df)):
     row = df.iloc[i]
-    current_total_asset = cash + position * row['close']
+    total_position = get_total_position()
+    current_total_asset = cash + total_position * row['close']
     
-    if row['buy_signal'] == 1 and position == 0 and not np.isnan(row['atr']):
-        buy_price = row['open'] * (1 + slippage_rate)
+    # 依次处理每个系统
+    for sys_key, sys in systems.items():
         atr_value = row['atr']
-        stop_loss_price = buy_price - stop_loss_multiplier * atr_value
+        if np.isnan(atr_value):
+            continue
         
-        risk_amount = current_total_asset * risk_per_unit
-        shares_per_unit = int(risk_amount / atr_value / 100) * 100
-        
-        max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
-        shares = min(shares_per_unit, max_shares)
-        
-        if shares > 0:
-            cost = shares * buy_price
-            commission = cost * commission_rate
-            total_cost = cost + commission
-            position = shares
-            cash -= total_cost
-            entry_price = buy_price
-            current_units = 1
+        # 入场：该系统无仓位且触发买入信号
+        if row[sys['buy_signal_col']] == 1 and sys['position'] == 0:
+            buy_price = row['open'] * (1 + slippage_rate)
+            sys['stop_loss_price'] = buy_price - stop_loss_multiplier * atr_value
             
-            current_system = '系统一(S1)' if row['buy_signal_s1'] == 1 else '系统二(S2)'
+            risk_amount = current_total_asset * risk_per_unit
+            shares_per_unit = int(risk_amount / atr_value / 100) * 100
+            max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
+            shares = min(shares_per_unit, max_shares)
+            
+            if shares > 0:
+                cost = shares * buy_price
+                commission = cost * commission_rate
+                total_cost = cost + commission
+                sys['position'] = shares
+                cash -= total_cost
+                sys['entry_price'] = buy_price
+                sys['current_units'] = 1
+                
+                trades.append({
+                    'date': row['trade_date'].strftime('%Y-%m-%d'),
+                    'type': '买入',
+                    'price': round(buy_price, 2),
+                    'shares': shares,
+                    'amount': round(cost, 2),
+                    'commission': round(commission, 2),
+                    'slippage': round(shares * row['open'] * slippage_rate, 2),
+                    'cash_after': round(cash, 2),
+                    'stop_loss': round(sys['stop_loss_price'], 2),
+                    'atr_at_entry': round(atr_value, 2),
+                    'system': sys['name'],
+                    'units': sys['current_units'],
+                    'risk_per_unit': f'{risk_per_unit*100}%'
+                })
+        
+        # 持仓中：检查止损/止盈/加仓
+        elif sys['position'] > 0:
+            current_low = row['low']
+            stop_loss_triggered = current_low <= sys['stop_loss_price']
+            sell_signal_triggered = row[sys['sell_signal_col']] == 1
+            
+            if stop_loss_triggered:
+                sell_price = sys['stop_loss_price'] * (1 - slippage_rate)
+                exit_type = '止损卖出'
+            elif sell_signal_triggered:
+                sell_price = row['open'] * (1 - slippage_rate)
+                exit_type = '止盈卖出（反向突破）'
+            else:
+                # 检查加仓
+                if sys['current_units'] < max_units:
+                    add_on_price = sys['entry_price'] + sys['current_units'] * add_on_atr * atr_value
+                    if row['high'] >= add_on_price:
+                        buy_price = add_on_price * (1 + slippage_rate)
+                        risk_amount = current_total_asset * risk_per_unit
+                        shares_per_unit = int(risk_amount / atr_value / 100) * 100
+                        max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
+                        shares = min(shares_per_unit, max_shares)
+                        
+                        if shares > 0:
+                            cost = shares * buy_price
+                            commission = cost * commission_rate
+                            total_cost = cost + commission
+                            sys['position'] += shares
+                            cash -= total_cost
+                            sys['current_units'] += 1
+                            
+                            trades.append({
+                                'date': row['trade_date'].strftime('%Y-%m-%d'),
+                                'type': '加仓',
+                                'price': round(buy_price, 2),
+                                'shares': shares,
+                                'amount': round(cost, 2),
+                                'commission': round(commission, 2),
+                                'slippage': round(shares * buy_price * slippage_rate, 2),
+                                'cash_after': round(cash, 2),
+                                'stop_loss': round(sys['stop_loss_price'], 2),
+                                'atr_at_entry': round(atr_value, 2),
+                                'system': sys['name'],
+                                'units': sys['current_units'],
+                                'add_on_level': f'+{sys["current_units"] * add_on_atr}ATR'
+                            })
+                
+                # 更新止损价（只升不降）
+                sys['stop_loss_price'] = max(sys['stop_loss_price'], sys['entry_price'] - stop_loss_multiplier * atr_value)
+                continue
+            
+            # 执行卖出
+            revenue = sys['position'] * sell_price
+            commission = revenue * commission_rate
+            stamp_tax = revenue * stamp_tax_rate
+            net_revenue = revenue - commission - stamp_tax
+            
+            trade_profit = net_revenue - (sys['position'] * sys['entry_price'])
+            if trade_profit > 0:
+                win_trades += 1
+                total_profit += trade_profit
+            else:
+                lose_trades += 1
+                total_loss += abs(trade_profit)
+            
+            cash += net_revenue
             
             trades.append({
                 'date': row['trade_date'].strftime('%Y-%m-%d'),
-                'type': '买入',
-                'price': round(buy_price, 2),
-                'shares': shares,
-                'amount': round(cost, 2),
+                'type': exit_type,
+                'price': round(sell_price, 2),
+                'shares': sys['position'],
+                'amount': round(revenue, 2),
                 'commission': round(commission, 2),
-                'slippage': round(shares * row['open'] * slippage_rate, 2),
+                'stamp_tax': round(stamp_tax, 2),
+                'slippage': round(sys['position'] * row['open'] * slippage_rate, 2),
                 'cash_after': round(cash, 2),
-                'stop_loss': round(stop_loss_price, 2),
-                'atr_at_entry': round(atr_value, 2),
-                'system': current_system,
-                'units': current_units,
-                'risk_per_unit': f'{risk_per_unit*100}%'
+                'profit': round(trade_profit, 2),
+                'exit_reason': exit_type,
+                'system': sys['name'],
+                'units': sys['current_units']
             })
-        current_total_asset = cash + position * row['close']
-        holdings.append({
-            'date': row['trade_date'].strftime('%Y-%m-%d'),
-            'total_asset': round(current_total_asset, 2),
-            'cash': round(cash, 2),
-            'position': position,
-            'position_value': round(position * row['close'], 2),
-            'stop_loss': round(stop_loss_price, 2) if position > 0 else None,
-            'units': current_units
-        })
+            sys['position'] = 0
+            sys['current_units'] = 0
     
-    elif position > 0:
-        current_low = row['low']
-        atr_value = row['atr']
-        
-        stop_loss_triggered = current_low <= stop_loss_price
-        
-        sell_signal_s1_triggered = row['sell_signal_s1'] == 1 and current_system == '系统一(S1)'
-        sell_signal_s2_triggered = row['sell_signal_s2'] == 1 and current_system == '系统二(S2)'
-        sell_signal_triggered = sell_signal_s1_triggered or sell_signal_s2_triggered
-        
-        if stop_loss_triggered:
-            sell_price = stop_loss_price * (1 - slippage_rate)
-            exit_type = '止损卖出'
-        elif sell_signal_triggered:
-            sell_price = row['open'] * (1 - slippage_rate)
-            exit_type = '止盈卖出（反向突破）'
-        else:
-            if not np.isnan(atr_value) and current_units < max_units:
-                add_on_price = entry_price + current_units * add_on_atr * atr_value
-                if row['high'] >= add_on_price:
-                    buy_price = add_on_price * (1 + slippage_rate)
-                    risk_amount = current_total_asset * risk_per_unit
-                    shares_per_unit = int(risk_amount / atr_value / 100) * 100
-                    
-                    max_shares = int(cash / (buy_price * (1 + commission_rate)) / 100) * 100
-                    shares = min(shares_per_unit, max_shares)
-                    
-                    if shares > 0:
-                        cost = shares * buy_price
-                        commission = cost * commission_rate
-                        total_cost = cost + commission
-                        position += shares
-                        cash -= total_cost
-                        current_units += 1
-                        
-                        trades.append({
-                            'date': row['trade_date'].strftime('%Y-%m-%d'),
-                            'type': '加仓',
-                            'price': round(buy_price, 2),
-                            'shares': shares,
-                            'amount': round(cost, 2),
-                            'commission': round(commission, 2),
-                            'slippage': round(shares * buy_price * slippage_rate, 2),
-                            'cash_after': round(cash, 2),
-                            'stop_loss': round(stop_loss_price, 2),
-                            'atr_at_entry': round(atr_value, 2),
-                            'system': current_system,
-                            'units': current_units,
-                            'add_on_level': f'+{current_units * add_on_atr}ATR'
-                        })
-            
-            stop_loss_price = max(stop_loss_price, entry_price - stop_loss_multiplier * atr_value) if not np.isnan(atr_value) else stop_loss_price
-            holdings.append({
-                'date': row['trade_date'].strftime('%Y-%m-%d'),
-                'total_asset': round(current_total_asset, 2),
-                'cash': round(cash, 2),
-                'position': position,
-                'position_value': round(position * row['close'], 2),
-                'stop_loss': round(stop_loss_price, 2),
-                'units': current_units
-            })
-            continue
-        
-        revenue = position * sell_price
+    # 记录每日净值
+    total_position = get_total_position()
+    current_total_asset = cash + total_position * row['close']
+    holdings.append({
+        'date': row['trade_date'].strftime('%Y-%m-%d'),
+        'total_asset': round(current_total_asset, 2),
+        'cash': round(cash, 2),
+        'position': total_position,
+        'position_value': round(total_position * row['close'], 2),
+        'units': systems['S1']['current_units'] + systems['S2']['current_units']
+    })
+
+# 期末平仓
+for sys_key, sys in systems.items():
+    if sys['position'] > 0:
+        sell_price = df['close'].iloc[-1] * (1 - slippage_rate)
+        revenue = sys['position'] * sell_price
         commission = revenue * commission_rate
         stamp_tax = revenue * stamp_tax_rate
         net_revenue = revenue - commission - stamp_tax
         
-        trade_profit = net_revenue - (position * entry_price)
+        trade_profit = net_revenue - (sys['position'] * sys['entry_price'])
         if trade_profit > 0:
             win_trades += 1
             total_profit += trade_profit
@@ -200,76 +252,22 @@ for i in range(len(df)):
         cash += net_revenue
         
         trades.append({
-            'date': row['trade_date'].strftime('%Y-%m-%d'),
-            'type': exit_type,
+            'date': df['trade_date'].iloc[-1].strftime('%Y-%m-%d'),
+            'type': '期末平仓',
             'price': round(sell_price, 2),
-            'shares': position,
+            'shares': sys['position'],
             'amount': round(revenue, 2),
             'commission': round(commission, 2),
             'stamp_tax': round(stamp_tax, 2),
-            'slippage': round(position * row['open'] * slippage_rate, 2),
+            'slippage': round(sys['position'] * df['close'].iloc[-1] * slippage_rate, 2),
             'cash_after': round(cash, 2),
             'profit': round(trade_profit, 2),
-            'exit_reason': exit_type,
-            'system': current_system,
-            'units': current_units
+            'exit_reason': '期末平仓',
+            'system': sys['name'],
+            'units': sys['current_units']
         })
-        position = 0
-        current_units = 0
-        current_total_asset = cash + position * row['close']
-        holdings.append({
-            'date': row['trade_date'].strftime('%Y-%m-%d'),
-            'total_asset': round(current_total_asset, 2),
-            'cash': round(cash, 2),
-            'position': position,
-            'position_value': round(position * row['close'], 2),
-            'units': current_units
-        })
-    
-    else:
-        holdings.append({
-            'date': row['trade_date'].strftime('%Y-%m-%d'),
-            'total_asset': round(current_total_asset, 2),
-            'cash': round(cash, 2),
-            'position': position,
-            'position_value': round(position * row['close'], 2),
-            'units': current_units
-        })
-
-if position > 0:
-    sell_price = df['close'].iloc[-1] * (1 - slippage_rate)
-    revenue = position * sell_price
-    commission = revenue * commission_rate
-    stamp_tax = revenue * stamp_tax_rate
-    net_revenue = revenue - commission - stamp_tax
-    
-    trade_profit = net_revenue - (position * entry_price)
-    if trade_profit > 0:
-        win_trades += 1
-        total_profit += trade_profit
-    else:
-        lose_trades += 1
-        total_loss += abs(trade_profit)
-    
-    cash += net_revenue
-    
-    trades.append({
-        'date': df['trade_date'].iloc[-1].strftime('%Y-%m-%d'),
-        'type': '期末平仓',
-        'price': round(sell_price, 2),
-        'shares': position,
-        'amount': round(revenue, 2),
-        'commission': round(commission, 2),
-        'stamp_tax': round(stamp_tax, 2),
-        'slippage': round(position * df['close'].iloc[-1] * slippage_rate, 2),
-        'cash_after': round(cash, 2),
-        'profit': round(trade_profit, 2),
-        'exit_reason': '期末平仓',
-        'system': current_system,
-        'units': current_units
-    })
-    position = 0
-    current_units = 0
+        sys['position'] = 0
+        sys['current_units'] = 0
 
 holdings_df = pd.DataFrame(holdings)
 holdings_df['return'] = holdings_df['total_asset'] / initial_capital - 1
