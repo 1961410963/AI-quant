@@ -350,6 +350,34 @@ start_price = df['close'].iloc[0]
 for p in close_prices:
     holding_line.append(initial_capital * (p / start_price))
 
+# 生成持仓/空仓状态区间
+position_periods = []
+no_position_periods = []
+period_start = 0
+is_holding = holdings[0]['position'] > 0
+for i in range(1, len(holdings)):
+    current_holding = holdings[i]['position'] > 0
+    if current_holding != is_holding:
+        idx_start = dates.index(holdings[period_start]['date']) if holdings[period_start]['date'] in dates else period_start
+        idx_end = dates.index(holdings[i-1]['date']) if holdings[i-1]['date'] in dates else i-1
+        if is_holding:
+            position_periods.append([idx_start, idx_end])
+        else:
+            no_position_periods.append([idx_start, idx_end])
+        period_start = i
+        is_holding = current_holding
+# 最后一段
+idx_start = dates.index(holdings[period_start]['date']) if holdings[period_start]['date'] in dates else period_start
+idx_end = len(dates) - 1
+if is_holding:
+    position_periods.append([idx_start, idx_end])
+else:
+    no_position_periods.append([idx_start, idx_end])
+
+# 转换为ECharts markArea格式
+holding_areas = [[[s, 0], [e, 1]] for s, e in position_periods]
+empty_areas = [[[s, 0], [e, 1]] for s, e in no_position_periods]
+
 trade_rows = []
 for t in trades:
     row_class = 'buy-row' if t['type'] in ['买入', '加仓'] else 'sell-row'
@@ -670,9 +698,9 @@ html_template = '''<!DOCTYPE html>
             <h3 style="color:#1a1a2e; margin-bottom:15px; margin-top:5px;">图3 海龟策略资产净值曲线与回撤曲线</h3>
             <div id="equityChart" class="chart-container"></div>
             <div class="interpretation" style="margin-top:15px;">
-                <strong>【图3解读】</strong> 图中左侧Y轴为总资产（蓝色区域），灰色虚线为买入持有对照；右侧Y轴为回撤曲线（红色区域）。<br><br>
-                <strong>净值走势：</strong>策略净值反映了海龟策略在天邑股份上的表现。通过ATR动态止损、金字塔加仓和单位风险控制，策略能够在趋势行情中放大收益。<br><br>
-                <strong>回撤特征：</strong>回撤曲线反映了策略在不同时间点的浮亏状态。海龟策略的单位风险控制和最大回撤限制机制有助于保护账户安全。
+                <strong>【图3解读】</strong> 图中左侧Y轴为总资产（红色区域），灰色虚线为买入持有对照；右侧Y轴为回撤曲线（红色区域）。背景浅红色区域为持仓区间，浅灰色区域为空仓区间。<br><br>
+                <strong>净值走势：</strong>策略净值反映了海龟策略在天邑股份上的表现。空仓区间（浅灰背景）表示策略等待突破信号，总资产保持不变，曲线呈水平线——这是趋势跟踪策略的正常特征，在震荡市中主动空仓以避免假突破亏损。<br><br>
+                <strong>回撤特征：</strong>回撤曲线反映了策略相对于历史最高资产的浮亏状态。空仓期间回撤不变（因为没有持仓盈亏），持仓期间回撤随资产波动。
             </div>
         </div>
 
@@ -786,6 +814,8 @@ html_template = '''<!DOCTYPE html>
         var holdingsData = HOLDINGS_DATA;
         var drawdownData = DRAWDOWN_DATA;
         var holdingLine = HOLDING_LINE;
+        var holdingAreas = HOLDING_AREAS;
+        var emptyAreas = EMPTY_AREAS;
 
         var commonDataZoom = [
             { type: 'inside', xAxisIndex: [0], start: 0, end: 100 },
@@ -830,7 +860,7 @@ html_template = '''<!DOCTYPE html>
         var equityChart = echarts.init(document.getElementById('equityChart'));
         var equityOption = {
             tooltip: { trigger: 'axis', axisPointer: { type: 'cross' }, valueFormatter: function(v) { return v === null || v === undefined ? '-' : v.toFixed(2); } },
-            legend: { data: ['总资产', '买入持有对照', '回撤曲线'] },
+            legend: { data: ['总资产', '买入持有对照', '回撤曲线', '持仓区间', '空仓区间'] },
             grid: { left: '3%', right: '4%', top: '10%', bottom: '15%', containLabel: true },
             xAxis: { type: 'category', data: dates, axisLabel: { rotate: 45, fontSize: 10 } },
             yAxis: [
@@ -839,6 +869,8 @@ html_template = '''<!DOCTYPE html>
             ],
             dataZoom: commonDataZoom,
             series: [
+                { name: '空仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(156,163,175,0.08)' }, data: emptyAreas } },
+                { name: '持仓区间', type: 'line', data: [], markArea: { silent: true, itemStyle: { color: 'rgba(255,107,107,0.06)' }, data: holdingAreas } },
                 { name: '总资产', type: 'line', yAxisIndex: 0, data: closePrices.map(function(p, i) {
                     var h = holdingsData.find(function(d) { return d[0] === i; });
                     return h ? h[1] : null;
@@ -917,6 +949,8 @@ html_content = html_content.replace('SELL_POINTS', json.dumps(sell_points))
 html_content = html_content.replace('HOLDINGS_DATA', json.dumps(holdings_data))
 html_content = html_content.replace('DRAWDOWN_DATA', json.dumps(holdings_drawdown))
 html_content = html_content.replace('HOLDING_LINE', json.dumps(holding_line))
+html_content = html_content.replace('HOLDING_AREAS', json.dumps(holding_areas))
+html_content = html_content.replace('EMPTY_AREAS', json.dumps(empty_areas))
 
 with open(f'output/{stock_code}_turtle_strategy.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
