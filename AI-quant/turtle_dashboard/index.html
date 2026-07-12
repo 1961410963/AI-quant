@@ -622,11 +622,12 @@ function calcATR(data, period) {
         ));
     }
     const atr = [];
-    for (let i = 0; i < tr.length; i++) {
-        if (i < period) { atr.push(null); continue; }
-        let s = 0;
-        for (let j = i - period + 1; j <= i; j++) s += tr[j];
-        atr.push(s / period);
+    for (let i = 0; i < period; i++) { atr.push(null); }
+    let s = 0;
+    for (let i = 0; i < period; i++) s += tr[i];
+    atr.push(s / period);
+    for (let i = period; i < tr.length; i++) {
+        atr.push((atr[i] * (period - 1) + tr[i]) / period);
     }
     return atr;
 }

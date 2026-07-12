@@ -41,7 +41,7 @@ df['tr1'] = df['high'] - df['low']
 df['tr2'] = abs(df['high'] - df['close'].shift(1))
 df['tr3'] = abs(df['low'] - df['close'].shift(1))
 df['tr'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-df['atr'] = df['tr'].rolling(window=atr_period).mean()
+df['atr'] = df['tr'].ewm(alpha=1/atr_period, adjust=False).mean()
 
 df['prev_entry_high_s1'] = df['entry_high_s1'].shift(1)
 df['prev_entry_high_s2'] = df['entry_high_s2'].shift(1)
@@ -526,7 +526,7 @@ html_template = '''<!DOCTYPE html>
                 1. 当日最高价 - 当日最低价<br>
                 2. |当日最高价 - 前一日收盘价|<br>
                 3. |当日最低价 - 前一日收盘价|<br>
-                ATR是TR的N日移动平均值（标准周期为{atr_period}日）。ATR越大说明市场波动越剧烈，ATR越小说明市场越平稳。
+                ATR是TR的N日Wilder平滑值（标准周期为{atr_period}日）。ATR越大说明市场波动越剧烈，ATR越小说明市场越平稳。
             </div>
 
             <div class="concept-box">
@@ -614,7 +614,7 @@ html_template = '''<!DOCTYPE html>
             <div class="strategy-rule">
                 <strong>ATR计算（Wilder平滑法）：</strong><br>
                 TR = max(high-low, |high-prev_close|, |low-prev_close|)<br>
-                ATR = TR.rolling({atr_period}).mean()（前{atr_period}日TR均值）
+                ATR_t = (ATR_{{t-1}} × ({atr_period}-1) + TR_t) / {atr_period}（前{atr_period}个TR的加权平滑值）
             </div>
             <div class="strategy-rule">
                 <strong>买入规则（双系统突破）：</strong><br>
