@@ -110,6 +110,16 @@ for i in range(len(df)):
                 'units': current_units,
                 'risk_per_unit': f'{risk_per_unit*100}%'
             })
+        current_total_asset = cash + position * row['close']
+        holdings.append({
+            'date': row['trade_date'].strftime('%Y-%m-%d'),
+            'total_asset': round(current_total_asset, 2),
+            'cash': round(cash, 2),
+            'position': position,
+            'position_value': round(position * row['close'], 2),
+            'stop_loss': round(stop_loss_price, 2) if position > 0 else None,
+            'units': current_units
+        })
     
     elif position > 0:
         current_low = row['low']
@@ -206,6 +216,15 @@ for i in range(len(df)):
         })
         position = 0
         current_units = 0
+        current_total_asset = cash + position * row['close']
+        holdings.append({
+            'date': row['trade_date'].strftime('%Y-%m-%d'),
+            'total_asset': round(current_total_asset, 2),
+            'cash': round(cash, 2),
+            'position': position,
+            'position_value': round(position * row['close'], 2),
+            'units': current_units
+        })
     
     else:
         holdings.append({
