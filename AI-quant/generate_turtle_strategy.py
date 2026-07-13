@@ -89,6 +89,9 @@ systems = {
 def get_total_position():
     return systems['S1']['position'] + systems['S2']['position']
 
+def get_total_units():
+    return systems['S1']['current_units'] + systems['S2']['current_units']
+
 for i in range(len(df)):
     row = df.iloc[i]
     total_position = get_total_position()
@@ -102,6 +105,10 @@ for i in range(len(df)):
         
         # 入场：该系统无仓位且触发买入信号
         if row[sys['buy_signal_col']] == 1 and sys['position'] == 0:
+            total_units = get_total_units()
+            if total_units >= max_units:
+                continue
+            
             buy_price = row['open'] * (1 + slippage_rate)
             sys['stop_loss_price'] = buy_price - stop_loss_multiplier * atr_value
             
@@ -149,7 +156,8 @@ for i in range(len(df)):
                 exit_type = '止盈卖出（反向突破）'
             else:
                 # 检查加仓
-                if sys['current_units'] < max_units:
+                total_units = get_total_units()
+                if total_units < max_units and sys['current_units'] < max_units:
                     add_on_price = sys['entry_price'] + sys['current_units'] * add_on_atr * atr_value
                     if row['high'] >= add_on_price:
                         buy_price = add_on_price * (1 + slippage_rate)
