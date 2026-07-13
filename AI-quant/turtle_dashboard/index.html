@@ -806,7 +806,18 @@ function renderCharts(data, r, p) {
     const mddData = r.equity.map(e => e.mdd);
 
     chartEq.setOption({
-        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'cross' },
+            formatter: (params) => {
+                let html = `<div style="font-weight:600;margin-bottom:4px;">${params[0].axisValue}</div>`;
+                params.forEach(p => {
+                    const val = p.seriesName === '最大回撤' ? p.value.toFixed(2) + '%' : p.value.toFixed(2);
+                    html += `<div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color};"></span><span style="flex:1;">${p.seriesName}</span><span style="font-weight:600;">${val}</span></div>`;
+                });
+                return html;
+            }
+        },
         legend: { data: ['策略净值', '买入持有', '最大回撤'], textStyle: { color: '#64748b' }, top: 0 },
         grid: { left: '3%', right: '4%', top: '12%', bottom: '8%', containLabel: true },
         xAxis: { type: 'category', data: dates, axisLabel: { rotate: 0, fontSize: 10, color: '#475569' } },
