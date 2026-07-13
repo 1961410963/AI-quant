@@ -853,9 +853,25 @@ function renderCharts(data, r, p) {
 
     // 雷达图
     if (!chartRad) chartRad = echarts.init(document.getElementById('chartRadar'));
-    const maxR = Math.max(r.cumRet, r.buyHold, 1);
+    const radarData = [
+        Math.max(0, r.cumRet),
+        Math.max(0, r.sharpe),
+        r.winRate,
+        r.plRatio,
+        Math.max(0, 100 - Math.abs(r.mdd)),
+        Math.max(0, r.excess)
+    ].map(v => Number(v.toFixed(2)));
     chartRad.setOption({
-        tooltip: {},
+        tooltip: {
+            formatter: (params) => {
+                const names = ['收益率', '夏普比率', '胜率', '盈亏比', '风险控制', '超额收益'];
+                let html = '<div style="font-weight:600;margin-bottom:4px;">策略表现</div>';
+                params.value.forEach((v, i) => {
+                    html += `<div style="display:flex;justify-content:space-between;gap:12px;"><span>${names[i]}</span><span style="color:#14b8a6;font-weight:600;">${v.toFixed(2)}</span></div>`;
+                });
+                return html;
+            }
+        },
         radar: {
             indicator: [
                 { name: '收益率', max: 100 },
@@ -866,22 +882,19 @@ function renderCharts(data, r, p) {
                 { name: '超额收益', max: 100 }
             ],
             shape: 'polygon',
+            radius: '62%',
+            center: ['50%', '52%'],
             splitArea: { areaStyle: { color: ['rgba(20,184,166,0.02)', 'rgba(20,184,166,0.05)'] } },
             axisLine: { lineStyle: { color: '#252d44' } },
             splitLine: { lineStyle: { color: '#252d44' } },
-            name: { textStyle: { color: '#64748b', fontSize: 11 } }
+            name: { textStyle: { color: '#94a3b8', fontSize: 11 } }
         },
         series: [{
             type: 'radar',
+            symbol: 'circle',
+            symbolSize: 5,
             data: [{
-                value: [
-                    Math.max(0, r.cumRet),
-                    Math.max(0, r.sharpe),
-                    r.winRate,
-                    r.plRatio,
-                    Math.max(0, 100 - Math.abs(r.mdd)),
-                    Math.max(0, r.excess)
-                ],
+                value: radarData,
                 name: '策略表现',
                 areaStyle: { color: 'rgba(20,184,166,0.2)' },
                 lineStyle: { color: '#14b8a6', width: 2 },
