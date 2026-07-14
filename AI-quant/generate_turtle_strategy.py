@@ -170,7 +170,11 @@ for i in range(len(df)):
                             cost = shares * buy_price
                             commission = cost * commission_rate
                             total_cost = cost + commission
+                            
+                            old_cost = sys['position'] * sys['entry_price']
                             sys['position'] += shares
+                            sys['entry_price'] = (old_cost + cost) / sys['position']
+                            
                             cash -= total_cost
                             sys['current_units'] += 1
                             
@@ -322,6 +326,27 @@ print(f'胜率: {win_rate:.2f}%')
 print(f'盈亏比: {profit_loss_ratio:.2f}')
 print(f'期望收益: {expected_return:.2f}元/次')
 print(f'持有收益: {holding_return*100:.2f}%')
+
+print(f'\n--- 交易明细统计 ---')
+print(f'盈利交易: {win_trades}次, 总盈利: {total_profit:.2f}元, 平均盈利: {(total_profit/win_trades):.2f}元' if win_trades > 0 else '盈利交易: 0次')
+print(f'亏损交易: {lose_trades}次, 总亏损: {total_loss:.2f}元, 平均亏损: {(total_loss/lose_trades):.2f}元' if lose_trades > 0 else '亏损交易: 0次')
+
+total_commissions = sum(t['commission'] for t in trades if 'commission' in t)
+total_stamp_tax = sum(t['stamp_tax'] for t in trades if 'stamp_tax' in t)
+total_slippage = sum(t['slippage'] for t in trades if 'slippage' in t)
+print(f'\n--- 成本明细 ---')
+print(f'总佣金: {total_commissions:.2f}元')
+print(f'总印花税: {total_stamp_tax:.2f}元')
+print(f'总滑点: {total_slippage:.2f}元')
+print(f'总成本: {total_commissions + total_stamp_tax + total_slippage:.2f}元')
+
+buy_trades = [t for t in trades if t['type'] == '买入']
+sell_trades = [t for t in trades if t['type'] in ['止损卖出', '止盈卖出（反向突破）', '期末平仓']]
+add_trades = [t for t in trades if t['type'] == '加仓']
+print(f'\n--- 交易类型分布 ---')
+print(f'买入: {len(buy_trades)}次')
+print(f'加仓: {len(add_trades)}次')
+print(f'卖出: {len(sell_trades)}次')
 
 dates = [d.strftime('%Y-%m-%d') for d in df['trade_date']]
 close_prices = [round(p, 2) for p in df['close'].tolist()]
