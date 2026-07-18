@@ -367,22 +367,22 @@ html = r'''<!DOCTYPE html>
         <!-- 3.5 总收益率计算方式 -->
         <div class="strategy-box" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff); border-color:#e9d5ff;">
             <h3 style="color:#86198f;">🧮 3.5 总收益率计算方式</h3>
-            <p>策略的总收益率通过<strong>每日组合收益的复利累积</strong>计算得出，具体分为两步：</p>
+            <p>策略的总收益率通过<strong>每季度组合收益的复利累积</strong>计算得出。本数据集按季度更新（每季度末一个数据点），共10个季度，具体分为两步：</p>
             
-            <p style="margin-top:12px;"><strong>第一步：计算每日组合收益率</strong></p>
-            <p>对每个交易日，组合中30支股票按各自仓位权重加权，得到当日组合收益率：</p>
+            <p style="margin-top:12px;"><strong>第一步：计算每季度组合收益率</strong></p>
+            <p>对每个季度，组合中30支股票按各自仓位权重加权，得到当季组合收益率：</p>
             <div class="formula" style="text-align:left; font-size:14px;">
-                r_portfolio(t) = Σ [ weight_i(t) × r_i(t) ], &nbsp; i = 1...30
+                r_portfolio(q) = Σ [ weight_i(q) × r_i(q) ], &nbsp; i = 1...30
             </div>
             <p style="font-size:13px; color:#6b7280; margin-top:6px;">
-                其中 weight_i(t) 是股票i在第t日的仓位权重（由下跌概率计算得出），r_i(t) 是股票i在第t日的收益率。
+                其中 weight_i(q) 是股票i在第q季度的仓位权重（由下跌概率计算得出），r_i(q) 是股票i在第q季度的收益率（Next_Ret）。
             </p>
 
             <p style="margin-top:14px;"><strong>第二步：复利累积计算总收益率</strong></p>
-            <p>从策略起始日开始，将每日组合收益率复利相乘，得到累计净值：</p>
+            <p>从策略起始季度开始，将每季度组合收益率复利相乘，得到累计净值：</p>
             <div class="formula" style="text-align:left; font-size:14px;">
-                累计净值(T) = ∏ [1 + r_portfolio(t)], &nbsp; t = 1...T<br>
-                <strong style="color:#86198f;">总收益率 = 累计净值(T) - 1</strong>
+                累计净值(Q) = ∏ [1 + r_portfolio(q)], &nbsp; q = 1...Q<br>
+                <strong style="color:#86198f;">总收益率 = 累计净值(Q) - 1</strong>
             </div>
             <p style="font-size:13px; color:#6b7280; margin-top:6px;">
                 例如：若4个季度后累计净值为1.2548，则总收益率 = 1.2548 - 1 = <strong style="color:#10b981;">25.48%</strong>
@@ -390,6 +390,10 @@ html = r'''<!DOCTYPE html>
 
             <p style="margin-top:14px;"><strong>对比：基础策略的总收益率计算</strong></p>
             <p style="font-size:13px;">基础策略（等权重）的区别仅在于权重：每支股票权重固定为 1/30 ≈ 3.33%，不加权调整。复利累积逻辑完全相同。</p>
+
+            <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #c026d3; font-size:13px; color:#6b21a8;">
+                <strong>关于回撤为0的说明：</strong>由于数据按季度更新，每个季度只有一个数据点。当某季度累计净值创历史新高时，该季度的回撤就是0%（因为没有中间数据点可以显示下跌）。回撤只在累计净值低于历史最高点时才会出现负值。测试集共4个季度，数据点较少，所以部分季度回撤为0是正常的。
+            </div>
         </div>
 
         <!-- 3.6 季度加减仓操作逻辑 -->

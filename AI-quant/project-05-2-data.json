@@ -48624,7 +48624,7 @@
     "随机森林": {
       "total_return": 0.20323022936116653,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 7.061695339005309,
+      "sharpe_ratio": 0.8896899857862859,
       "max_drawdown": -0.0661733333333333,
       "avg_trades": 30.0,
       "portfolio_cum": [
@@ -48661,7 +48661,7 @@
     "决策树": {
       "total_return": 0.07357678460940309,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 3.997632386562044,
+      "sharpe_ratio": 0.5036543394238474,
       "max_drawdown": -0.07551818181818186,
       "avg_trades": 5.75,
       "portfolio_cum": [
@@ -48700,7 +48700,7 @@
     "随机森林": {
       "total_return": 0.2548431617464244,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 7.868290436245486,
+      "sharpe_ratio": 0.9913114160730224,
       "max_drawdown": -0.0573676085267121,
       "avg_trades": 30.0,
       "portfolio_cum": [
@@ -48739,7 +48739,7 @@
     "决策树": {
       "total_return": 0.10871123791187443,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 5.061150976512264,
+      "sharpe_ratio": 0.6376450872191979,
       "max_drawdown": -0.07593153196799322,
       "avg_trades": 5.75,
       "portfolio_cum": [
@@ -48782,7 +48782,7 @@
       "base_model": "决策树",
       "total_return": 0.07357678460940309,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 3.997632386562044,
+      "sharpe_ratio": 0.5036543394238474,
       "max_drawdown": -0.07551818181818186,
       "avg_trades": 5.75,
       "portfolio_cum": [
@@ -48823,7 +48823,7 @@
       "base_model": "随机森林",
       "total_return": 0.20323022936116653,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 7.061695339005309,
+      "sharpe_ratio": 0.8896899857862859,
       "max_drawdown": -0.0661733333333333,
       "avg_trades": 30.0,
       "portfolio_cum": [
@@ -48864,7 +48864,7 @@
       "base_model": "决策树",
       "total_return": 0.10871123791187443,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 5.061150976512264,
+      "sharpe_ratio": 0.6376450872191979,
       "max_drawdown": -0.07593153196799322,
       "avg_trades": 5.75,
       "portfolio_cum": [
@@ -48905,7 +48905,7 @@
       "base_model": "随机森林",
       "total_return": 0.2548431617464244,
       "market_return": -0.05841136413087389,
-      "sharpe_ratio": 7.868290436245486,
+      "sharpe_ratio": 0.9913114160730224,
       "max_drawdown": -0.0573676085267121,
       "avg_trades": 30.0,
       "portfolio_cum": [

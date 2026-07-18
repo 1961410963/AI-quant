@@ -123,7 +123,8 @@ def calculate_strategy_metrics(df, pred_col):
     market_return = market_cum.iloc[-1] - 1
     
     daily_return = portfolio_daily
-    sharpe_ratio = np.sqrt(252) * daily_return.mean() / daily_return.std()
+    # 数据按季度更新，年化因子为√4（一年4个季度）
+    sharpe_ratio = np.sqrt(4) * daily_return.mean() / daily_return.std()
     
     rolling_max = portfolio_cum.cummax()
     drawdown = (portfolio_cum - rolling_max) / rolling_max
@@ -174,7 +175,8 @@ def calculate_risk_weighted_strategy(df, pred_col, prob_col='Down_Prob'):
     market_return = market_cum.iloc[-1] - 1
     
     daily_return = portfolio_daily
-    sharpe_ratio = np.sqrt(252) * daily_return.mean() / daily_return.std()
+    # 数据按季度更新，年化因子为√4（一年4个季度）
+    sharpe_ratio = np.sqrt(4) * daily_return.mean() / daily_return.std()
     
     rolling_max = portfolio_cum.cummax()
     drawdown = (portfolio_cum - rolling_max) / rolling_max
