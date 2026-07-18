@@ -319,18 +319,21 @@
 
     <!-- 四、数据集拆分 -->
     <div class="section">
-        <h2 class="section-title">四、数据集拆分（6:4 按季度）</h2>
-        <p class="section-desc">按时间序列拆分，前6个季度训练，后4个季度测试，避免数据泄露</p>
+        <h2 class="section-title">四、数据集拆分（按季度）</h2>
+        <p class="section-desc">按时间序列拆分，避免数据泄露。原始10个季度经特征工程后保留8个季度</p>
         
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
             <div style="background:#f0fdf4; padding:20px; border-radius:10px; border-left:4px solid #10b981;">
-                <h3 style="font-size:15px; color:#065f46; margin-bottom:10px;">📦 训练集（60%）</h3>
+                <h3 style="font-size:15px; color:#065f46; margin-bottom:10px;">📦 训练集</h3>
                 <p style="font-size:13px; color:#374151;" id="train-info">--</p>
             </div>
             <div style="background:#fef3c7; padding:20px; border-radius:10px; border-left:4px solid #f59e0b;">
-                <h3 style="font-size:15px; color:#92400e; margin-bottom:10px;">📊 测试集（40%）</h3>
+                <h3 style="font-size:15px; color:#92400e; margin-bottom:10px;">📊 测试集</h3>
                 <p style="font-size:13px; color:#374151;" id="test-info">--</p>
             </div>
+        </div>
+        <div class="fig-caption" style="margin-top:12px;">
+            <strong>说明：</strong>原始数据覆盖2020Q1-2022Q2共10个季度。由于特征工程计算滞后项(lag2)和移动平均(MA3)需要前置数据，dropna后2020Q1-Q2被丢弃，实际训练集为2020Q3-2021Q2（4个季度），测试集为2021Q3-2022Q2（4个季度）。
         </div>
     </div>
 
@@ -568,34 +571,6 @@
         </div>
     </div>
 
-    <!-- 十、策略核心参数调优 -->
-    <div class="section">
-        <h2 class="section-title">十、策略核心参数调优思路</h2>
-        <p class="section-desc">通过网格搜索优化策略参数，找到最优配置</p>
-        
-        <div style="background:#f8fafc; border-radius:12px; padding:20px;">
-            <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">🔍 参数网格搜索</h3>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin-bottom:15px;">
-                <div style="padding:12px; background:#fff; border-radius:8px;">
-                    <div style="font-size:14px; font-weight:600; color:#3b82f6;">选股数量</div>
-                    <div style="font-size:13px; color:#64748b;">[20, 30, 50, 100]</div>
-                </div>
-                <div style="padding:12px; background:#fff; border-radius:8px;">
-                    <div style="font-size:14px; font-weight:600; color:#3b82f6;">调仓频率</div>
-                    <div style="font-size:13px; color:#64748b;">[月度, 季度, 半年度]</div>
-                </div>
-                <div style="padding:12px; background:#fff; border-radius:8px;">
-                    <div style="font-size:14px; font-weight:600; color:#3b82f6;">模型参数</div>
-                    <div style="font-size:13px; color:#64748b;">n_estimators, max_depth</div>
-                </div>
-            </div>
-            <p style="font-size:13px; color:#64748b;">
-                <strong>排序依据：</strong>按夏普比率排序，选择收益与风险的平衡点。
-                <br><strong>⚠️ 注意：</strong>在测试集上最优的参数未来不一定最优，需警惕过拟合风险。
-            </p>
-        </div>
-    </div>
-
 </div>
 
 <div class="footer">
@@ -688,7 +663,7 @@ function renderFeatureImportance(chartId, modelName) {
                 color: modelName === '随机森林' ? '#10b981' : '#f97316',
                 borderRadius: [0, 4, 4, 0]
             },
-            label: { show: true, position: 'right', formatter: '{c}', fontSize: 11 }
+            label: { show: true, position: 'right', formatter: function(p) { return p.value.toFixed(4); }, fontSize: 11 }
         }]
     });
 }
@@ -843,7 +818,7 @@ function renderCompareCharts() {
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '收益率(%)' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].total_return * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => sr[m].total_return * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 
     const chartSharpe = echarts.init(document.getElementById('chart-sharpe-compare'));
@@ -852,7 +827,7 @@ function renderCompareCharts() {
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '夏普比率' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].sharpe_ratio), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => sr[m].sharpe_ratio), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 
     const chartDD = echarts.init(document.getElementById('chart-dd-compare'));
@@ -861,7 +836,7 @@ function renderCompareCharts() {
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '回撤(%)' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].max_drawdown * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => sr[m].max_drawdown * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 
     const chartTrades = echarts.init(document.getElementById('chart-trades-compare'));
@@ -870,7 +845,7 @@ function renderCompareCharts() {
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '平均持仓数' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].avg_trades), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => sr[m].avg_trades), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 }
 
@@ -893,16 +868,16 @@ function renderRiskCompareCharts() {
             {
                 name: '基础策略',
                 type: 'bar',
-                data: models.map(m => (sr[m].total_return * 100).toFixed(2)),
+                data: models.map(m => +(sr[m].total_return * 100).toFixed(2)),
                 itemStyle: { color: '#94a3b8' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: '{c}%' }
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
             },
             {
                 name: '动态仓位',
                 type: 'bar',
-                data: models.map(m => (rsr[m].total_return * 100).toFixed(2)),
+                data: models.map(m => +(rsr[m].total_return * 100).toFixed(2)),
                 itemStyle: { color: '#10b981' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: '{c}%' }
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
             }
         ]
     });
@@ -919,14 +894,16 @@ function renderRiskCompareCharts() {
             {
                 name: '基础策略',
                 type: 'bar',
-                data: models.map(m => sr[m].sharpe_ratio.toFixed(2)),
-                itemStyle: { color: '#94a3b8' }
+                data: models.map(m => +sr[m].sharpe_ratio.toFixed(2)),
+                itemStyle: { color: '#94a3b8' },
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2); } }
             },
             {
                 name: '动态仓位',
                 type: 'bar',
-                data: models.map(m => rsr[m].sharpe_ratio.toFixed(2)),
-                itemStyle: { color: '#3b82f6' }
+                data: models.map(m => +rsr[m].sharpe_ratio.toFixed(2)),
+                itemStyle: { color: '#3b82f6' },
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2); } }
             }
         ]
     });
@@ -943,14 +920,16 @@ function renderRiskCompareCharts() {
             {
                 name: '基础策略',
                 type: 'bar',
-                data: models.map(m => (sr[m].max_drawdown * 100).toFixed(2)),
-                itemStyle: { color: '#94a3b8' }
+                data: models.map(m => +(sr[m].max_drawdown * 100).toFixed(2)),
+                itemStyle: { color: '#94a3b8' },
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
             },
             {
                 name: '动态仓位',
                 type: 'bar',
-                data: models.map(m => (rsr[m].max_drawdown * 100).toFixed(2)),
-                itemStyle: { color: '#ef4444' }
+                data: models.map(m => +(rsr[m].max_drawdown * 100).toFixed(2)),
+                itemStyle: { color: '#ef4444' },
+                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
             }
         ]
     });
