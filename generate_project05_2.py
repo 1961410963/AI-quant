@@ -470,12 +470,12 @@ html = r'''<!DOCTYPE html>
             <p style="font-size:12px; color:#6b7280; margin-top:8px;">注：上表为示意数据，权重 = (1-下跌概率)/Σ(1-下跌概率)，合计100%</p>
         </div>
 
-        <!-- 3.7 核心策略回测结果 -->
-        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.7 核心策略回测结果</h3>
+        <!-- 3.7 四策略回测结果总览 -->
+        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.7 四策略回测结果总览</h3>
         <table class="metrics-table">
             <thead>
                 <tr>
-                    <th>选股模型</th>
+                    <th>策略名称</th>
                     <th>策略类型</th>
                     <th>总收益率</th>
                     <th>夏普比率</th>
@@ -483,13 +483,13 @@ html = r'''<!DOCTYPE html>
                     <th>平均下跌概率</th>
                 </tr>
             </thead>
-            <tbody id="risk-strategy-tbody"></tbody>
+            <tbody id="all-strategy-tbody"></tbody>
         </table>
 
-        <div class="fig-title">图 1：核心策略累计收益率曲线（概率驱动动态仓位）</div>
-        <div id="chart-risk-cum-return" class="chart-container"></div>
+        <div class="fig-title">图 1：四策略累计收益率曲线对比</div>
+        <div id="chart-all-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>核心策略（概率驱动动态仓位）的累计收益率曲线。纵轴为累计收益率百分比，0%为起始基准线。两个对比模型配合动态仓位策略后均显著跑赢市场。
+            <strong>解读：</strong>四个策略的累计收益率曲线对比。纵轴为累计收益率百分比，0%为起始基准线。核心策略（动态仓位）在两个选股模型上均优于对应的基础策略。
         </div>
     </div>
 
@@ -570,96 +570,59 @@ html = r'''<!DOCTYPE html>
         <div id="chart-feat-dt" class="chart-container large"></div>
     </div>
 
-    <!-- 六、策略对比与效果分析 -->
+    <!-- 六、四策略全面对比 -->
     <div class="section">
-        <h2 class="section-title">六、策略对比与效果分析</h2>
-        <p class="section-desc">核心策略（动态仓位）vs 基础策略（等权重）的全面对比</p>
+        <h2 class="section-title">六、四策略全面对比</h2>
+        <p class="section-desc">决策树、随机森林、决策树+动态仓位、随机森林+动态仓位 四个策略的全面对比</p>
         
-        <!-- 基础策略回测结果 -->
-        <h3 style="font-size:16px; margin-bottom:12px; color:#334155;">📊 基础策略回测结果（等权重Top30）</h3>
-        <table class="metrics-table">
-            <thead>
-                <tr>
-                    <th>选股模型</th>
-                    <th>总收益率</th>
-                    <th>市场收益率</th>
-                    <th>超额收益</th>
-                    <th>夏普比率</th>
-                    <th>最大回撤</th>
-                </tr>
-            </thead>
-            <tbody id="strategy-tbody"></tbody>
-        </table>
-
-        <!-- 核心vs基础对比 -->
-        <h3 style="font-size:16px; margin:20px 0 12px; color:#334155;">⚖️ 核心策略 vs 基础策略对比</h3>
-        
-        <div class="fig-title">图 4：总收益率对比（核心策略 vs 基础策略）</div>
-        <div id="chart-risk-compare-return" class="chart-container"></div>
-        <div class="fig-caption">
-            <strong>解读：</strong>核心策略（概率驱动动态仓位）在两个对比模型上都提升了总收益率。具体提升幅度见图表数值。
-        </div>
-
-        <div class="chart-row">
-            <div>
-                <div class="fig-title">图 5：夏普比率对比</div>
-                <div id="chart-risk-compare-sharpe" class="chart-container small"></div>
-            </div>
-            <div>
-                <div class="fig-title">图 6：最大回撤对比</div>
-                <div id="chart-risk-compare-dd" class="chart-container small"></div>
-            </div>
-        </div>
-        <div class="fig-caption">
-            <strong>解读：</strong>核心策略在夏普比率和最大回撤两个风险指标上均有改善，体现了下跌概率加权在风险控制上的优势。
-        </div>
-
-        <!-- 基础策略累计收益 -->
-        <div class="fig-title">图 7：基础策略累计收益率曲线（等权重对比）</div>
+        <div class="fig-title">图 4：四策略累计收益率曲线对比</div>
         <div id="chart-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>基础策略（等权重配置）的累计收益曲线，作为核心策略的对比基准。两个对比模型均跑赢市场。
+            <strong>解读：</strong>四个策略的累计收益率曲线。核心策略（动态仓位）曲线整体高于对应的基础策略曲线，验证了概率驱动仓位调整的有效性。
         </div>
 
         <div class="chart-row">
             <div>
-                <div class="fig-title">图 8：基础策略回撤曲线</div>
+                <div class="fig-title">图 5：四策略回撤曲线对比</div>
                 <div id="chart-drawdown" class="chart-container small"></div>
             </div>
             <div>
-                <div class="fig-title">图 9：季度收益率对比</div>
+                <div class="fig-title">图 6：四策略季度收益率对比</div>
                 <div id="chart-quarterly" class="chart-container small"></div>
             </div>
         </div>
+        <div class="fig-caption">
+            <strong>解读：</strong>左图为四策略回撤曲线对比，右图为四策略季度收益率对比。核心策略在回撤控制上优于基础策略。
+        </div>
     </div>
 
-    <!-- 七、核心策略四维对比 -->
+    <!-- 七、四策略多维对比 -->
     <div class="section">
-        <h2 class="section-title">七、核心策略四维对比</h2>
-        <p class="section-desc">四个维度对比各选股模型配合核心策略的表现</p>
+        <h2 class="section-title">七、四策略多维对比</h2>
+        <p class="section-desc">从总收益率、夏普比率、最大回撤、平均持仓数量四个维度对比四个策略</p>
         
         <div class="chart-row">
             <div>
-                <div class="fig-title">图 10：总收益率对比</div>
+                <div class="fig-title">图 7：总收益率对比</div>
                 <div id="chart-return-compare" class="chart-container small"></div>
             </div>
             <div>
-                <div class="fig-title">图 11：夏普比率对比</div>
+                <div class="fig-title">图 8：夏普比率对比</div>
                 <div id="chart-sharpe-compare" class="chart-container small"></div>
             </div>
         </div>
         <div class="chart-row">
             <div>
-                <div class="fig-title">图 12：最大回撤对比</div>
+                <div class="fig-title">图 9：最大回撤对比</div>
                 <div id="chart-dd-compare" class="chart-container small"></div>
             </div>
             <div>
-                <div class="fig-title">图 13：平均持仓数量对比</div>
+                <div class="fig-title">图 10：平均持仓数量对比</div>
                 <div id="chart-trades-compare" class="chart-container small"></div>
             </div>
         </div>
         <div class="fig-caption">
-            <strong>解读：</strong>两个对比模型配合核心策略（动态仓位）后，在收益和风险调整后收益上均优于市场平均水平。具体表现见图表数值。
+            <strong>解读：</strong>四个策略在四个维度上的对比。核心策略（动态仓位）在总收益率和夏普比率上均优于对应的基础策略，体现了概率驱动仓位调整在收益提升和风险控制上的双重优势。
         </div>
     </div>
 
@@ -688,23 +651,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function initAll() {
     renderOverview();
     renderDataSplit();
-    renderRiskStrategyTable();
-    renderRiskCumReturn();
+    renderAllStrategyTable();
+    renderAllCumReturn();
     renderFeatureImportance('chart-feat-rf', '随机森林');
     renderFeatureImportance('chart-feat-dt', '决策树');
-    renderStrategyTable();
     renderCumReturn();
     renderDrawdown();
     renderQuarterly();
     renderCompareCharts();
-    renderRiskCompareCharts();
     setTimeout(resizeAllCharts, 100);
     setTimeout(resizeAllCharts, 500);
     window.addEventListener('resize', resizeAllCharts);
 }
 
 function resizeAllCharts() {
-    const ids = ['chart-risk-cum-return','chart-feat-rf','chart-feat-dt','chart-cum-return','chart-drawdown','chart-quarterly','chart-return-compare','chart-sharpe-compare','chart-dd-compare','chart-trades-compare','chart-risk-compare-return','chart-risk-compare-sharpe','chart-risk-compare-dd'];
+    const ids = ['chart-all-cum-return','chart-feat-rf','chart-feat-dt','chart-cum-return','chart-drawdown','chart-quarterly','chart-return-compare','chart-sharpe-compare','chart-dd-compare','chart-trades-compare'];
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -745,38 +706,49 @@ function renderDataSplit() {
         '<span style="color:#64748b; font-size:12px;">(4个季度全部有完整特征)</span>';
 }
 
-function renderRiskStrategyTable() {
-    const tbody = document.getElementById('risk-strategy-tbody');
-    const rsr = allData.risk_strategy_results;
-    const sr = allData.strategy_results;
-    tbody.innerHTML = Object.keys(rsr).map(name => {
-        const r = rsr[name];
-        const base = sr[name];
-        const tag = '<span style="font-size:11px; color:#64748b;">(基础: ' + (base.total_return * 100).toFixed(1) + '%)</span>';
+// 4个策略的统一颜色配置
+const STRATEGY_COLORS = {
+    '决策树': '#f97316',
+    '随机森林': '#3b82f6',
+    '决策树+动态仓位': '#dc2626',
+    '随机森林+动态仓位': '#10b981'
+};
+const STRATEGY_ORDER = ['决策树', '随机森林', '决策树+动态仓位', '随机森林+动态仓位'];
+
+function renderAllStrategyTable() {
+    const tbody = document.getElementById('all-strategy-tbody');
+    const as = allData.all_strategies;
+    tbody.innerHTML = STRATEGY_ORDER.map(name => {
+        const r = as[name];
+        const typeTag = r.type === '核心策略'
+            ? '<span style="color:#10b981; font-weight:600;">核心策略</span>'
+            : '<span style="color:#64748b;">基础策略</span>';
+        const downProb = r.avg_down_prob !== null && r.avg_down_prob !== undefined
+            ? (r.avg_down_prob * 100).toFixed(1) + '%'
+            : '—';
         return '<tr>' +
-            '<td style="font-weight:600;">' + name + '</td>' +
-            '<td><span style="color:#10b981;">动态仓位</span></td>' +
-            '<td>' + (r.total_return * 100).toFixed(2) + '% ' + tag + '</td>' +
+            '<td style="font-weight:600; color:' + STRATEGY_COLORS[name] + ';">' + name + '</td>' +
+            '<td>' + typeTag + '</td>' +
+            '<td>' + (r.total_return * 100).toFixed(2) + '%</td>' +
             '<td>' + r.sharpe_ratio.toFixed(2) + '</td>' +
             '<td>' + (r.max_drawdown * 100).toFixed(2) + '%</td>' +
-            '<td>' + (r.avg_down_prob * 100).toFixed(1) + '%</td>' +
+            '<td>' + downProb + '</td>' +
         '</tr>';
     }).join('');
 }
 
-// 图1：核心策略累计收益率（百分比格式）
-function renderRiskCumReturn() {
-    const chart = echarts.init(document.getElementById('chart-risk-cum-return'));
-    const rsr = allData.risk_strategy_results;
-    const colors = ['#10b981', '#f97316'];
-    const series = Object.keys(rsr).map((name, i) => ({
-        name: name + '(动态仓位)',
+// 图1：四策略累计收益率对比（百分比格式）
+function renderAllCumReturn() {
+    const chart = echarts.init(document.getElementById('chart-all-cum-return'));
+    const as = allData.all_strategies;
+    const series = STRATEGY_ORDER.map(name => ({
+        name: name,
         type: 'line',
         smooth: true,
         symbol: 'none',
-        lineStyle: { width: 3, color: colors[i] },
-        itemStyle: { color: colors[i] },
-        data: rsr[name].portfolio_cum.map(v => (v - 1) * 100)
+        lineStyle: { width: 3, color: STRATEGY_COLORS[name] },
+        itemStyle: { color: STRATEGY_COLORS[name] },
+        data: as[name].portfolio_cum.map(v => (v - 1) * 100)
     }));
     series.push({
         name: '市场平均',
@@ -785,7 +757,7 @@ function renderRiskCumReturn() {
         symbol: 'none',
         lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
         itemStyle: { color: '#94a3b8' },
-        data: rsr['随机森林'].market_cum.map(v => (v - 1) * 100)
+        data: as['决策树'].market_cum.map(v => (v - 1) * 100)
     });
     chart.setOption({
         tooltip: {
@@ -800,7 +772,7 @@ function renderRiskCumReturn() {
         },
         legend: { bottom: 5 },
         grid: { left: 85, right: 30, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: rsr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
             name: '累计收益率(%)',
@@ -834,37 +806,18 @@ function renderFeatureImportance(chartId, modelName) {
     });
 }
 
-function renderStrategyTable() {
-    const tbody = document.getElementById('strategy-tbody');
-    const sr = allData.strategy_results;
-    const bestSharpe = Math.max(...Object.values(sr).map(r => r.sharpe_ratio));
-    tbody.innerHTML = Object.keys(sr).map(name => {
-        const r = sr[name];
-        const excess = (r.total_return - r.market_return) * 100;
-        return '<tr>' +
-            '<td style="font-weight:600;">' + name + '</td>' +
-            '<td>' + (r.total_return * 100).toFixed(2) + '%</td>' +
-            '<td>' + (r.market_return * 100).toFixed(2) + '%</td>' +
-            '<td>' + excess.toFixed(2) + '%</td>' +
-            '<td class="' + (r.sharpe_ratio === bestSharpe ? 'best-score' : '') + '">' + r.sharpe_ratio.toFixed(2) + '</td>' +
-            '<td>' + (r.max_drawdown * 100).toFixed(2) + '%</td>' +
-        '</tr>';
-    }).join('');
-}
-
-// 图7：基础策略累计收益率（百分比格式）
+// 图4：四策略累计收益率曲线（百分比格式）
 function renderCumReturn() {
     const chart = echarts.init(document.getElementById('chart-cum-return'));
-    const sr = allData.strategy_results;
-    const colors = ['#10b981', '#f97316'];
-    const series = Object.keys(sr).map((name, i) => ({
+    const as = allData.all_strategies;
+    const series = STRATEGY_ORDER.map(name => ({
         name: name,
         type: 'line',
         smooth: true,
         symbol: 'none',
-        lineStyle: { width: 3, color: colors[i] },
-        itemStyle: { color: colors[i] },
-        data: sr[name].portfolio_cum.map(v => (v - 1) * 100)
+        lineStyle: { width: 3, color: STRATEGY_COLORS[name] },
+        itemStyle: { color: STRATEGY_COLORS[name] },
+        data: as[name].portfolio_cum.map(v => (v - 1) * 100)
     }));
     series.push({
         name: '市场平均',
@@ -873,7 +826,7 @@ function renderCumReturn() {
         symbol: 'none',
         lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
         itemStyle: { color: '#94a3b8' },
-        data: sr['随机森林'].market_cum.map(v => (v - 1) * 100)
+        data: as['决策树'].market_cum.map(v => (v - 1) * 100)
     });
     chart.setOption({
         tooltip: {
@@ -888,7 +841,7 @@ function renderCumReturn() {
         },
         legend: { bottom: 5 },
         grid: { left: 85, right: 30, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: sr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
             name: '累计收益率(%)',
@@ -900,44 +853,43 @@ function renderCumReturn() {
     });
 }
 
+// 图5：四策略回撤曲线
 function renderDrawdown() {
     const chart = echarts.init(document.getElementById('chart-drawdown'));
-    const sr = allData.strategy_results;
-    const colors = ['#10b981', '#f97316'];
-    const series = Object.keys(sr).map((name, i) => ({
+    const as = allData.all_strategies;
+    const series = STRATEGY_ORDER.map(name => ({
         name: name,
         type: 'line',
         smooth: true,
         symbol: 'none',
-        lineStyle: { width: 2, color: colors[i] },
-        itemStyle: { color: colors[i] },
-        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: colors[i] + '40' }, { offset: 1, color: colors[i] + '05' }]) },
-        data: sr[name].drawdown.map(v => v * 100)
+        lineStyle: { width: 2, color: STRATEGY_COLORS[name] },
+        itemStyle: { color: STRATEGY_COLORS[name] },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: STRATEGY_COLORS[name] + '30' }, { offset: 1, color: STRATEGY_COLORS[name] + '05' }]) },
+        data: as[name].drawdown.map(v => v * 100)
     }));
     chart.setOption({
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
         grid: { left: 80, right: 20, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: sr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: { type: 'value', name: '回撤(%)', nameLocation: 'middle', nameGap: 50 },
         series: series
     });
 }
 
+// 图6：四策略季度收益率对比
 function renderQuarterly() {
     const chart = echarts.init(document.getElementById('chart-quarterly'));
     const qr = allData.quarterly_results;
     const quarters = [...new Set(qr.map(r => r.year_quarter))].sort();
-    const models = [...new Set(qr.map(r => r.model))];
-    const colors = ['#10b981', '#f97316'];
-    const series = models.map((m, i) => ({
-        name: m,
+    const series = STRATEGY_ORDER.map(name => ({
+        name: name,
         type: 'bar',
         data: quarters.map(q => {
-            const r = qr.find(x => x.year_quarter === q && x.model === m);
+            const r = qr.find(x => x.year_quarter === q && x.model === name);
             return r ? r.return * 100 : 0;
         }),
-        itemStyle: { color: colors[i] }
+        itemStyle: { color: STRATEGY_COLORS[name] }
     }));
     chart.setOption({
         tooltip: { trigger: 'axis' },
@@ -949,134 +901,54 @@ function renderQuarterly() {
     });
 }
 
+// 图7-10：四策略四维对比（柱状图）
 function renderCompareCharts() {
-    const sr = allData.strategy_results;
-    const models = Object.keys(sr);
-    const colors = ['#10b981', '#f97316'];
+    const as = allData.all_strategies;
+    const models = STRATEGY_ORDER;
+    const barColors = models.map(m => STRATEGY_COLORS[m]);
 
-    const commonGrid = { left: 80, right: 25, top: 25, bottom: 60 };
-    const commonXAxis = { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } };
+    const commonGrid = { left: 80, right: 25, top: 25, bottom: 65 };
+    const commonXAxis = { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 20 } };
     const commonYAxisBase = { type: 'value', nameLocation: 'middle', nameGap: 50 };
 
+    // 图7：总收益率对比
     const chartReturn = echarts.init(document.getElementById('chart-return-compare'));
     chartReturn.setOption({
         tooltip: {},
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '收益率(%)' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].total_return * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => +(as[m].total_return * 100).toFixed(2)), itemStyle: { color: function(p) { return barColors[p.dataIndex]; } }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2) + '%'; }, fontSize: 10 } }]
     });
 
+    // 图8：夏普比率对比
     const chartSharpe = echarts.init(document.getElementById('chart-sharpe-compare'));
     chartSharpe.setOption({
         tooltip: {},
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '夏普比率' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].sharpe_ratio), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => +as[m].sharpe_ratio.toFixed(2)), itemStyle: { color: function(p) { return barColors[p.dataIndex]; } }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 
+    // 图9：最大回撤对比
     const chartDD = echarts.init(document.getElementById('chart-dd-compare'));
     chartDD.setOption({
         tooltip: {},
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '回撤(%)' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].max_drawdown * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
+        series: [{ type: 'bar', data: models.map(m => +(as[m].max_drawdown * 100).toFixed(2)), itemStyle: { color: function(p) { return barColors[p.dataIndex]; } }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2) + '%'; }, fontSize: 10 } }]
     });
 
+    // 图10：平均持仓数量对比
     const chartTrades = echarts.init(document.getElementById('chart-trades-compare'));
     chartTrades.setOption({
         tooltip: {},
         grid: commonGrid,
         xAxis: commonXAxis,
         yAxis: Object.assign({}, commonYAxisBase, { name: '平均持仓数' }),
-        series: [{ type: 'bar', data: models.map(m => sr[m].avg_trades), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
-    });
-}
-
-// 图4-6：核心策略 vs 基础策略对比
-function renderRiskCompareCharts() {
-    const sr = allData.strategy_results;
-    const rsr = allData.risk_strategy_results;
-    const models = Object.keys(sr);
-
-    // 图4：总收益率对比（分组柱状图）
-    const chartReturn = echarts.init(document.getElementById('chart-risk-compare-return'));
-    chartReturn.setOption({
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 5 },
-        grid: { left: 85, right: 25, top: 20, bottom: 65 },
-        xAxis: { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } },
-        yAxis: { type: 'value', name: '总收益率(%)', nameLocation: 'middle', nameGap: 55 },
-        series: [
-            {
-                name: '基础策略',
-                type: 'bar',
-                data: models.map(m => +(sr[m].total_return * 100).toFixed(2)),
-                itemStyle: { color: '#94a3b8' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
-            },
-            {
-                name: '核心策略(动态仓位)',
-                type: 'bar',
-                data: models.map(m => +(rsr[m].total_return * 100).toFixed(2)),
-                itemStyle: { color: '#10b981' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
-            }
-        ]
-    });
-
-    // 图5：夏普比率对比
-    const chartSharpe = echarts.init(document.getElementById('chart-risk-compare-sharpe'));
-    chartSharpe.setOption({
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 5 },
-        grid: { left: 80, right: 20, top: 20, bottom: 65 },
-        xAxis: { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } },
-        yAxis: { type: 'value', name: '夏普比率', nameLocation: 'middle', nameGap: 50 },
-        series: [
-            {
-                name: '基础策略',
-                type: 'bar',
-                data: models.map(m => +sr[m].sharpe_ratio.toFixed(2)),
-                itemStyle: { color: '#94a3b8' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2); } }
-            },
-            {
-                name: '核心策略(动态仓位)',
-                type: 'bar',
-                data: models.map(m => +rsr[m].sharpe_ratio.toFixed(2)),
-                itemStyle: { color: '#3b82f6' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2); } }
-            }
-        ]
-    });
-
-    // 图6：最大回撤对比
-    const chartDD = echarts.init(document.getElementById('chart-risk-compare-dd'));
-    chartDD.setOption({
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 5 },
-        grid: { left: 80, right: 20, top: 20, bottom: 65 },
-        xAxis: { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } },
-        yAxis: { type: 'value', name: '回撤(%)', nameLocation: 'middle', nameGap: 50 },
-        series: [
-            {
-                name: '基础策略',
-                type: 'bar',
-                data: models.map(m => +(sr[m].max_drawdown * 100).toFixed(2)),
-                itemStyle: { color: '#94a3b8' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
-            },
-            {
-                name: '核心策略(动态仓位)',
-                type: 'bar',
-                data: models.map(m => +(rsr[m].max_drawdown * 100).toFixed(2)),
-                itemStyle: { color: '#ef4444' },
-                label: { show: true, position: 'top', fontSize: 10, formatter: function(p) { return p.value.toFixed(2) + '%'; } }
-            }
-        ]
+        series: [{ type: 'bar', data: models.map(m => +as[m].avg_trades.toFixed(2)), itemStyle: { color: function(p) { return barColors[p.dataIndex]; } }, label: { show: true, position: 'top', formatter: function(p) { return p.value.toFixed(2); }, fontSize: 10 } }]
     });
 }
 </script>

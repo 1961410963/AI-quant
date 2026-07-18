@@ -211,24 +211,73 @@ risk_strategy_results = {}
 risk_strategy_results['随机森林'] = calculate_risk_weighted_strategy(test_df, 'RF_Pred')
 risk_strategy_results['决策树'] = calculate_risk_weighted_strategy(test_df, 'DT_Pred')
 
-# 季度收益
+# ============================================================
+# 构建4个策略的统一结构（用于所有对比图表同时展示）
+# 策略1: 决策树（基础）
+# 策略2: 随机森林（基础）
+# 策略3: 决策树+动态仓位（核心）
+# 策略4: 随机森林+动态仓位（核心）
+# ============================================================
+all_strategies = {}
+all_strategies['决策树'] = {
+    'type': '基础策略',
+    'base_model': '决策树',
+    **strategy_results['决策树'],
+    'avg_down_prob': None,
+    'avg_weight_std': None
+}
+all_strategies['随机森林'] = {
+    'type': '基础策略',
+    'base_model': '随机森林',
+    **strategy_results['随机森林'],
+    'avg_down_prob': None,
+    'avg_weight_std': None
+}
+all_strategies['决策树+动态仓位'] = {
+    'type': '核心策略',
+    'base_model': '决策树',
+    **risk_strategy_results['决策树']
+}
+all_strategies['随机森林+动态仓位'] = {
+    'type': '核心策略',
+    'base_model': '随机森林',
+    **risk_strategy_results['随机森林']
+}
+
+# 季度收益（4个策略）
 quarterly_results = []
 col_map = {
     '随机森林': 'RF_Pred',
-    '决策树': 'DT_Pred'
+    '决策树': 'DT_Pred',
+    '随机森林+动态仓位': 'RF_Pred',
+    '决策树+动态仓位': 'DT_Pred'
 }
-for name in strategy_results:
+for name in all_strategies:
     df_sorted = test_df.copy()
     df_sorted['Rank'] = df_sorted.groupby('Date')[col_map[name]].rank(ascending=False)
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
-    for yq, group in df_sorted[df_sorted['In_Portfolio'] == 1].groupby('YearQuarter'):
-        quarterly_return = group['Next_Ret'].mean()
-        quarterly_results.append({
-            'model': name,
-            'year_quarter': yq,
-            'return': quarterly_return
-        })
+    # 核心策略需要按下跌概率加权计算季度收益
+    if '动态仓位' in name:
+        portfolio = df_sorted[df_sorted['In_Portfolio'] == 1].copy()
+        portfolio['Risk_Weight'] = (1 - portfolio['Down_Prob']).clip(lower=0.01)
+        portfolio['Risk_Weight'] = portfolio.groupby('Date')['Risk_Weight'].transform(lambda x: x / x.sum())
+        portfolio['Weighted_Ret'] = portfolio['Risk_Weight'] * portfolio['Next_Ret']
+        for yq, group in portfolio.groupby('YearQuarter'):
+            quarterly_return = group['Weighted_Ret'].sum() / group['Date'].nunique()
+            quarterly_results.append({
+                'model': name,
+                'year_quarter': yq,
+                'return': quarterly_return
+            })
+    else:
+        for yq, group in df_sorted[df_sorted['In_Portfolio'] == 1].groupby('YearQuarter'):
+            quarterly_return = group['Next_Ret'].mean()
+            quarterly_results.append({
+                'model': name,
+                'year_quarter': yq,
+                'return': quarterly_return
+            })
 
 # 特征重要性
 feature_importance = {}
@@ -263,6 +312,7 @@ results_dict = {
     'model_results': results,
     'strategy_results': strategy_results,
     'risk_strategy_results': risk_strategy_results,
+    'all_strategies': all_strategies,
     'quarterly_results': quarterly_results,
     'feature_importance': feature_importance
 }
