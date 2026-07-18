@@ -66,9 +66,9 @@
             border-bottom: 2px solid #e2e8f0;
         }
         .section-desc { font-size: 14px; color: #64748b; margin-bottom: 20px; }
-        .chart-container { width: 100%; height: 420px; margin-top: 8px; }
-        .chart-container.small { height: 340px; }
-        .chart-container.large { height: 500px; }
+        .chart-container { width: 100%; height: 440px; margin-top: 8px; }
+        .chart-container.small { height: 380px; }
+        .chart-container.large { height: 520px; }
         .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .fig-title { font-size: 15px; font-weight: 600; color: #334155; margin: 14px 0 6px; }
         .fig-caption {
@@ -455,9 +455,9 @@ function renderFeatureImportance(chartId, modelName) {
         .sort((a, b) => b.value - a.value).slice(0, 15);
     chart.setOption({
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-        grid: { left: 180, right: 40, top: 10, bottom: 25 },
-        xAxis: { type: 'value', name: '特征重要性', nameGap: 10 },
-        yAxis: { type: 'category', data: sorted.map(s => s.name).reverse(), axisLabel: { fontSize: 10 } },
+        grid: { left: 260, right: 60, top: 10, bottom: 25 },
+        xAxis: { type: 'value', name: '特征重要性', nameGap: 10, nameLocation: 'middle' },
+        yAxis: { type: 'category', data: sorted.map(s => s.name).reverse(), axisLabel: { fontSize: 11, width: 240, overflow: 'truncate', ellipsis: '...' } },
         series: [{
             type: 'bar',
             data: sorted.map(s => s.value).reverse(),
@@ -498,6 +498,7 @@ function renderCumReturn() {
         smooth: true,
         symbol: 'none',
         lineStyle: { width: 3, color: colors[i] },
+        itemStyle: { color: colors[i] },
         data: sr[name].portfolio_cum
     }));
     series.push({
@@ -506,14 +507,15 @@ function renderCumReturn() {
         smooth: true,
         symbol: 'none',
         lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
+        itemStyle: { color: '#94a3b8' },
         data: sr['随机森林回归'].market_cum
     });
     chart.setOption({
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
-        grid: { left: 70, right: 30, top: 20, bottom: 60 },
-        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10 } },
-        yAxis: { type: 'value', name: '累计收益', formatter: '{value:.2f}' },
+        grid: { left: 85, right: 30, top: 20, bottom: 75 },
+        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        yAxis: { type: 'value', name: '累计收益', nameLocation: 'middle', nameGap: 55, axisLabel: { formatter: function(v) { return v.toFixed(2); } } },
         series: series
     });
 }
@@ -528,15 +530,16 @@ function renderDrawdown() {
         smooth: true,
         symbol: 'none',
         lineStyle: { width: 2, color: colors[i] },
+        itemStyle: { color: colors[i] },
         areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: colors[i] + '40' }, { offset: 1, color: colors[i] + '05' }]) },
         data: sr[name].drawdown.map(v => v * 100)
     }));
     chart.setOption({
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
-        grid: { left: 60, right: 20, top: 20, bottom: 50 },
-        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10 } },
-        yAxis: { type: 'value', name: '回撤(%)' },
+        grid: { left: 80, right: 20, top: 20, bottom: 75 },
+        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        yAxis: { type: 'value', name: '回撤(%)', nameLocation: 'middle', nameGap: 50 },
         series: series
     });
 }
@@ -553,14 +556,15 @@ function renderQuarterly() {
         data: quarters.map(q => {
             const r = qr.find(x => x.year_quarter === q && x.model === m);
             return r ? r.return * 100 : 0;
-        })
+        }),
+        itemStyle: { color: colors[i] }
     }));
     chart.setOption({
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
-        grid: { left: 60, right: 20, top: 20, bottom: 50 },
-        xAxis: { type: 'category', data: quarters },
-        yAxis: { type: 'value', name: '收益率(%)' },
+        grid: { left: 80, right: 20, top: 20, bottom: 65 },
+        xAxis: { type: 'category', data: quarters, axisLabel: { fontSize: 11 } },
+        yAxis: { type: 'value', name: '收益率(%)', nameLocation: 'middle', nameGap: 50 },
         series: series
     });
 }
@@ -570,40 +574,44 @@ function renderCompareCharts() {
     const models = Object.keys(sr);
     const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
 
+    const commonGrid = { left: 80, right: 25, top: 25, bottom: 60 };
+    const commonXAxis = { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } };
+    const commonYAxisBase = { type: 'value', nameLocation: 'middle', nameGap: 50 };
+
     const chartReturn = echarts.init(document.getElementById('chart-return-compare'));
     chartReturn.setOption({
         tooltip: {},
-        grid: { left: 60, right: 20, top: 20, bottom: 40 },
-        xAxis: { type: 'category', data: models },
-        yAxis: { type: 'value', name: '收益率(%)' },
-        series: [{ type: 'bar', data: models.map(m => sr[m].total_return * 100), itemStyle: { color: colors } }]
+        grid: commonGrid,
+        xAxis: commonXAxis,
+        yAxis: Object.assign({}, commonYAxisBase, { name: '收益率(%)' }),
+        series: [{ type: 'bar', data: models.map(m => sr[m].total_return * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
     });
 
     const chartSharpe = echarts.init(document.getElementById('chart-sharpe-compare'));
     chartSharpe.setOption({
         tooltip: {},
-        grid: { left: 60, right: 20, top: 20, bottom: 40 },
-        xAxis: { type: 'category', data: models },
-        yAxis: { type: 'value', name: '夏普比率' },
-        series: [{ type: 'bar', data: models.map(m => sr[m].sharpe_ratio), itemStyle: { color: colors } }]
+        grid: commonGrid,
+        xAxis: commonXAxis,
+        yAxis: Object.assign({}, commonYAxisBase, { name: '夏普比率' }),
+        series: [{ type: 'bar', data: models.map(m => sr[m].sharpe_ratio), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
     });
 
     const chartDD = echarts.init(document.getElementById('chart-dd-compare'));
     chartDD.setOption({
         tooltip: {},
-        grid: { left: 60, right: 20, top: 20, bottom: 40 },
-        xAxis: { type: 'category', data: models },
-        yAxis: { type: 'value', name: '回撤(%)' },
-        series: [{ type: 'bar', data: models.map(m => sr[m].max_drawdown * 100), itemStyle: { color: colors } }]
+        grid: commonGrid,
+        xAxis: commonXAxis,
+        yAxis: Object.assign({}, commonYAxisBase, { name: '回撤(%)' }),
+        series: [{ type: 'bar', data: models.map(m => sr[m].max_drawdown * 100), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
     });
 
     const chartTrades = echarts.init(document.getElementById('chart-trades-compare'));
     chartTrades.setOption({
         tooltip: {},
-        grid: { left: 60, right: 20, top: 20, bottom: 40 },
-        xAxis: { type: 'category', data: models },
-        yAxis: { type: 'value', name: '平均持仓数' },
-        series: [{ type: 'bar', data: models.map(m => sr[m].avg_trades), itemStyle: { color: colors } }]
+        grid: commonGrid,
+        xAxis: commonXAxis,
+        yAxis: Object.assign({}, commonYAxisBase, { name: '平均持仓数' }),
+        series: [{ type: 'bar', data: models.map(m => sr[m].avg_trades), itemStyle: { color: colors }, label: { show: true, position: 'top', formatter: '{c}', fontSize: 10 } }]
     });
 }
 </script>
