@@ -383,7 +383,7 @@ html = r'''<!DOCTYPE html>
         <div class="fig-title">图 1：核心策略累计收益率曲线（概率驱动动态仓位）</div>
         <div id="chart-risk-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>核心策略（概率驱动动态仓位）的累计收益率曲线。纵轴为累计收益率百分比，0%为起始基准线。所有选股模型配合动态仓位策略后均显著跑赢市场（市场收益率-5.84%）。
+            <strong>解读：</strong>核心策略（概率驱动动态仓位）的累计收益率曲线。纵轴为累计收益率百分比，0%为起始基准线。两个对比模型配合动态仓位策略后均显著跑赢市场。
         </div>
     </div>
 
@@ -410,37 +410,29 @@ html = r'''<!DOCTYPE html>
     <!-- 五、对比模型说明 -->
     <div class="section">
         <h2 class="section-title">五、对比模型说明</h2>
-        <p class="section-desc">为验证核心策略效果，训练四种基础模型作为对比基准。这些模型仅用于选股排名，不涉及动态仓位</p>
+        <p class="section-desc">为验证核心策略效果，训练两个对比模型（与05.1项目一致）。这些模型仅用于选股排名，不涉及动态仓位</p>
         
         <table class="model-compare-table">
             <thead>
                 <tr>
                     <th>对比维度</th>
-                    <th>随机森林回归</th>
-                    <th>决策树回归</th>
-                    <th>随机森林分类</th>
-                    <th>决策树分类</th>
+                    <th>随机森林</th>
+                    <th>决策树</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><strong>任务类型</strong></td>
-                    <td>回归</td>
-                    <td>回归</td>
                     <td>二分类</td>
                     <td>二分类</td>
                 </tr>
                 <tr>
                     <td><strong>预测目标</strong></td>
-                    <td>未来收益率 Next_Ret</td>
-                    <td>未来收益率 Next_Ret</td>
                     <td>是否Top30高收益股</td>
                     <td>是否Top30高收益股</td>
                 </tr>
                 <tr>
                     <td><strong>输出形式</strong></td>
-                    <td>连续值（收益率预测值）</td>
-                    <td>连续值（收益率预测值）</td>
                     <td>概率值（0~1）</td>
                     <td>概率值（0~1）</td>
                 </tr>
@@ -448,13 +440,14 @@ html = r'''<!DOCTYPE html>
                     <td><strong>模型结构</strong></td>
                     <td>100棵决策树集成</td>
                     <td>单棵决策树</td>
-                    <td>100棵决策树集成</td>
-                    <td>单棵决策树</td>
+                </tr>
+                <tr>
+                    <td><strong>模型参数</strong></td>
+                    <td>n_estimators=100, max_depth=10</td>
+                    <td>max_depth=5</td>
                 </tr>
                 <tr>
                     <td><strong>在核心策略中角色</strong></td>
-                    <td>选股排名 → 交由概率模型调仓</td>
-                    <td>选股排名 → 交由概率模型调仓</td>
                     <td>选股排名 → 交由概率模型调仓</td>
                     <td>选股排名 → 交由概率模型调仓</td>
                 </tr>
@@ -498,7 +491,7 @@ html = r'''<!DOCTYPE html>
         <div class="fig-title">图 4：总收益率对比（核心策略 vs 基础策略）</div>
         <div id="chart-risk-compare-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>核心策略（概率驱动动态仓位）在所有选股模型上都提升了总收益率。决策树回归的提升最为显著，从34.23%提升至44.91%（提升10.68个百分点）。
+            <strong>解读：</strong>核心策略（概率驱动动态仓位）在两个对比模型上都提升了总收益率。具体提升幅度见图表数值。
         </div>
 
         <div class="chart-row">
@@ -512,14 +505,14 @@ html = r'''<!DOCTYPE html>
             </div>
         </div>
         <div class="fig-caption">
-            <strong>解读：</strong>核心策略在夏普比率和最大回撤两个风险指标上均有改善。随机森林分类策略的夏普比率从7.06提升至7.87，最大回撤从-6.62%降至-5.74%，体现了下跌概率加权在风险控制上的优势。
+            <strong>解读：</strong>核心策略在夏普比率和最大回撤两个风险指标上均有改善，体现了下跌概率加权在风险控制上的优势。
         </div>
 
         <!-- 基础策略累计收益 -->
         <div class="fig-title">图 7：基础策略累计收益率曲线（等权重对比）</div>
         <div id="chart-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>基础策略（等权重配置）的累计收益曲线，作为核心策略的对比基准。所有ML策略均显著跑赢市场（市场收益率-5.84%）。
+            <strong>解读：</strong>基础策略（等权重配置）的累计收益曲线，作为核心策略的对比基准。两个对比模型均跑赢市场。
         </div>
 
         <div class="chart-row">
@@ -560,7 +553,7 @@ html = r'''<!DOCTYPE html>
             </div>
         </div>
         <div class="fig-caption">
-            <strong>解读：</strong>随机森林分类策略在风险调整后收益（夏普比率=7.87）上表现最优，体现了其在收益与风险之间的良好平衡。决策树回归策略收益率最高但稳定性稍弱。整体来看，概率驱动的动态仓位策略在收益和风险调整后收益上均优于市场平均水平。
+            <strong>解读：</strong>两个对比模型配合核心策略（动态仓位）后，在收益和风险调整后收益上均优于市场平均水平。具体表现见图表数值。
         </div>
     </div>
 
@@ -609,7 +602,7 @@ function renderOverview() {
         { id: 'stat-train', label: '训练集样本', value: di.train_samples },
         { id: 'stat-test', label: '测试集样本', value: di.test_samples },
         { id: 'stat-feat', label: '特征数量', value: di.feature_count },
-        { id: 'stat-model', label: '模型数量', value: 5 }
+        { id: 'stat-model', label: '模型数量', value: 3 }
     ];
     grid.innerHTML = items.map(item =>
         '<div class="overview-card"><div class="num" id="' + item.id + '">' + item.value.toLocaleString() + '</div><div class="label">' + item.label + '</div></div>'
@@ -653,7 +646,7 @@ function renderRiskStrategyTable() {
 function renderRiskCumReturn() {
     const chart = echarts.init(document.getElementById('chart-risk-cum-return'));
     const rsr = allData.risk_strategy_results;
-    const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
+    const colors = ['#10b981', '#f97316'];
     const series = Object.keys(rsr).map((name, i) => ({
         name: name + '(动态仓位)',
         type: 'line',
@@ -741,7 +734,7 @@ function renderStrategyTable() {
 function renderCumReturn() {
     const chart = echarts.init(document.getElementById('chart-cum-return'));
     const sr = allData.strategy_results;
-    const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
+    const colors = ['#10b981', '#f97316'];
     const series = Object.keys(sr).map((name, i) => ({
         name: name,
         type: 'line',
@@ -788,7 +781,7 @@ function renderCumReturn() {
 function renderDrawdown() {
     const chart = echarts.init(document.getElementById('chart-drawdown'));
     const sr = allData.strategy_results;
-    const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
+    const colors = ['#10b981', '#f97316'];
     const series = Object.keys(sr).map((name, i) => ({
         name: name,
         type: 'line',
@@ -814,7 +807,7 @@ function renderQuarterly() {
     const qr = allData.quarterly_results;
     const quarters = [...new Set(qr.map(r => r.year_quarter))].sort();
     const models = [...new Set(qr.map(r => r.model))];
-    const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
+    const colors = ['#10b981', '#f97316'];
     const series = models.map((m, i) => ({
         name: m,
         type: 'bar',
@@ -837,7 +830,7 @@ function renderQuarterly() {
 function renderCompareCharts() {
     const sr = allData.strategy_results;
     const models = Object.keys(sr);
-    const colors = ['#10b981', '#84cc16', '#3b82f6', '#f97316'];
+    const colors = ['#10b981', '#f97316'];
 
     const commonGrid = { left: 80, right: 25, top: 25, bottom: 60 };
     const commonXAxis = { type: 'category', data: models, axisLabel: { fontSize: 11, interval: 0, rotate: 15 } };

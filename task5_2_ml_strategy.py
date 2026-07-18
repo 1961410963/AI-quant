@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -58,12 +57,10 @@ print(f'训练集季度: {sorted(train_df["YearQuarter"].unique())}')
 print(f'测试集季度: {sorted(test_df["YearQuarter"].unique())}')
 
 X_train = train_df[all_feature_cols]
-y_train_reg = train_df['Next_Ret']
 y_train_clf = train_df['Next_Ret_Top30']
 y_train_binary = train_df['Next_Ret_Binary']
 
 X_test = test_df[all_feature_cols]
-y_test_reg = test_df['Next_Ret']
 y_test_clf = test_df['Next_Ret_Top30']
 y_test_binary = test_df['Next_Ret_Binary']
 
@@ -76,26 +73,20 @@ X_test_scaled = scaler.transform(X_test)
 
 # ============================================================
 # 模型训练
+# 对比模型（与05.1项目一致）：随机森林分类、决策树分类
+# 核心模型：下跌概率模型（用于动态仓位调整）
 # ============================================================
 models = {}
 
-# 1. 随机森林回归：预测未来收益率(Next_Ret)，输出连续值
-models['随机森林回归'] = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
-models['随机森林回归'].fit(X_train_scaled, y_train_reg)
+# 1. 随机森林分类（对比模型）：预测是否为Top30高收益股
+models['随机森林'] = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+models['随机森林'].fit(X_train_scaled, y_train_clf)
 
-# 2. 决策树回归：预测未来收益率(Next_Ret)，输出连续值
-models['决策树回归'] = DecisionTreeRegressor(max_depth=5, random_state=42)
-models['决策树回归'].fit(X_train_scaled, y_train_reg)
+# 2. 决策树分类（对比模型）：预测是否为Top30高收益股
+models['决策树'] = DecisionTreeClassifier(max_depth=5, random_state=42)
+models['决策树'].fit(X_train_scaled, y_train_clf)
 
-# 3. 随机森林分类：预测是否为Top30高收益股(Next_Ret_Top30)，输出概率
-models['随机森林分类'] = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
-models['随机森林分类'].fit(X_train_scaled, y_train_clf)
-
-# 4. 决策树分类：预测是否为Top30高收益股(Next_Ret_Top30)，输出概率
-models['决策树分类'] = DecisionTreeClassifier(max_depth=5, random_state=42)
-models['决策树分类'].fit(X_train_scaled, y_train_clf)
-
-# 5. 下跌概率模型：预测股票下跌概率(Next_Ret <= 0)，用于动态仓位调整
+# 3. 下跌概率模型（核心策略）：预测股票下跌概率(Next_Ret <= 0)，用于动态仓位调整
 models['下跌概率模型'] = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
 models['下跌概率模型'].fit(X_train_scaled, y_train_binary)
 
@@ -105,19 +96,12 @@ for name, model in models.items():
         # 下跌概率模型：predict_proba[:, 0] = P(下跌)
         down_prob = model.predict_proba(X_test_scaled)[:, 0]
         results[name] = {'predictions': down_prob.tolist()}
-    elif '回归' in name:
-        y_pred = model.predict(X_test_scaled)
-        rmse = np.sqrt(mean_squared_error(y_test_reg, y_pred))
-        r2 = r2_score(y_test_reg, y_pred)
-        results[name] = {'rmse': rmse, 'r2': r2, 'predictions': y_pred.tolist()}
     else:
         y_pred = model.predict_proba(X_test_scaled)[:, 1]
         results[name] = {'predictions': y_pred.tolist()}
 
-test_df['RF_Reg_Pred'] = np.array(results['随机森林回归']['predictions'])
-test_df['DT_Reg_Pred'] = np.array(results['决策树回归']['predictions'])
-test_df['RF_Clf_Pred'] = np.array(results['随机森林分类']['predictions'])
-test_df['DT_Clf_Pred'] = np.array(results['决策树分类']['predictions'])
+test_df['RF_Pred'] = np.array(results['随机森林']['predictions'])
+test_df['DT_Pred'] = np.array(results['决策树']['predictions'])
 test_df['Down_Prob'] = np.array(results['下跌概率模型']['predictions'])
 
 # ============================================================
@@ -160,7 +144,7 @@ def calculate_strategy_metrics(df, pred_col):
     }
 
 # ============================================================
-# 策略二：基于下跌概率的动态仓位调整策略
+# 策略二：基于下跌概率的动态仓位调整策略（核心策略）
 # 核心逻辑：
 #   1. 仍然按模型预测排名选Top30股票
 #   2. 根据下跌概率动态调整每只股票的仓位权重
@@ -216,27 +200,21 @@ def calculate_risk_weighted_strategy(df, pred_col, prob_col='Down_Prob'):
         'avg_weight_std': avg_weight_std
     }
 
-# 计算基础策略结果
+# 计算基础策略结果（对比模型）
 strategy_results = {}
-strategy_results['随机森林回归'] = calculate_strategy_metrics(test_df, 'RF_Reg_Pred')
-strategy_results['决策树回归'] = calculate_strategy_metrics(test_df, 'DT_Reg_Pred')
-strategy_results['随机森林分类'] = calculate_strategy_metrics(test_df, 'RF_Clf_Pred')
-strategy_results['决策树分类'] = calculate_strategy_metrics(test_df, 'DT_Clf_Pred')
+strategy_results['随机森林'] = calculate_strategy_metrics(test_df, 'RF_Pred')
+strategy_results['决策树'] = calculate_strategy_metrics(test_df, 'DT_Pred')
 
-# 计算动态仓位策略结果
+# 计算动态仓位策略结果（核心策略）
 risk_strategy_results = {}
-risk_strategy_results['随机森林回归'] = calculate_risk_weighted_strategy(test_df, 'RF_Reg_Pred')
-risk_strategy_results['决策树回归'] = calculate_risk_weighted_strategy(test_df, 'DT_Reg_Pred')
-risk_strategy_results['随机森林分类'] = calculate_risk_weighted_strategy(test_df, 'RF_Clf_Pred')
-risk_strategy_results['决策树分类'] = calculate_risk_weighted_strategy(test_df, 'DT_Clf_Pred')
+risk_strategy_results['随机森林'] = calculate_risk_weighted_strategy(test_df, 'RF_Pred')
+risk_strategy_results['决策树'] = calculate_risk_weighted_strategy(test_df, 'DT_Pred')
 
 # 季度收益
 quarterly_results = []
 col_map = {
-    '随机森林回归': 'RF_Reg_Pred',
-    '决策树回归': 'DT_Reg_Pred',
-    '随机森林分类': 'RF_Clf_Pred',
-    '决策树分类': 'DT_Clf_Pred'
+    '随机森林': 'RF_Pred',
+    '决策树': 'DT_Pred'
 }
 for name in strategy_results:
     df_sorted = test_df.copy()
@@ -253,13 +231,13 @@ for name in strategy_results:
 
 # 特征重要性
 feature_importance = {}
-rf_clf = models['随机森林分类']
+rf_clf = models['随机森林']
 feature_importance['随机森林'] = {
     'features': all_feature_cols,
     'importance': rf_clf.feature_importances_.tolist()
 }
 
-dt_clf = models['决策树分类']
+dt_clf = models['决策树']
 feature_importance['决策树'] = {
     'features': all_feature_cols,
     'importance': dt_clf.feature_importances_.tolist()
@@ -296,7 +274,7 @@ print(f'   测试集: {len(test_df):,} ({len(test_df)/len(df)*100:.0f}%)')
 print(f'   特征数: {len(all_feature_cols)}')
 print()
 
-print('=== 基础策略回测结果（等权重Top30） ===')
+print('=== 基础策略回测结果（等权重Top30，对比模型） ===')
 for name, res in strategy_results.items():
     print(f'{name}:')
     print(f'   总收益率: {res["total_return"]:.2%}')
@@ -305,9 +283,9 @@ for name, res in strategy_results.items():
     print(f'   最大回撤: {res["max_drawdown"]:.2%}')
     print()
 
-print('=== 动态仓位策略回测结果（下跌概率加权） ===')
+print('=== 核心策略回测结果（下跌概率动态仓位） ===')
 for name, res in risk_strategy_results.items():
-    print(f'{name}:')
+    print(f'{name}+动态仓位:')
     print(f'   总收益率: {res["total_return"]:.2%}')
     print(f'   夏普比率: {res["sharpe_ratio"]:.2f}')
     print(f'   最大回撤: {res["max_drawdown"]:.2%}')
