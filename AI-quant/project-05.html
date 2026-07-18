@@ -357,9 +357,59 @@
         </div>
     </div>
 
-    <!-- 一、算法原理 -->
+    <!-- 一、完整实战流程 -->
     <div class="section">
-        <h2 class="section-title">一、分类型机器学习算法</h2>
+        <h2 class="section-title">一、完整实战流程</h2>
+        <p class="section-desc">机器学习在量化交易中的标准9步工作流</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px;">
+            <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">01</div>
+                <div style="font-size:14px;">准备数据</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#3b82f6,#06b6d4); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">02</div>
+                <div style="font-size:14px;">构造标签</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#06b6d4,#10b981); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">03</div>
+                <div style="font-size:14px;">选择特征</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#10b981,#84cc16); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">04</div>
+                <div style="font-size:14px;">时间序列划分</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#84cc16,#eab308); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">05</div>
+                <div style="font-size:14px;">训练模型</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#eab308,#f97316); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">06</div>
+                <div style="font-size:14px;">预测</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#f97316,#ef4444); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">07</div>
+                <div style="font-size:14px;">评估</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#ef4444,#ec4899); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">08</div>
+                <div style="font-size:14px;">特征重要性</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#ec4899,#7c3aed); color:#fff; padding:20px; border-radius:12px; text-align:center;">
+                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">09</div>
+                <div style="font-size:14px;">保存结果</div>
+            </div>
+        </div>
+        <div style="margin-top:24px; padding:20px; background:#fef3c7; border-radius:10px; border-left:4px solid #f59e0b;">
+            <p style="color:#92400e; font-size:14px;">
+                <strong>⚠️ 关键注意：</strong>
+                金融时间序列数据不能随机打乱划分，必须按时间顺序切分，否则会产生未来函数（用未来数据预测过去），导致结果严重高估。
+            </p>
+        </div>
+    </div>
+
+    <!-- 二、分类型机器学习算法 -->
+    <div class="section">
+        <h2 class="section-title">二、分类型机器学习算法</h2>
         <p class="section-desc">本项目使用三种经典分类算法进行对比实验：逻辑回归、决策树、随机森林</p>
         <div class="algo-grid">
             <div class="algo-card">
@@ -431,9 +481,9 @@
         </div>
     </div>
 
-    <!-- 二、评价指标 -->
+    <!-- 三、模型评价指标 -->
     <div class="section">
-        <h2 class="section-title">二、模型评价指标</h2>
+        <h2 class="section-title">三、模型评价指标</h2>
         <p class="section-desc">混淆矩阵、ROC曲线与AUC是分类模型最核心的评估工具</p>
         <div class="chart-row">
             <div>
@@ -470,9 +520,9 @@
         </div>
     </div>
 
-    <!-- 三、数据分布 -->
+    <!-- 四、数据分布 -->
     <div class="section">
-        <h2 class="section-title">三、数据分布</h2>
+        <h2 class="section-title">四、数据分布</h2>
         <p class="section-desc">目标变量Y（涨跌标签）分布与数据集划分</p>
         <div class="chart-row">
             <div id="chart-label-dist" class="chart-container small"></div>
@@ -480,10 +530,62 @@
         </div>
     </div>
 
-    <!-- 四、模型性能对比 -->
+    <!-- 五、逻辑回归模型结果 -->
     <div class="section">
-        <h2 class="section-title">四、模型性能对比</h2>
-        <p class="section-desc">三个模型在测试集上的各项指标对比</p>
+        <h2 class="section-title">五、逻辑回归模型结果</h2>
+        <p class="section-desc">逻辑回归是最简单的线性分类模型，作为基线模型使用</p>
+        <div class="chart-row">
+            <div id="chart-lr-confusion" class="chart-container small"></div>
+            <div id="chart-lr-metrics" class="chart-container small"></div>
+        </div>
+        <h3 style="font-size:18px; margin:24px 0 12px; color:#334155;">特征系数分析（Top-15）</h3>
+        <p style="font-size:14px; color:#64748b; margin-bottom:16px;">
+            系数为正表示该特征提高上涨概率，系数为负表示降低上涨概率，绝对值越大影响越大。
+        </p>
+        <div id="chart-lr-coef" class="chart-container large"></div>
+    </div>
+
+    <!-- 六、决策树模型结果 -->
+    <div class="section">
+        <h2 class="section-title">六、决策树模型结果</h2>
+        <p class="section-desc">决策树通过if-else规则分裂样本，可解释性强但容易过拟合</p>
+        <div class="chart-row">
+            <div id="chart-dt-confusion" class="chart-container small"></div>
+            <div id="chart-dt-metrics" class="chart-container small"></div>
+        </div>
+        <div style="margin-top:20px; padding:20px; background:#f0f9ff; border-radius:10px; border-left:4px solid #3b82f6;">
+            <p style="color:#1e40af; font-size:14px;">
+                <strong>📌 模型参数：</strong>
+                max_depth=5（最大深度）· min_samples_split=50（分裂最小样本数）· min_samples_leaf=20（叶子最小样本数）
+            </p>
+        </div>
+    </div>
+
+    <!-- 七、随机森林模型结果 -->
+    <div class="section">
+        <h2 class="section-title">七、随机森林模型结果</h2>
+        <p class="section-desc">随机森林是多棵决策树的集成模型，本项目表现最佳</p>
+        <div class="chart-row">
+            <div id="chart-rf-confusion" class="chart-container small"></div>
+            <div id="chart-rf-metrics" class="chart-container small"></div>
+        </div>
+        <h3 style="font-size:18px; margin:24px 0 12px; color:#334155;">特征重要性（Top-15）</h3>
+        <p style="font-size:14px; color:#64748b; margin-bottom:16px;">
+            特征重要性反映了该特征对模型预测的贡献程度，值越大越重要。
+        </p>
+        <div id="chart-feat-importance" class="chart-container large"></div>
+        <div style="margin-top:20px; padding:20px; background:#f0fdf4; border-radius:10px; border-left:4px solid #10b981;">
+            <p style="color:#065f46; font-size:14px;">
+                <strong>📌 模型参数：</strong>
+                n_estimators=100（树的数量）· max_depth=10（最大深度）
+            </p>
+        </div>
+    </div>
+
+    <!-- 八、三模型综合对比 -->
+    <div class="section">
+        <h2 class="section-title">八、三模型综合对比</h2>
+        <p class="section-desc">三个模型在测试集上的性能横向对比</p>
         <table class="metrics-table" id="metrics-table">
             <thead>
                 <tr>
@@ -498,12 +600,8 @@
             <tbody id="metrics-tbody"></tbody>
         </table>
         <div id="chart-model-compare" class="chart-container"></div>
-    </div>
 
-    <!-- 五、ROC曲线 -->
-    <div class="section">
-        <h2 class="section-title">五、ROC 曲线与 AUC</h2>
-        <p class="section-desc">ROC曲线与AUC是分类模型最重要的评估指标之一</p>
+        <h3 style="font-size:18px; margin:30px 0 12px; color:#334155;">ROC 曲线与 AUC</h3>
         <div class="chart-row">
             <div style="background:#f0f9ff; border-radius:12px; padding:20px; border-left:4px solid #3b82f6;">
                 <h3 style="font-size:16px; margin-bottom:12px; color:#1e40af;">📖 什么是 ROC 曲线？</h3>
@@ -531,82 +629,6 @@
         <div id="chart-roc" class="chart-container large"></div>
     </div>
 
-    <!-- 六、混淆矩阵对比 -->
-    <div class="section">
-        <h2 class="section-title">六、混淆矩阵对比</h2>
-        <p class="section-desc">点击标签切换不同模型的混淆矩阵热力图</p>
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchCM('随机森林')">随机森林</button>
-            <button class="tab-btn" onclick="switchCM('决策树')">决策树</button>
-            <button class="tab-btn" onclick="switchCM('逻辑回归')">逻辑回归</button>
-        </div>
-        <div id="chart-confusion" class="chart-container"></div>
-    </div>
-
-    <!-- 七、特征重要性 -->
-    <div class="section">
-        <h2 class="section-title">七、特征重要性分析</h2>
-        <p class="section-desc">随机森林模型Top-15特征重要性排序</p>
-        <div id="chart-feat-importance" class="chart-container large"></div>
-    </div>
-
-    <!-- 八、逻辑回归系数 -->
-    <div class="section">
-        <h2 class="section-title">八、逻辑回归特征系数</h2>
-        <p class="section-desc">逻辑回归模型Top-15特征系数（正负表示方向，绝对值表示影响大小）</p>
-        <div id="chart-lr-coef" class="chart-container large"></div>
-    </div>
-
-    <!-- 九、实战流程 -->
-    <div class="section">
-        <h2 class="section-title">九、完整实战流程</h2>
-        <p class="section-desc">机器学习在量化交易中的标准9步工作流</p>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px;">
-            <div style="background:linear-gradient(135deg,#1e3a8a,#3b82f6); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">01</div>
-                <div style="font-size:14px;">准备数据</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#3b82f6,#06b6d4); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">02</div>
-                <div style="font-size:14px;">构造标签</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#06b6d4,#10b981); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">03</div>
-                <div style="font-size:14px;">选择特征</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#10b981,#84cc16); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">04</div>
-                <div style="font-size:14px;">时间序列划分</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#84cc16,#eab308); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">05</div>
-                <div style="font-size:14px;">训练模型</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#eab308,#f97316); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">06</div>
-                <div style="font-size:14px;">预测</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#f97316,#ef4444); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">07</div>
-                <div style="font-size:14px;">评估</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#ef4444,#ec4899); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">08</div>
-                <div style="font-size:14px;">特征重要性</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#ec4899,#7c3aed); color:#fff; padding:20px; border-radius:12px; text-align:center;">
-                <div style="font-size:28px; font-weight:700; margin-bottom:4px;">09</div>
-                <div style="font-size:14px;">保存结果</div>
-            </div>
-        </div>
-        <div style="margin-top:24px; padding:20px; background:#fef3c7; border-radius:10px; border-left:4px solid #f59e0b;">
-            <p style="color:#92400e; font-size:14px;">
-                <strong>⚠️ 关键注意：</strong>
-                金融时间序列数据不能随机打乱划分，必须按时间顺序切分，否则会产生未来函数（用未来数据预测过去），导致结果严重高估。
-            </p>
-        </div>
-    </div>
-
 </div>
 
 <div class="footer">
@@ -630,7 +652,6 @@ async function loadData() {
 }
 
 function initAll() {
-    // 概览统计
     document.getElementById('stat-total').textContent = allData.date_range.total_samples.toLocaleString();
     document.getElementById('stat-train').textContent = allData.date_range.train_samples.toLocaleString();
     document.getElementById('stat-test').textContent = allData.date_range.test_samples.toLocaleString();
@@ -639,12 +660,25 @@ function initAll() {
 
     renderLabelDist();
     renderDataSplit();
+
+    // 逻辑回归
+    renderConfusion('chart-lr-confusion', '逻辑回归');
+    renderMetricsCard('chart-lr-metrics', '逻辑回归');
+    renderLRCoef();
+
+    // 决策树
+    renderConfusion('chart-dt-confusion', '决策树');
+    renderMetricsCard('chart-dt-metrics', '决策树');
+
+    // 随机森林
+    renderConfusion('chart-rf-confusion', '随机森林');
+    renderMetricsCard('chart-rf-metrics', '随机森林');
+    renderFeatureImportance();
+
+    // 综合对比
     renderMetricsTable();
     renderModelCompare();
     renderROC();
-    renderConfusion('随机森林');
-    renderFeatureImportance();
-    renderLRCoef();
 }
 
 // 标签分布
@@ -831,18 +865,8 @@ function renderROC() {
     });
 }
 
-// 混淆矩阵热力图
-let currentCM = '随机森林';
-function switchCM(name) {
-    currentCM = name;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.textContent.includes(name));
-    });
-    renderConfusion(name);
-}
-
-function renderConfusion(modelName) {
-    const chart = echarts.init(document.getElementById('chart-confusion'));
+function renderConfusion(chartId, modelName) {
+    const chart = echarts.init(document.getElementById(chartId));
     const cm = allData.confusion_matrices[modelName];
     const data = [];
     for (let i = 0; i < 2; i++) {
@@ -851,7 +875,7 @@ function renderConfusion(modelName) {
         }
     }
     chart.setOption({
-        title: { text: `${modelName} 混淆矩阵`, left: 'center', textStyle: { fontSize: 16, fontWeight: 500 } },
+        title: { text: `${modelName} 混淆矩阵`, left: 'center', textStyle: { fontSize: 15, fontWeight: 500 } },
         tooltip: {
             position: 'top',
             formatter: function(p) {
@@ -859,31 +883,66 @@ function renderConfusion(modelName) {
                 return labels[p.value[1]][p.value[0]] + ': ' + p.value[2];
             }
         },
-        grid: { left: 100, right: 40, top: 60, bottom: 60 },
+        grid: { left: 90, right: 20, top: 50, bottom: 40 },
         xAxis: {
             type: 'category',
             data: ['预测: 跌(0)', '预测: 涨(1)'],
-            splitArea: { show: true }
+            splitArea: { show: true },
+            axisLabel: { fontSize: 11 }
         },
         yAxis: {
             type: 'category',
             data: ['实际: 跌(0)', '实际: 涨(1)'],
-            splitArea: { show: true }
+            splitArea: { show: true },
+            axisLabel: { fontSize: 11 }
         },
         visualMap: {
+            show: false,
             min: 0,
             max: Math.max(...cm.flat()),
-            calculable: true,
-            orient: 'horizontal',
-            left: 'center',
-            bottom: 10,
             inRange: { color: ['#dbeafe', '#1e40af'] }
         },
         series: [{
             type: 'heatmap',
             data: data,
-            label: { show: true, fontSize: 16, fontWeight: 'bold', color: '#fff' },
-            emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' } }
+            label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#fff' },
+            emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' }
+        }]
+    });
+}
+
+// 单个模型指标卡片
+function renderMetricsCard(chartId, modelName) {
+    const result = allData.model_results.find(r => r.model === modelName);
+    const chart = echarts.init(document.getElementById(chartId));
+    const items = [
+        { name: '准确率', value: result.accuracy },
+        { name: '精确率', value: result.precision },
+        { name: '召回率', value: result.recall },
+        { name: 'F1分数', value: result.f1 },
+        { name: 'ROC-AUC', value: result.auc }
+    ];
+    chart.setOption({
+        title: { text: `${modelName} 评估指标`, left: 'center', textStyle: { fontSize: 15, fontWeight: 500 } },
+        tooltip: { trigger: 'item' },
+        grid: { left: 100, right: 30, top: 50, bottom: 20 },
+        xAxis: { type: 'value', max: 1, axisLabel: { fontSize: 10 } },
+        yAxis: {
+            type: 'category',
+            data: items.map(i => i.name).reverse(),
+            axisLabel: { fontSize: 12 }
+        },
+        series: [{
+            type: 'bar',
+            data: items.map(i => i.value).reverse(),
+            itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                    { offset: 0, color: '#7c3aed' },
+                    { offset: 1, color: '#a78bfa' }
+                ]),
+                borderRadius: [0, 4, 4, 0]
+            },
+            label: { show: true, position: 'right', formatter: (p) => p.value.toFixed(3) }
         }]
     });
 }
