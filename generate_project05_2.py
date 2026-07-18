@@ -367,7 +367,7 @@ html = r'''<!DOCTYPE html>
         <!-- 3.5 总收益率计算方式 -->
         <div class="strategy-box" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff); border-color:#e9d5ff;">
             <h3 style="color:#86198f;">🧮 3.5 总收益率计算方式</h3>
-            <p>策略的总收益率通过<strong>每季度组合收益的复利累积</strong>计算得出。本数据集按季度更新（每季度末一个数据点），共10个季度，具体分为两步：</p>
+            <p>策略的总收益率通过<strong>每季度组合收益的复利累积</strong>计算得出。本数据集按季度更新（每季度末一个数据点），原始10个季度经特征工程dropna后保留8个季度（训练4 + 测试4），策略回测在测试集4个季度上进行，具体分为两步：</p>
             
             <p style="margin-top:12px;"><strong>第一步：计算每季度组合收益率</strong></p>
             <p>对每个季度，组合中30支股票按各自仓位权重加权，得到当季组合收益率：</p>
@@ -526,7 +526,7 @@ html = r'''<!DOCTYPE html>
         <div class="fig-title">图 1：四策略累计收益率曲线对比</div>
         <div id="chart-all-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>四个策略的累计收益率曲线对比。纵轴为累计收益率百分比，0%为起始基准线。核心策略（动态仓位）在两个选股模型上均优于对应的基础策略。
+            <strong>解读：</strong>四个策略的累计收益率曲线对比。纵轴为累计收益率百分比，0%为起始基准线。核心策略（动态仓位）在随机森林模型上明显优于基础策略（25.48% vs 20.32%）；在决策树模型上与基础策略基本持平（-1.33% vs -1.35%，差异约0.02个百分点）。
         </div>
     </div>
 
@@ -612,10 +612,10 @@ html = r'''<!DOCTYPE html>
         <h2 class="section-title">六、四策略全面对比</h2>
         <p class="section-desc">决策树、随机森林、决策树+动态仓位、随机森林+动态仓位 四个策略的全面对比</p>
         
-        <div class="fig-title">图 4：四策略累计收益率曲线对比</div>
+        <div class="fig-title">图 4：四策略超额收益曲线对比（相对市场基准）</div>
         <div id="chart-cum-return" class="chart-container"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>四个策略的累计收益率曲线。核心策略（动态仓位）曲线整体高于对应的基础策略曲线，验证了概率驱动仓位调整的有效性。
+            <strong>解读：</strong>本图展示四策略相对市场平均基准的<strong>超额累计收益</strong>（策略累计净值 - 市场累计净值）。正值表示跑赢市场，负值表示跑输市场。四个策略均显著跑赢市场基准，核心策略（动态仓位）的超额收益在随机森林模型上最为突出。
         </div>
 
         <div class="chart-row">
@@ -794,17 +794,22 @@ function renderOverview() {
 
 function renderDataSplit() {
     const di = allData.data_info;
-    const trainQuarters = di.train_quarters_raw || [];
-    const testQuarters = di.test_quarters_raw || [];
+    const trainQuartersRaw = di.train_quarters_raw || [];
+    const trainQuarters = di.train_quarters || [];
+    const testQuarters = di.test_quarters || [];
+    const trainRatio = (di.train_samples / di.total_samples * 100).toFixed(1);
+    const testRatio = (di.test_samples / di.total_samples * 100).toFixed(1);
     document.getElementById('train-info').innerHTML =
-        '季度: ' + trainQuarters.join(', ') + '<br>' +
-        '数量: <strong style="color:#065f46;">' + trainQuarters.length + '个季度</strong><br>' +
-        '占比: 60%<br>' +
-        '<span style="color:#64748b; font-size:12px;">(特征工程前置期后实际有标签样本为2020Q3起)</span>';
+        '原始季度: ' + trainQuartersRaw.join(', ') + '<br>' +
+        'dropna后: <strong style="color:#065f46;">' + trainQuarters.join(', ') + ' (' + trainQuarters.length + '个)</strong><br>' +
+        '样本数: ' + di.train_samples.toLocaleString() + ' / ' + di.total_samples.toLocaleString() + '<br>' +
+        '占比: <strong style="color:#065f46;">' + trainRatio + '%</strong><br>' +
+        '<span style="color:#64748b; font-size:12px;">(2020Q1-Q2因lag2/MA3特征工程被丢弃)</span>';
     document.getElementById('test-info').innerHTML =
         '季度: ' + testQuarters.join(', ') + '<br>' +
         '数量: <strong style="color:#92400e;">' + testQuarters.length + '个季度</strong><br>' +
-        '占比: 40%<br>' +
+        '样本数: ' + di.test_samples.toLocaleString() + ' / ' + di.total_samples.toLocaleString() + '<br>' +
+        '占比: <strong style="color:#92400e;">' + testRatio + '%</strong><br>' +
         '<span style="color:#64748b; font-size:12px;">(4个季度全部有完整特征)</span>';
 }
 
@@ -912,6 +917,8 @@ function renderFeatureImportance(chartId, modelName) {
 function renderCumReturn() {
     const chart = echarts.init(document.getElementById('chart-cum-return'));
     const as = allData.all_strategies;
+    // 图4改为超额收益曲线：策略累计收益 - 市场累计收益（相对市场基准的超额表现）
+    const marketCum = as['决策树'].market_cum;
     const series = STRATEGY_ORDER.map(name => ({
         name: name,
         type: 'line',
@@ -919,22 +926,13 @@ function renderCumReturn() {
         symbol: 'none',
         lineStyle: { width: 3, color: STRATEGY_COLORS[name] },
         itemStyle: { color: STRATEGY_COLORS[name] },
-        data: as[name].portfolio_cum.map(v => (v - 1) * 100)
+        data: as[name].portfolio_cum.map((v, i) => ((v - marketCum[i]) * 100))
     }));
-    series.push({
-        name: '市场平均',
-        type: 'line',
-        smooth: true,
-        symbol: 'none',
-        lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
-        itemStyle: { color: '#94a3b8' },
-        data: as['决策树'].market_cum.map(v => (v - 1) * 100)
-    });
     chart.setOption({
         tooltip: {
             trigger: 'axis',
             formatter: function(params) {
-                let s = params[0].axisValue + '<br/>';
+                let s = params[0].axisValue + '（相对市场超额）<br/>';
                 params.forEach(p => {
                     s += p.marker + p.seriesName + ': ' + p.value.toFixed(2) + '%<br/>';
                 });
@@ -946,7 +944,7 @@ function renderCumReturn() {
         xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
-            name: '累计收益率(%)',
+            name: '超额收益率(%)',
             nameLocation: 'middle',
             nameGap: 55,
             axisLabel: { formatter: '{value}%' }

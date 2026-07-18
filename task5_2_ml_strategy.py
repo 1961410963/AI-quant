@@ -29,7 +29,8 @@ for col in feature_cols:
     df[col + '_delta'] = df.groupby('Code')[col].diff(1)
 
 df['Next_Ret_Decile'] = df.groupby('Date')['Next_Ret'].rank(pct=True).apply(lambda x: int(x * 10))
-df['Next_Ret_Top30'] = df.groupby('Date')['Next_Ret'].rank(ascending=False).apply(lambda x: 1 if x <= 30 else 0)
+# Top30标签：使用method='first'处理并列，确保每天严格标30个正样本
+df['Next_Ret_Top30'] = df.groupby('Date')['Next_Ret'].rank(ascending=False, method='first').apply(lambda x: 1 if x <= 30 else 0)
 
 df = df.dropna().reset_index(drop=True)
 
