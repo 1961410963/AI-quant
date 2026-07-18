@@ -474,8 +474,41 @@ html = r'''<!DOCTYPE html>
             <p style="font-size:12px; color:#6b7280; margin-top:8px;">注：上表为示意数据，权重 = (1-下跌概率)/Σ(1-下跌概率)，合计100%</p>
         </div>
 
-        <!-- 3.7 四策略回测结果总览 -->
-        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.7 四策略回测结果总览</h3>
+        <!-- 3.7 选股逻辑：次级排序键（流动性代理） -->
+        <div class="strategy-box" style="background:linear-gradient(135deg,#fffbeb,#fef3c7); border-color:#fde68a; margin-top:16px;">
+            <h3 style="color:#92400e;">🔀 3.7 选股逻辑：次级排序键（流动性代理）</h3>
+            <p><strong>问题背景：</strong>决策树分类器设置 max_depth=5，叶子节点最多32个，意味着大量股票会得到<strong>完全相同</strong>的预测概率。pandas默认的排名方式 (method='average') 在并列时取平均名次，会导致并列股票"全部入选或全部落选"，使决策树策略持仓数严重不足（实测仅5.75支，远低于30支）。</p>
+
+            <p style="margin-top:12px;"><strong>解决方案：</strong>采用<strong>次级排序键</strong>处理并列情况。当预测概率相同时，按<strong>流动性</strong>排序选取Top30。</p>
+
+            <p style="margin-top:10px;"><strong>排序逻辑：</strong></p>
+            <div class="formula" style="text-align:left; font-size:14px;">
+                排序键 = (预测概率 ↓, 流动性代理MV ↓)<br>
+                <span style="font-size:12px; color:#6b7280;">主键：模型预测概率降序 | 次键：市值MV降序</span>
+            </div>
+
+            <p style="margin-top:12px;"><strong>为何用MV作为流动性代理？</strong></p>
+            <ul style="font-size:13px; padding-left:20px; color:#374151; line-height:1.9;">
+                <li>当前数据集无成交量、成交额、换手率等直接流动性指标</li>
+                <li><strong>市值MV越大，通常流动性越好</strong>（大盘股成交更活跃、买卖价差更小）</li>
+                <li>这是金融业界常用的流动性近似方法，逻辑清晰、可解释</li>
+                <li>当概率并列时，优先选市值大（流动性好）的股票，也便于实际交易执行</li>
+            </ul>
+
+            <p style="margin-top:12px;"><strong>实际效果：</strong></p>
+            <ul style="font-size:13px; padding-left:20px; color:#374151; line-height:1.9;">
+                <li>✅ <strong>持仓数修复</strong>：决策树策略持仓数从 5.75 → 30.0（已修复）</li>
+                <li>✅ <strong>随机森林不受影响</strong>：max_depth=10，概率值足够细分，几乎没有并列，次级排序键不发挥作用</li>
+                <li>⚠️ <strong>决策树收益回归合理水平</strong>：从虚假的18.46%回到-1.35%（仍跑赢市场-5.84%）</li>
+            </ul>
+
+            <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #f59e0b; font-size:13px; color:#92400e;">
+                <strong>诚实说明：</strong>此前使用 method='first'（按CSV行顺序）处理并列，得到决策树18.46%的高收益。但CSV顺序并非有意义的选股逻辑，本质是数据排列的偶然结果，不可复现、无法解释。改用MV次级排序后，决策树收益回归到反映模型真实能力的水平。这是更诚实、更稳健的结果。
+            </div>
+        </div>
+
+        <!-- 3.8 四策略回测结果总览 -->
+        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.8 四策略回测结果总览</h3>
         <table class="metrics-table">
             <thead>
                 <tr>
@@ -597,6 +630,71 @@ html = r'''<!DOCTYPE html>
         </div>
         <div class="fig-caption">
             <strong>解读：</strong>左图为四策略回撤曲线对比，右图为四策略季度收益率对比。核心策略在回撤控制上优于基础策略。
+        </div>
+
+        <!-- 关于图5回撤为0的详细说明 -->
+        <div class="strategy-box" style="background:linear-gradient(135deg,#fff1f2,#fee2e2); border-color:#fecaca; margin-top:16px;">
+            <h3 style="color:#991b1b;">🔍 关于图5中"0回撤"的详细说明</h3>
+            <p>许多读者会疑惑：4个策略怎么会在某些时点出现0回撤？这是否是bug？<strong>不是bug</strong>，是数据稀疏性导致的正常现象。下面用真实数据说明：</p>
+
+            <p style="margin-top:12px;"><strong>测试集4个季度的真实回撤数据（%）：</strong></p>
+            <div style="background:#fff; padding:14px 18px; border-radius:8px; margin-top:8px; font-size:13px; color:#374151; overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; min-width:560px;">
+                    <tr style="background:#fef2f2;">
+                        <th style="padding:8px; text-align:left; border-bottom:2px solid #fecaca;">策略</th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2021Q3<br><span style="font-weight:normal; font-size:11px;">(起点)</span></th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2021Q4</th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2022Q1</th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2022Q2</th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">最大回撤</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">随机森林</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-6.62%</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-1.17%</td>
+                        <td style="padding:8px; text-align:center; font-weight:600; color:#dc2626;">-6.62%</td>
+                    </tr>
+                    <tr style="background:#fafafa;">
+                        <td style="padding:8px;">决策树</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-5.79%</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-5.01%</td>
+                        <td style="padding:8px; text-align:center; font-weight:600; color:#dc2626;">-5.79%</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">随机森林+动态仓位</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-5.74%</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-1.40%</td>
+                        <td style="padding:8px; text-align:center; font-weight:600; color:#dc2626;">-5.74%</td>
+                    </tr>
+                    <tr style="background:#fafafa;">
+                        <td style="padding:8px;">决策树+动态仓位</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-4.83%</td>
+                        <td style="padding:8px; text-align:center; color:#94a3b8;">0.00%</td>
+                        <td style="padding:8px; text-align:center; color:#dc2626;">-5.91%</td>
+                        <td style="padding:8px; text-align:center; font-weight:600; color:#dc2626;">-5.91%</td>
+                    </tr>
+                </table>
+            </div>
+
+            <p style="margin-top:14px;"><strong>为什么会出现0回撤？三个原因：</strong></p>
+            <ul style="font-size:13px; padding-left:20px; color:#374151; line-height:1.9;">
+                <li><strong>起点必然为0</strong>：2021Q3是回测起点，累计净值=1，没有"历史最高点"可比，回撤必然为0</li>
+                <li><strong>创新高时为0</strong>：2022Q1四个策略都创新高（累计净值超过2021Q3），此时累计净值=cummax，回撤=0</li>
+                <li><strong>数据按季度稀疏更新</strong>：4个测试季度只有4个数据点，看不到季度内的日/周级别回撤。如果换成日线数据，0回撤会大幅减少</li>
+            </ul>
+
+            <p style="margin-top:12px;"><strong>关键结论：</strong>4个策略的回撤模式高度一致（都是"0→跌→0→跌"），因为它们在同一组回测期受同一市场环境影响。<strong>"0回撤"不等于"没风险"</strong>——4个策略在2021Q4都出现了5-7%的真实回撤，在2022Q2也都有1-6%的回撤。最大回撤数值（-5.74% 到 -6.62%）才是衡量风险的关键指标。</p>
+
+            <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #dc2626; font-size:13px; color:#991b1b;">
+                <strong>提示：</strong>本数据集为季度频率（每季度末一个数据点），回撤曲线只能反映季度末时点的状态。如需观察更精细的回撤，需使用日线或周线数据。
+            </div>
         </div>
     </div>
 

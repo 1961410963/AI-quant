@@ -110,8 +110,10 @@ test_df['Down_Prob'] = np.array(results['下跌概率模型']['predictions'])
 # ============================================================
 def calculate_strategy_metrics(df, pred_col):
     df_sorted = df.copy()
-    # 使用method='first'处理并列排名，确保决策树(max_depth=5，叶子节点少、概率值大量重复)也能选满30支
-    df_sorted['Rank'] = df_sorted.groupby('Date')[pred_col].rank(ascending=False, method='first')
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
+    # 决策树max_depth=5叶子节点少、概率值大量重复，概率并列时优先选MV大(流动性好)的股票
+    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, False])
+    df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
     portfolio_daily = df_sorted[df_sorted['In_Portfolio'] == 1].groupby('Date')['Next_Ret'].mean()
@@ -156,8 +158,9 @@ def calculate_strategy_metrics(df, pred_col):
 # ============================================================
 def calculate_risk_weighted_strategy(df, pred_col, prob_col='Down_Prob'):
     df_sorted = df.copy()
-    # 使用method='first'处理并列排名，确保决策树也能选满30支
-    df_sorted['Rank'] = df_sorted.groupby('Date')[pred_col].rank(ascending=False, method='first')
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
+    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, False])
+    df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
     portfolio = df_sorted[df_sorted['In_Portfolio'] == 1].copy()
@@ -258,7 +261,9 @@ col_map = {
 }
 for name in all_strategies:
     df_sorted = test_df.copy()
-    df_sorted['Rank'] = df_sorted.groupby('Date')[col_map[name]].rank(ascending=False, method='first')
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
+    df_sorted = df_sorted.sort_values(['Date', col_map[name], 'MV'], ascending=[True, False, False])
+    df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
     # 核心策略需要按下跌概率加权计算季度收益
