@@ -306,7 +306,7 @@ html = r'''<!DOCTYPE html>
             <h3 style="font-size:16px; margin-bottom:12px; color:#334155;">🎯 应变量（预测目标）</h3>
             <div class="factor-list">
                 <div class="factor-item" style="border-left-color:#10b981;"><strong>Next_Ret_Binary</strong>：涨跌二分类标签（<strong style="color:#10b981;">核心目标</strong>，下跌概率模型预测对象）</div>
-                <div class="factor-item"><strong>Next_Ret</strong>：未来收益率（对比模型回归目标）</div>
+                <div class="factor-item"><strong>Next_Ret</strong>：未来收益率（原始标签，非模型预测目标）</div>
                 <div class="factor-item"><strong>Next_Ret_Top30</strong>：是否为Top30高收益股票（对比模型分类目标）</div>
                 <div class="factor-item"><strong>Next_Ret_Decile</strong>：收益率分位数排名</div>
             </div>
@@ -343,7 +343,7 @@ html = r'''<!DOCTYPE html>
         <div style="margin-bottom:20px;">
             <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📋 3.3 完整操作步骤</h3>
             <ol class="step-list">
-                <li><strong>选股（模型预测排名）</strong>：按基础模型（随机森林/决策树的回归或分类版本）预测排名，选出Top30股票作为候选池</li>
+                <li><strong>选股（模型预测排名）</strong>：按基础分类模型（随机森林/决策树）预测概率排名，选出Top30股票作为候选池</li>
                 <li><strong>预测下跌概率</strong>：对选出的30支股票，用下跌概率模型计算每支的下跌概率 P(Next_Ret ≤ 0)</li>
                 <li><strong>计算仓位权重</strong>：weight_i = (1 - down_prob_i) / Σ(1 - down_prob_j)，下跌概率低的股票获得更高权重</li>
                 <li><strong>加权持仓</strong>：按计算出的权重配置资金，非等权重。例如下跌概率10%的股票权重高于下跌概率60%的股票</li>
@@ -592,6 +592,20 @@ function initAll() {
     renderQuarterly();
     renderCompareCharts();
     renderRiskCompareCharts();
+    setTimeout(resizeAllCharts, 100);
+    setTimeout(resizeAllCharts, 500);
+    window.addEventListener('resize', resizeAllCharts);
+}
+
+function resizeAllCharts() {
+    const ids = ['chart-risk-cum-return','chart-feat-rf','chart-feat-dt','chart-cum-return','chart-drawdown','chart-quarterly','chart-return-compare','chart-sharpe-compare','chart-dd-compare','chart-trades-compare','chart-risk-compare-return','chart-risk-compare-sharpe','chart-risk-compare-dd'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const inst = echarts.getInstanceByDom(el);
+            if (inst) inst.resize();
+        }
+    });
 }
 
 function renderOverview() {
@@ -611,16 +625,18 @@ function renderOverview() {
 
 function renderDataSplit() {
     const di = allData.data_info;
-    const trainQuarters = di.train_quarters || [];
-    const testQuarters = di.test_quarters || [];
+    const trainQuarters = di.train_quarters_raw || [];
+    const testQuarters = di.test_quarters_raw || [];
     document.getElementById('train-info').innerHTML =
         '季度: ' + trainQuarters.join(', ') + '<br>' +
-        '样本数: ' + di.train_samples.toLocaleString() + '<br>' +
-        '占比: ' + (di.train_samples / di.total_samples * 100).toFixed(0) + '%';
+        '数量: <strong style="color:#065f46;">' + trainQuarters.length + '个季度</strong><br>' +
+        '占比: 60%<br>' +
+        '<span style="color:#64748b; font-size:12px;">(特征工程前置期后实际有标签样本为2020Q3起)</span>';
     document.getElementById('test-info').innerHTML =
         '季度: ' + testQuarters.join(', ') + '<br>' +
-        '样本数: ' + di.test_samples.toLocaleString() + '<br>' +
-        '占比: ' + (di.test_samples / di.total_samples * 100).toFixed(0) + '%';
+        '数量: <strong style="color:#92400e;">' + testQuarters.length + '个季度</strong><br>' +
+        '占比: 40%<br>' +
+        '<span style="color:#64748b; font-size:12px;">(4个季度全部有完整特征)</span>';
 }
 
 function renderRiskStrategyTable() {
@@ -663,7 +679,7 @@ function renderRiskCumReturn() {
         symbol: 'none',
         lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
         itemStyle: { color: '#94a3b8' },
-        data: rsr['随机森林回归'].market_cum.map(v => (v - 1) * 100)
+        data: rsr['随机森林'].market_cum.map(v => (v - 1) * 100)
     });
     chart.setOption({
         tooltip: {
@@ -678,7 +694,7 @@ function renderRiskCumReturn() {
         },
         legend: { bottom: 5 },
         grid: { left: 85, right: 30, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: rsr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: rsr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
             name: '累计收益率(%)',
@@ -751,7 +767,7 @@ function renderCumReturn() {
         symbol: 'none',
         lineStyle: { type: 'dashed', width: 2, color: '#94a3b8' },
         itemStyle: { color: '#94a3b8' },
-        data: sr['随机森林回归'].market_cum.map(v => (v - 1) * 100)
+        data: sr['随机森林'].market_cum.map(v => (v - 1) * 100)
     });
     chart.setOption({
         tooltip: {
@@ -766,7 +782,7 @@ function renderCumReturn() {
         },
         legend: { bottom: 5 },
         grid: { left: 85, right: 30, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: sr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
             name: '累计收益率(%)',
@@ -796,7 +812,7 @@ function renderDrawdown() {
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
         grid: { left: 80, right: 20, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: sr['随机森林回归'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: sr['随机森林'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: { type: 'value', name: '回撤(%)', nameLocation: 'middle', nameGap: 50 },
         series: series
     });

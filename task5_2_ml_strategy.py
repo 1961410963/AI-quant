@@ -44,10 +44,11 @@ all_feature_cols = [col for col in df.columns
                                                         '营业总收入', '营业收入']) and 'Next_Ret' not in col]
 
 # ============================================================
-# 数据集拆分：按季度约 5:5 比例（原始6:4，特征工程后调整为5:5）
+# 数据集拆分：按季度 6:4 比例
 # 原始数据共10个季度(2020Q1-2022Q2)
-# 由于特征工程计算lag2/ma3需要前置数据，dropna后2020Q1-Q2被丢弃
-# 实际训练集: 2020Q3-2021Q2（4个季度），测试集: 2021Q3-2022Q2（4个季度）
+# 前6个季度训练(2020Q1-2021Q2)，后4个季度测试(2021Q3-2022Q2)
+# 由于特征工程计算lag2/ma3需要前置数据，训练集中2020Q1-Q2作为特征前置期
+# 训练集实际有标签样本: 2020Q3-2021Q2（4个季度），测试集: 2021Q3-2022Q2（4个季度）
 # ============================================================
 split_date = '2021-06-30'
 train_df = df[df['Date'] <= split_date].copy()
@@ -253,8 +254,11 @@ results_dict = {
             'start': df['Date'].min().strftime('%Y-%m-%d'),
             'end': df['Date'].max().strftime('%Y-%m-%d')
         },
+        'train_quarters_raw': ['2020Q1', '2020Q2', '2020Q3', '2020Q4', '2021Q1', '2021Q2'],
+        'test_quarters_raw': ['2021Q3', '2021Q4', '2022Q1', '2022Q2'],
         'train_quarters': sorted(train_df['YearQuarter'].unique().tolist()),
-        'test_quarters': sorted(test_df['YearQuarter'].unique().tolist())
+        'test_quarters': sorted(test_df['YearQuarter'].unique().tolist()),
+        'split_note': '训练集6个季度(2020Q1-2021Q2)，测试集4个季度(2021Q3-2022Q2)；特征工程lag2/ma3需前置数据，训练集实际有标签样本为2020Q3起'
     },
     'model_results': results,
     'strategy_results': strategy_results,
