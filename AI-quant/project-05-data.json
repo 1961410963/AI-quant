@@ -14,7 +14,7 @@
   },
   "model_results": [
     {
-      "model": "Logistic Regression",
+      "model": "逻辑回归",
       "accuracy": 0.7028,
       "precision": 0.3086,
       "recall": 0.0737,
@@ -22,7 +22,7 @@
       "auc": 0.5093
     },
     {
-      "model": "Decision Tree",
+      "model": "决策树",
       "accuracy": 0.5897,
       "precision": 0.3073,
       "recall": 0.4042,
@@ -30,7 +30,7 @@
       "auc": 0.55
     },
     {
-      "model": "Random Forest",
+      "model": "随机森林",
       "accuracy": 0.6481,
       "precision": 0.3548,
       "recall": 0.3571,
@@ -39,7 +39,7 @@
     }
   ],
   "roc_curves": {
-    "Logistic Regression": {
+    "逻辑回归": {
       "fpr": [
         0.0,
         0.0002205071664829107,
@@ -4990,7 +4990,7 @@
       ],
       "auc": 0.5093
     },
-    "Decision Tree": {
+    "决策树": {
       "fpr": [
         0.0,
         0.0008820286659316428,
@@ -5061,7 +5061,7 @@
       ],
       "auc": 0.55
     },
-    "Random Forest": {
+    "随机森林": {
       "fpr": [
         0.0,
         0.0,
@@ -9834,7 +9834,7 @@
     }
   },
   "confusion_matrices": {
-    "Logistic Regression": [
+    "逻辑回归": [
       [
         4255,
         280
@@ -9844,7 +9844,7 @@
         125
       ]
     ],
-    "Decision Tree": [
+    "决策树": [
       [
         2989,
         1546
@@ -9854,7 +9854,7 @@
         686
       ]
     ],
-    "Random Forest": [
+    "随机森林": [
       [
         3433,
         1102

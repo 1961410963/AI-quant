@@ -443,22 +443,22 @@
                     <div class="cm-cell cm-header">预测: 涨(1)</div>
                     <div class="cm-cell cm-header">预测: 跌(0)</div>
                     <div class="cm-cell cm-label">实际: 涨(1)</div>
-                    <div class="cm-cell cm-tp">TP<br>真正例</div>
-                    <div class="cm-cell cm-fn">FN<br>假反例</div>
+                    <div class="cm-cell cm-tp">真正例<br>（实际涨·预测涨）</div>
+                    <div class="cm-cell cm-fn">假反例<br>（实际涨·预测跌）</div>
                     <div class="cm-cell cm-label">实际: 跌(0)</div>
-                    <div class="cm-cell cm-fp">FP<br>假正例</div>
-                    <div class="cm-cell cm-tn">TN<br>真反例</div>
+                    <div class="cm-cell cm-fp">假正例<br>（实际跌·预测涨）</div>
+                    <div class="cm-cell cm-tn">真反例<br>（实际跌·预测跌）</div>
                 </div>
             </div>
             <div>
                 <h3 style="font-size:16px; margin-bottom:12px; color:#334155;">指标计算公式</h3>
                 <div style="background:#f8fafc; border-radius:10px; padding:20px; font-size:14px;">
-                    <p style="margin-bottom:10px;"><strong>准确率 Accuracy</strong> = (TP+TN) / 总数</p>
-                    <p style="margin-bottom:10px;"><strong>精确率 Precision</strong> = TP / (TP+FP)</p>
-                    <p style="margin-bottom:10px;"><strong>召回率 Recall</strong> = TP / (TP+FN)</p>
-                    <p style="margin-bottom:10px;"><strong>F1 Score</strong> = 2 × P × R / (P+R)</p>
-                    <p style="margin-bottom:10px;"><strong>TPR</strong> = TP / (TP+FN)（纵轴）</p>
-                    <p><strong>FPR</strong> = FP / (FP+TN)（横轴）</p>
+                    <p style="margin-bottom:10px;"><strong>准确率</strong> = (真正例+真反例) / 总数</p>
+                    <p style="margin-bottom:10px;"><strong>精确率</strong> = 真正例 / (真正例+假正例)</p>
+                    <p style="margin-bottom:10px;"><strong>召回率</strong> = 真正例 / (真正例+假反例)</p>
+                    <p style="margin-bottom:10px;"><strong>F1分数</strong> = 2 × 精确率 × 召回率 / (精确率+召回率)</p>
+                    <p style="margin-bottom:10px;"><strong>真阳性率</strong> = 真正例 / (真正例+假反例)（纵轴）</p>
+                    <p><strong>假阳性率</strong> = 假正例 / (假正例+真反例)（横轴）</p>
                 </div>
             </div>
         </div>
@@ -488,10 +488,10 @@
             <thead>
                 <tr>
                     <th>模型</th>
-                    <th>Accuracy</th>
-                    <th>Precision</th>
-                    <th>Recall</th>
-                    <th>F1 Score</th>
+                    <th>准确率</th>
+                    <th>精确率</th>
+                    <th>召回率</th>
+                    <th>F1分数</th>
                     <th>ROC-AUC</th>
                 </tr>
             </thead>
@@ -503,7 +503,7 @@
     <!-- 五、ROC曲线 -->
     <div class="section">
         <h2 class="section-title">五、ROC 曲线</h2>
-        <p class="section-desc">受试者工作特征曲线，横轴FPR，纵轴TPR，曲线下面积为AUC</p>
+        <p class="section-desc">受试者工作特征曲线，横轴为假阳性率，纵轴为真阳性率，曲线下面积为AUC</p>
         <div id="chart-roc" class="chart-container large"></div>
     </div>
 
@@ -512,9 +512,9 @@
         <h2 class="section-title">六、混淆矩阵对比</h2>
         <p class="section-desc">点击标签切换不同模型的混淆矩阵热力图</p>
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchCM('Random Forest')">Random Forest</button>
-            <button class="tab-btn" onclick="switchCM('Decision Tree')">Decision Tree</button>
-            <button class="tab-btn" onclick="switchCM('Logistic Regression')">Logistic Regression</button>
+            <button class="tab-btn active" onclick="switchCM('随机森林')">随机森林</button>
+            <button class="tab-btn" onclick="switchCM('决策树')">决策树</button>
+            <button class="tab-btn" onclick="switchCM('逻辑回归')">逻辑回归</button>
         </div>
         <div id="chart-confusion" class="chart-container"></div>
     </div>
@@ -618,7 +618,7 @@ function initAll() {
     renderMetricsTable();
     renderModelCompare();
     renderROC();
-    renderConfusion('Random Forest');
+    renderConfusion('随机森林');
     renderFeatureImportance();
     renderLRCoef();
 }
@@ -697,10 +697,10 @@ function renderModelCompare() {
     const chart = echarts.init(document.getElementById('chart-model-compare'));
     const results = allData.model_results;
     const indicators = [
-        { name: 'Accuracy', max: 1 },
-        { name: 'Precision', max: 1 },
-        { name: 'Recall', max: 1 },
-        { name: 'F1 Score', max: 1 },
+        { name: '准确率', max: 1 },
+        { name: '精确率', max: 1 },
+        { name: '召回率', max: 1 },
+        { name: 'F1分数', max: 1 },
         { name: 'ROC-AUC', max: 1 }
     ];
     const colors = ['#7c3aed', '#f97316', '#10b981'];
@@ -744,7 +744,7 @@ function renderROC() {
     });
     // 对角线
     series.push({
-        name: 'Random Guess (AUC=0.5)',
+        name: '随机猜测 (AUC=0.5)',
         type: 'line',
         symbol: 'none',
         lineStyle: { type: 'dashed', color: '#94a3b8', width: 1 },
@@ -758,7 +758,7 @@ function renderROC() {
         grid: { left: 70, right: 40, top: 60, bottom: 80 },
         xAxis: {
             type: 'value',
-            name: 'FPR (假阳性率)',
+            name: '假阳性率 (FPR)',
             nameLocation: 'middle',
             nameGap: 30,
             min: 0,
@@ -766,7 +766,7 @@ function renderROC() {
         },
         yAxis: {
             type: 'value',
-            name: 'TPR (真阳性率)',
+            name: '真阳性率 (TPR)',
             nameLocation: 'middle',
             nameGap: 40,
             min: 0,
@@ -777,7 +777,7 @@ function renderROC() {
 }
 
 // 混淆矩阵热力图
-let currentCM = 'Random Forest';
+let currentCM = '随机森林';
 function switchCM(name) {
     currentCM = name;
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -800,7 +800,7 @@ function renderConfusion(modelName) {
         tooltip: {
             position: 'top',
             formatter: function(p) {
-                const labels = [['TN 真反例', 'FP 假正例'], ['FN 假反例', 'TP 真正例']];
+                const labels = [['真反例（实际跌·预测跌）', '假正例（实际跌·预测涨）'], ['假反例（实际涨·预测跌）', '真正例（实际涨·预测涨）']];
                 return labels[p.value[1]][p.value[0]] + ': ' + p.value[2];
             }
         },
