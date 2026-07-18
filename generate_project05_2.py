@@ -364,8 +364,114 @@ html = r'''<!DOCTYPE html>
             <p>可以看到，下跌概率最低的股票A获得了最高仓位（44.4%），而下跌概率最高的股票C仓位最低（22.2%）。</p>
         </div>
 
-        <!-- 3.5 核心策略回测结果 -->
-        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.5 核心策略回测结果</h3>
+        <!-- 3.5 总收益率计算方式 -->
+        <div class="strategy-box" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff); border-color:#e9d5ff;">
+            <h3 style="color:#86198f;">🧮 3.5 总收益率计算方式</h3>
+            <p>策略的总收益率通过<strong>每日组合收益的复利累积</strong>计算得出，具体分为两步：</p>
+            
+            <p style="margin-top:12px;"><strong>第一步：计算每日组合收益率</strong></p>
+            <p>对每个交易日，组合中30支股票按各自仓位权重加权，得到当日组合收益率：</p>
+            <div class="formula" style="text-align:left; font-size:14px;">
+                r_portfolio(t) = Σ [ weight_i(t) × r_i(t) ], &nbsp; i = 1...30
+            </div>
+            <p style="font-size:13px; color:#6b7280; margin-top:6px;">
+                其中 weight_i(t) 是股票i在第t日的仓位权重（由下跌概率计算得出），r_i(t) 是股票i在第t日的收益率。
+            </p>
+
+            <p style="margin-top:14px;"><strong>第二步：复利累积计算总收益率</strong></p>
+            <p>从策略起始日开始，将每日组合收益率复利相乘，得到累计净值：</p>
+            <div class="formula" style="text-align:left; font-size:14px;">
+                累计净值(T) = ∏ [1 + r_portfolio(t)], &nbsp; t = 1...T<br>
+                <strong style="color:#86198f;">总收益率 = 累计净值(T) - 1</strong>
+            </div>
+            <p style="font-size:13px; color:#6b7280; margin-top:6px;">
+                例如：若4个季度后累计净值为1.2548，则总收益率 = 1.2548 - 1 = <strong style="color:#10b981;">25.48%</strong>
+            </p>
+
+            <p style="margin-top:14px;"><strong>对比：基础策略的总收益率计算</strong></p>
+            <p style="font-size:13px;">基础策略（等权重）的区别仅在于权重：每支股票权重固定为 1/30 ≈ 3.33%，不加权调整。复利累积逻辑完全相同。</p>
+        </div>
+
+        <!-- 3.6 季度加减仓操作逻辑 -->
+        <div class="strategy-box" style="background:linear-gradient(135deg,#ecfeff,#cffafe); border-color:#a5f3fc;">
+            <h3 style="color:#155e75;">🔄 3.6 季度加减仓操作逻辑</h3>
+            <p>本策略采用<strong>季度调仓</strong>机制，每个季度末重新执行完整的选股和仓位调整流程。具体操作逻辑如下：</p>
+
+            <p style="margin-top:12px;"><strong>场景一：股票仍在Top30（继续持有）</strong></p>
+            <ul style="font-size:14px; padding-left:20px; color:#374151;">
+                <li>若该股票在新一季度的下跌概率<strong>降低</strong> → <strong style="color:#10b981;">加仓</strong>（权重上升）</li>
+                <li>若该股票在新一季度的下跌概率<strong>升高</strong> → <strong style="color:#ef4444;">减仓</strong>（权重下降）</li>
+                <li>若该股票在新一季度的下跌概率<strong>不变</strong> → 仓位维持不变</li>
+            </ul>
+
+            <p style="margin-top:12px;"><strong>场景二：股票跌出Top30（清仓卖出）</strong></p>
+            <ul style="font-size:14px; padding-left:20px; color:#374151;">
+                <li>该股票不再符合选股标准，<strong style="color:#ef4444;">全部卖出</strong></li>
+                <li>释放的资金按新权重分配给新进入Top30的股票</li>
+            </ul>
+
+            <p style="margin-top:12px;"><strong>场景三：新股票进入Top30（买入建仓）</strong></p>
+            <ul style="font-size:14px; padding-left:20px; color:#374151;">
+                <li>新进入的股票按其下跌概率计算权重，<strong style="color:#10b981;">买入建仓</strong></li>
+                <li>下跌概率越低的新股票，获得的仓位权重越高</li>
+            </ul>
+
+            <div style="background:#fff; padding:14px 18px; border-radius:8px; margin-top:14px; border-left:4px solid #0891b2;">
+                <p style="font-size:13px; color:#155e75;"><strong>关键逻辑：</strong>每个季度的仓位权重是<strong>独立重新计算</strong>的，不依赖上一季度的持仓状态。系统会自动完成"卖出跌出Top30的股票 → 按新权重买入新进入Top30的股票 → 调整继续持有股票的仓位"这一完整流程。</p>
+            </div>
+
+            <p style="margin-top:12px;"><strong>资金分配示例（假设总资金100万）</strong></p>
+            <div style="background:#fff; padding:14px 18px; border-radius:8px; margin-top:8px; font-size:13px; color:#374151;">
+                <table style="width:100%; border-collapse:collapse;">
+                    <tr style="background:#f0fdfa;">
+                        <th style="padding:8px; text-align:left; border-bottom:1px solid #ccc;">股票</th>
+                        <th style="padding:8px; text-align:center; border-bottom:1px solid #ccc;">下跌概率</th>
+                        <th style="padding:8px; text-align:center; border-bottom:1px solid #ccc;">权重</th>
+                        <th style="padding:8px; text-align:center; border-bottom:1px solid #ccc;">分配资金</th>
+                        <th style="padding:8px; text-align:center; border-bottom:1px solid #ccc;">操作</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">股票A</td>
+                        <td style="padding:8px; text-align:center;">15%</td>
+                        <td style="padding:8px; text-align:center; color:#10b981; font-weight:600;">38.5%</td>
+                        <td style="padding:8px; text-align:center;">38.5万</td>
+                        <td style="padding:8px; text-align:center; color:#10b981;">加仓</td>
+                    </tr>
+                    <tr style="background:#fafafa;">
+                        <td style="padding:8px;">股票B</td>
+                        <td style="padding:8px; text-align:center;">45%</td>
+                        <td style="padding:8px; text-align:center;">26.9%</td>
+                        <td style="padding:8px; text-align:center;">26.9万</td>
+                        <td style="padding:8px; text-align:center; color:#ef4444;">减仓</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px;">股票C</td>
+                        <td style="padding:8px; text-align:center;">70%</td>
+                        <td style="padding:8px; text-align:center; color:#ef4444; font-weight:600;">11.5%</td>
+                        <td style="padding:8px; text-align:center;">11.5万</td>
+                        <td style="padding:8px; text-align:center; color:#ef4444;">减仓</td>
+                    </tr>
+                    <tr style="background:#fef2f2;">
+                        <td style="padding:8px;">股票D</td>
+                        <td style="padding:8px; text-align:center;">—</td>
+                        <td style="padding:8px; text-align:center;">—</td>
+                        <td style="padding:8px; text-align:center;">0</td>
+                        <td style="padding:8px; text-align:center; color:#ef4444;">清仓（跌出Top30）</td>
+                    </tr>
+                    <tr style="background:#f0fdf4;">
+                        <td style="padding:8px;">股票E（新进入）</td>
+                        <td style="padding:8px; text-align:center;">20%</td>
+                        <td style="padding:8px; text-align:center; color:#10b981; font-weight:600;">23.1%</td>
+                        <td style="padding:8px; text-align:center;">23.1万</td>
+                        <td style="padding:8px; text-align:center; color:#10b981;">建仓买入</td>
+                    </tr>
+                </table>
+            </div>
+            <p style="font-size:12px; color:#6b7280; margin-top:8px;">注：上表为示意数据，权重 = (1-下跌概率)/Σ(1-下跌概率)，合计100%</p>
+        </div>
+
+        <!-- 3.7 核心策略回测结果 -->
+        <h3 style="font-size:16px; margin-bottom:15px; color:#334155;">📈 3.7 核心策略回测结果</h3>
         <table class="metrics-table">
             <thead>
                 <tr>
