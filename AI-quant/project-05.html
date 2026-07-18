@@ -345,9 +345,28 @@
                 </div>
             </div>
         </div>
-        <div style="margin-top:18px; padding:16px 20px; background:#f0fdf4; border-radius:10px; border-left:4px solid #10b981; font-size:14px; color:#065f46;">
-            <strong>💡 AUC 快速解读：</strong>
-            AUC=1 完美分类 · AUC>0.8 模型良好 · AUC>0.7 模型有效 · AUC=0.5 随机猜测（无效）
+
+        <div class="chart-row" style="margin-top:20px;">
+            <div class="info-box blue">
+                <h3 style="font-size:15px; margin-bottom:10px;">📖 什么是 ROC 曲线？</h3>
+                <p style="font-size:13.5px; line-height:1.9;">
+                    <strong>ROC（受试者工作特征曲线）</strong>是评估二分类模型性能的经典图形工具。
+                    横轴是<strong>假阳性率</strong>（把跌误判为涨的比例），纵轴是<strong>真阳性率</strong>（把涨正确判为涨的比例）。
+                    通过从低到高调整分类阈值，得到一系列(FPR, TPR)坐标点并连成曲线。
+                    曲线越靠左上角，说明模型在较低误报率下能获得较高的命中率，性能越好。
+                </p>
+            </div>
+            <div class="info-box green">
+                <h3 style="font-size:15px; margin-bottom:10px;">📖 什么是 AUC？</h3>
+                <p style="font-size:13.5px; line-height:1.9;">
+                    <strong>AUC（ROC曲线下面积）</strong>即ROC曲线下方与横轴围成的面积，取值0~1。
+                    AUC越大模型整体排序能力越强。通俗理解：AUC表示"随机抽取一个正样本和一个负样本，模型给正样本打高分的概率"。
+                    <br>• AUC = 1：完美分类
+                    <br>• AUC > 0.8：模型良好
+                    <br>• AUC > 0.7：模型有效
+                    <br>• AUC = 0.5：随机猜测，完全无效
+                </p>
+            </div>
         </div>
     </div>
 
@@ -493,29 +512,6 @@
             逻辑回归虽然准确率不低，但AUC和召回率很低，实际预测能力有限。
             决策树在召回率上表现不错，但精确率和准确率偏低。
             整体而言，三个模型的AUC都不高（0.51~0.58），说明仅用财务指标预测短期股价涨跌是一个非常困难的任务。
-        </div>
-
-        <div class="chart-row" style="margin-top:24px;">
-            <div class="info-box blue">
-                <h3 style="font-size:15px; margin-bottom:10px;">📖 什么是 ROC 曲线？</h3>
-                <p style="font-size:13.5px; line-height:1.9;">
-                    <strong>ROC（受试者工作特征曲线）</strong>是评估二分类模型性能的经典图形工具。
-                    横轴是<strong>假阳性率</strong>（把跌误判为涨的比例），纵轴是<strong>真阳性率</strong>（把涨正确判为涨的比例）。
-                    通过从低到高调整分类阈值，得到一系列(FPR, TPR)坐标点并连成曲线。
-                    曲线越靠左上角，说明模型在较低误报率下能获得较高的命中率，性能越好。
-                </p>
-            </div>
-            <div class="info-box green">
-                <h3 style="font-size:15px; margin-bottom:10px;">📖 什么是 AUC？</h3>
-                <p style="font-size:13.5px; line-height:1.9;">
-                    <strong>AUC（ROC曲线下面积）</strong>即ROC曲线下方与横轴围成的面积，取值0~1。
-                    AUC越大模型整体排序能力越强。通俗理解：AUC表示"随机抽取一个正样本和一个负样本，模型给正样本打高分的概率"。
-                    <br>• AUC = 1：完美分类
-                    <br>• AUC > 0.8：模型良好
-                    <br>• AUC > 0.7：模型有效
-                    <br>• AUC = 0.5：随机猜测，完全无效
-                </p>
-            </div>
         </div>
 
         <div class="fig-title" style="margin-top:20px;">图 12：三模型 ROC 曲线对比</div>
