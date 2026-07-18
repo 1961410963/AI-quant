@@ -755,10 +755,10 @@ function renderROC() {
         title: { text: 'ROC 曲线对比', left: 'center', textStyle: { fontSize: 18, fontWeight: 500 } },
         tooltip: { trigger: 'axis' },
         legend: { bottom: 10 },
-        grid: { left: 70, right: 40, top: 60, bottom: 80 },
+        grid: { left: 70, right: 160, top: 60, bottom: 80 },
         xAxis: {
             type: 'value',
-            name: '假阳性率 (FPR)',
+            name: '假阳性率',
             nameLocation: 'middle',
             nameGap: 30,
             min: 0,
@@ -766,11 +766,28 @@ function renderROC() {
         },
         yAxis: {
             type: 'value',
-            name: '真阳性率 (TPR)',
+            name: '真阳性率',
             nameLocation: 'middle',
             nameGap: 40,
             min: 0,
             max: 1
+        },
+        visualMap: {
+            show: true,
+            type: 'piecewise',
+            pieces: [
+                { min: 0.9, max: 1.0, label: '0.9~1.0 完美分类', color: '#047857' },
+                { min: 0.8, max: 0.9, label: '0.8~0.9 模型良好', color: '#10b981' },
+                { min: 0.7, max: 0.8, label: '0.7~0.8 模型有效', color: '#f59e0b' },
+                { min: 0.5, max: 0.7, label: '0.5~0.7 随机猜测', color: '#dc2626' }
+            ],
+            right: 30,
+            top: 'center',
+            itemWidth: 28,
+            itemHeight: 45,
+            textStyle: { fontSize: 12, color: '#475569' },
+            align: 'left',
+            textGap: 12
         },
         series: series
     });
