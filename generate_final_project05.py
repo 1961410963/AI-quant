@@ -243,7 +243,7 @@ html = r'''<!DOCTYPE html>
         </div>
         <div class="warn-box">
             <strong>⚠️ 关键注意：</strong>
-            金融时间序列数据不能随机打乱划分，必须按时间顺序切分，否则会产生"未来函数"（用未来数据预测过去），导致模型表现被严重高估。本实验严格按日期排序后取前70%为训练集、后30%为测试集。
+            金融时间序列数据不能随机打乱划分，必须按时间顺序切分，否则会产生"未来函数"（用未来数据预测过去），导致模型表现被严重高估。本实验严格按日期排序后取前3个季度（2021Q2-2021Q4）为训练集、后2个季度（2022Q1-2022Q2）为测试集。
         </div>
     </div>
 
@@ -393,8 +393,9 @@ html = r'''<!DOCTYPE html>
         <div class="fig-title">图 2：数据集时间划分</div>
         <div id="chart-data-split" class="chart-container small"></div>
         <div class="fig-caption">
-            <strong>解读：</strong>按时间顺序将数据划分为训练集（前70%，14,540个样本，2021-06-30 至 2022-03-31）和测试集（后30%，6,232个样本，2022-03-31 至 2022-06-30）。
+            <strong>解读：</strong>按时间顺序将数据划分为训练集（前3个季度2021Q2-2021Q4，约60%样本）和测试集（后2个季度2022Q1-2022Q2，约40%样本）。
             严格遵循金融时间序列数据的划分原则——只用过去的数据训练模型，用未来的数据检验效果，避免未来函数导致的结果虚高。
+            此前版本使用70/30按行切分可能导致同季度数据被拆分到训练和测试集中，本次已修正为按季度时间切分。
         </div>
     </div>
 
@@ -628,12 +629,25 @@ function renderLabelDist() {
 function renderDataSplit() {
     const chart = echarts.init(document.getElementById('chart-data-split'));
     const dr = allData.date_range;
+    const trainPct = (dr.train_samples / dr.total_samples * 100).toFixed(0);
+    const testPct = (dr.test_samples / dr.total_samples * 100).toFixed(0);
+    const trainQ = (dr.train_quarters || ['2021Q2','2021Q3','2021Q4']).join('→');
+    const testQ = (dr.test_quarters || ['2022Q1','2022Q2']).join('→');
     chart.setOption({
-        tooltip: { trigger: 'axis' },
+        tooltip: { 
+            trigger: 'axis',
+            formatter: function(params) {
+                const p = params[0];
+                const q = p.seriesIndex === 0 ? trainQ : testQ;
+                return '<b>' + p.name + '</b><br/>' +
+                    '样本数: ' + p.value.toLocaleString() + '<br/>' +
+                    '季度: ' + q;
+            }
+        },
         grid: { left: 60, right: 20, top: 20, bottom: 40 },
         xAxis: {
             type: 'category',
-            data: ['训练集 (70%)', '测试集 (30%)'],
+            data: ['训练集 (' + trainPct + '%)', '测试集 (' + testPct + '%)'],
             axisLabel: { fontSize: 12 }
         },
         yAxis: { type: 'value', name: '样本数', nameGap: 10 },

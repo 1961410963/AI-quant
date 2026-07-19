@@ -17,13 +17,22 @@ feature_cols = [c for c in df.columns if c not in ['Date', 'Code', 'Y']]
 
 # 预处理
 df_sorted = df.sort_values('Date').reset_index(drop=True)
+df_sorted['Date'] = pd.to_datetime(df_sorted['Date'])
 X = df_sorted[feature_cols].replace([np.inf, -np.inf], np.nan)
 X = X.fillna(X.median())
 y = df_sorted['Y']
 
-split_idx = int(len(df_sorted) * 0.7)
-X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
-y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
+# 按时间切分：前3个季度(2021Q2-2021Q4)训练，后2个季度(2022Q1-2022Q2)测试
+# 这样避免了按行切分导致同日期数据被拆分到训练集和测试集的问题
+split_date = '2022-01-01'
+train_mask = df_sorted['Date'] < split_date
+test_mask = df_sorted['Date'] >= split_date
+
+X_train, X_test = X[train_mask], X[test_mask]
+y_train, y_test = y[train_mask], y[test_mask]
+
+train_quarters = sorted(df_sorted[train_mask]['Date'].dt.to_period('Q').astype(str).unique().tolist())
+test_quarters = sorted(df_sorted[test_mask]['Date'].dt.to_period('Q').astype(str).unique().tolist())
 
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
@@ -100,13 +109,15 @@ label_dist = y.value_counts().to_dict()
 label_dist = {str(k): int(v) for k, v in label_dist.items()}
 
 date_range = {
-    'train_start': str(df_sorted['Date'].iloc[0]),
-    'train_end': str(df_sorted['Date'].iloc[split_idx-1]),
-    'test_start': str(df_sorted['Date'].iloc[split_idx]),
-    'test_end': str(df_sorted['Date'].iloc[-1]),
+    'train_start': str(df_sorted[train_mask]['Date'].iloc[0]),
+    'train_end': str(df_sorted[train_mask]['Date'].iloc[-1]),
+    'test_start': str(df_sorted[test_mask]['Date'].iloc[0]),
+    'test_end': str(df_sorted[test_mask]['Date'].iloc[-1]),
     'train_samples': int(len(X_train)),
     'test_samples': int(len(X_test)),
     'total_samples': int(len(df_sorted)),
+    'train_quarters': train_quarters,
+    'test_quarters': test_quarters,
 }
 
 # 输出所有数据
