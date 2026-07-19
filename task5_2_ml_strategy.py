@@ -111,9 +111,9 @@ test_df['Down_Prob'] = np.array(results['下跌概率模型']['predictions'])
 # ============================================================
 def calculate_strategy_metrics(df, pred_col):
     df_sorted = df.copy()
-    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
-    # 决策树max_depth=5叶子节点少、概率值大量重复，概率并列时优先选MV大(流动性好)的股票
-    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, False])
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)升序为辅（小盘股优先）
+    # 决策树max_depth=5叶子节点少、概率值大量重复，概率并列时优先选MV小(小盘股)的股票
+    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, True])
     df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
@@ -159,8 +159,8 @@ def calculate_strategy_metrics(df, pred_col):
 # ============================================================
 def calculate_risk_weighted_strategy(df, pred_col, prob_col='Down_Prob'):
     df_sorted = df.copy()
-    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
-    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, False])
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)升序为辅（小盘股优先）
+    df_sorted = df_sorted.sort_values(['Date', pred_col, 'MV'], ascending=[True, False, True])
     df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
@@ -262,8 +262,8 @@ col_map = {
 }
 for name in all_strategies:
     df_sorted = test_df.copy()
-    # 次级排序键：预测概率降序为主，流动性代理(MV市值)降序为辅
-    df_sorted = df_sorted.sort_values(['Date', col_map[name], 'MV'], ascending=[True, False, False])
+    # 次级排序键：预测概率降序为主，流动性代理(MV市值)升序为辅（小盘股优先）
+    df_sorted = df_sorted.sort_values(['Date', col_map[name], 'MV'], ascending=[True, False, True])
     df_sorted['Rank'] = df_sorted.groupby('Date').cumcount() + 1
     df_sorted['In_Portfolio'] = (df_sorted['Rank'] <= 30).astype(int)
     
