@@ -299,7 +299,7 @@
             <h3 style="font-size:16px; margin-bottom:12px; color:#334155;">🎯 应变量（预测目标）</h3>
             <div class="factor-list">
                 <div class="factor-item" style="border-left-color:#10b981;"><strong>Next_Ret_Binary</strong>：涨跌二分类标签（<strong style="color:#10b981;">核心目标</strong>，下跌概率模型预测对象）</div>
-                <div class="factor-item"><strong>Next_Ret</strong>：未来收益率（原始标签，非模型预测目标）</div>
+                <div class="factor-item"><strong>Next_Ret</strong>：未来一个季度的收益率（原始标签，非模型预测目标），即选股后下一季度的实际收益</div>
                 <div class="factor-item"><strong>Next_Ret_Top30</strong>：是否为Top30高收益股票（对比模型分类目标）</div>
                 <div class="factor-item"><strong>Next_Ret_Decile</strong>：收益率分位数排名</div>
             </div>
@@ -368,7 +368,7 @@
                 r_portfolio(q) = Σ [ weight_i(q) × r_i(q) ], &nbsp; i = 1...30
             </div>
             <p style="font-size:13px; color:#6b7280; margin-top:6px;">
-                其中 weight_i(q) 是股票i在第q季度的仓位权重（由下跌概率计算得出），r_i(q) 是股票i在第q季度的收益率（Next_Ret）。
+                其中 weight_i(q) 是股票i在第q季度的仓位权重（由下跌概率计算得出），r_i(q) 是股票i在选股后第q+1季度的实际收益率（Next_Ret，即下一季度的收益）。
             </p>
 
             <p style="margin-top:14px;"><strong>第二步：复利累积计算总收益率</strong></p>
@@ -378,14 +378,17 @@
                 <strong style="color:#86198f;">总收益率 = 累计净值(Q) - 1</strong>
             </div>
             <p style="font-size:13px; color:#6b7280; margin-top:6px;">
-                例如：若4个季度后累计净值为1.2548，则总收益率 = 1.2548 - 1 = <strong style="color:#10b981;">25.48%</strong>
+                例如：若4个季度后累计净值为1.1932，则总收益率 = 1.1932 - 1 = <strong style="color:#10b981;">19.32%</strong>
             </p>
+
+            <p style="margin-top:14px;"><strong>收益归属季度说明</strong></p>
+            <p style="font-size:13px;">选股在每个季度末完成（如2021Q3末），但股票的Next_Ret是<strong>从当季到下一季度的收益率</strong>，因此收益归属到下一季度（如2021Q3末选股，收益发生在2021Q4）。图6的横轴标注的就是<strong>收益发生的季度</strong>，而非选股时点。</p>
 
             <p style="margin-top:14px;"><strong>对比：基础策略的总收益率计算</strong></p>
             <p style="font-size:13px;">基础策略（等权重）的区别仅在于权重：每支股票权重固定为 1/30 ≈ 3.33%，不加权调整。复利累积逻辑完全相同。</p>
 
             <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #c026d3; font-size:13px; color:#6b21a8;">
-                <strong>关于回撤为0的说明：</strong>由于数据按季度更新，每个季度只有一个数据点。当某季度累计净值创历史新高时，该季度的回撤就是0%（因为没有中间数据点可以显示下跌）。回撤只在累计净值低于历史最高点时才会出现负值。测试集共4个季度，数据点较少，所以部分季度回撤为0是正常的。
+                <strong>关于回撤为0的说明：</strong>由于数据按季度更新，每个季度只有一个数据点。当某季度累计净值创历史新高时，该季度的回撤就是0%（因为没有中间数据点可以显示下跌）。回撤只在累计净值低于历史最高点时才会出现负值。测试期共4个净值数据点（起点+3个季度收益），数据点较少，所以部分季度回撤为0是正常的。
             </div>
         </div>
 
@@ -491,7 +494,7 @@
             <ul style="font-size:13px; padding-left:20px; color:#374151; line-height:1.9;">
                 <li>✅ <strong>持仓数修复</strong>：决策树策略持仓数从 5.75 → 30.0（已修复）</li>
                 <li>✅ <strong>随机森林不受影响</strong>：max_depth=10，概率值足够细分，几乎没有并列，次级排序键不发挥作用</li>
-                <li>⚠️ <strong>决策树收益显著提升</strong>：10个季度测试期总收益从-1.35%（大盘优先）升至30.30%（小盘优先），验证了小盘股效应在A股的有效性</li>
+                <li>⚠️ <strong>决策树收益显著提升</strong>：在10个季度（训练+测试）回测期内，总收益从-1.35%（大盘优先）升至30.30%（小盘优先），验证了小盘股效应在A股的有效性</li>
             </ul>
 
             <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #f59e0b; font-size:13px; color:#92400e;">
