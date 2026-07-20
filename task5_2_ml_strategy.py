@@ -34,9 +34,24 @@ df['Next_Ret_Top30'] = df.groupby('Date')['Next_Ret'].rank(ascending=False, meth
 
 df = df.dropna().reset_index(drop=True)
 
+# ============================================================
+# 季度收益计算：收益标签应标注到"收益发生的季度"，而非"选股的季度"
+# 例如：2021Q3末选股，Next_Ret是Q3→Q4的收益，应归属到2021Q4
+# 因此需要把 YearQuarter 向后偏移一个季度
+# ============================================================
+def offset_quarter(yq):
+    """将季度字符串向后偏移一个季度，如 2021Q3 -> 2022Q1"""
+    year, q = int(yq[:4]), int(yq[5])
+    if q == 4:
+        return f'{year + 1}Q1'
+    else:
+        return f'{year}Q{q + 1}'
+
 df['Year'] = df['Date'].dt.year
 df['Quarter'] = df['Date'].dt.quarter
 df['YearQuarter'] = df['Year'].astype(str) + 'Q' + df['Quarter'].astype(str)
+df['Signal_Quarter'] = df['YearQuarter']  # 信号生成季度（选股时点）
+df['Return_Quarter'] = df['Signal_Quarter'].apply(offset_quarter)  # 收益发生季度
 
 all_feature_cols = [col for col in df.columns 
                     if any(prefix in col for prefix in ['企业倍数', '市净率', '市现率', '市盈率', '市销率', '股息率', 
@@ -273,7 +288,7 @@ for name in all_strategies:
         portfolio['Risk_Weight'] = (1 - portfolio['Down_Prob']).clip(lower=0.01)
         portfolio['Risk_Weight'] = portfolio.groupby('Date')['Risk_Weight'].transform(lambda x: x / x.sum())
         portfolio['Weighted_Ret'] = portfolio['Risk_Weight'] * portfolio['Next_Ret']
-        for yq, group in portfolio.groupby('YearQuarter'):
+        for yq, group in portfolio.groupby('Return_Quarter'):
             quarterly_return = group['Weighted_Ret'].sum() / group['Date'].nunique()
             quarterly_results.append({
                 'model': name,
@@ -281,7 +296,7 @@ for name in all_strategies:
                 'return': quarterly_return
             })
     else:
-        for yq, group in df_sorted[df_sorted['In_Portfolio'] == 1].groupby('YearQuarter'):
+        for yq, group in df_sorted[df_sorted['In_Portfolio'] == 1].groupby('Return_Quarter'):
             quarterly_return = group['Next_Ret'].mean()
             quarterly_results.append({
                 'model': name,

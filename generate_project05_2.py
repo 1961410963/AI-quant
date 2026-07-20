@@ -623,12 +623,12 @@ html = r'''<!DOCTYPE html>
                 <div id="chart-drawdown" class="chart-container small"></div>
             </div>
             <div>
-                <div class="fig-title">图 6：四策略季度收益率对比</div>
+                <div class="fig-title">图 6：四策略季度收益率对比（收益发生季度）</div>
                 <div id="chart-quarterly" class="chart-container small"></div>
             </div>
         </div>
         <div class="fig-caption">
-            <strong>解读：</strong>左图为四策略回撤曲线对比，右图为四策略季度收益率对比。核心策略在回撤控制上优于基础策略。
+            <strong>解读：</strong>横轴为<strong>收益发生的季度</strong>，而非选股时点。例如2021Q3末选股，其Next_Ret归属到2021Q4。核心策略在回撤控制上优于基础策略。
         </div>
 
         <!-- 关于图5回撤为0的详细说明 -->
