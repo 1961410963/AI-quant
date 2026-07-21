@@ -388,7 +388,7 @@
             <p style="font-size:13px;">基础策略（等权重）的区别仅在于权重：每支股票权重固定为 1/30 ≈ 3.33%，不加权调整。复利累积逻辑完全相同。</p>
 
             <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #c026d3; font-size:13px; color:#6b21a8;">
-                <strong>关于回撤为0的说明：</strong>由于数据按季度更新，每个季度只有一个数据点。当某季度累计净值创历史新高时，该季度的回撤就是0%（因为没有中间数据点可以显示下跌）。回撤只在累计净值低于历史最高点时才会出现负值。测试期共4个净值数据点（起点+3个季度收益），数据点较少，所以部分季度回撤为0是正常的。
+                <strong>关于回撤为0的说明：</strong>由于数据按季度更新，每个季度只有一个数据点。当某季度累计净值创历史新高时，该季度的回撤就是0%（因为没有中间数据点可以显示下跌）。回撤只在累计净值低于历史最高点时才会出现负值。4个收益发生季度共4个净值数据点，数据点较少，所以部分季度回撤为0是正常的。
             </div>
         </div>
 
@@ -632,15 +632,15 @@
             <h3 style="color:#991b1b;">🔍 关于图5中"0回撤"的详细说明</h3>
             <p>许多读者会疑惑：4个策略怎么会在某些时点出现0回撤？这是否是bug？<strong>不是bug</strong>，是数据稀疏性导致的正常现象。下面用真实数据说明：</p>
 
-            <p style="margin-top:12px;"><strong>测试集4个季度的真实回撤数据（%）：</strong></p>
+            <p style="margin-top:12px;"><strong>4个收益发生季度的真实回撤数据（%）：</strong></p>
             <div style="background:#fff; padding:14px 18px; border-radius:8px; margin-top:8px; font-size:13px; color:#374151; overflow-x:auto;">
                 <table style="width:100%; border-collapse:collapse; min-width:560px;">
                     <tr style="background:#fef2f2;">
                         <th style="padding:8px; text-align:left; border-bottom:2px solid #fecaca;">策略</th>
-                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2021Q3<br><span style="font-weight:normal; font-size:11px;">(起点)</span></th>
                         <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2021Q4</th>
                         <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2022Q1</th>
                         <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2022Q2</th>
+                        <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">2022Q3</th>
                         <th style="padding:8px; text-align:center; border-bottom:2px solid #fecaca;">最大回撤</th>
                     </tr>
                     <tr>
@@ -680,12 +680,12 @@
 
             <p style="margin-top:14px;"><strong>为什么会出现0回撤？三个原因：</strong></p>
             <ul style="font-size:13px; padding-left:20px; color:#374151; line-height:1.9;">
-                <li><strong>起点必然为0</strong>：2021Q3是回测起点，累计净值=1，没有"历史最高点"可比，回撤必然为0</li>
-                <li><strong>创新高时为0</strong>：2022Q1四个策略都创新高（累计净值超过2021Q3），此时累计净值=cummax，回撤=0</li>
-                <li><strong>数据按季度稀疏更新</strong>：4个测试季度只有4个数据点，看不到季度内的日/周级别回撤。如果换成日线数据，0回撤会大幅减少</li>
+                <li><strong>起点必然为0</strong>：2021Q4是首个收益发生季度，累计收益率=17.43%，没有"历史最高点"可比，回撤必然为0</li>
+                <li><strong>创新高时为0</strong>：2022Q2四个策略都创新高（累计净值超过此前最高点），此时累计净值=cummax，回撤=0</li>
+                <li><strong>数据按季度稀疏更新</strong>：4个收益发生季度只有4个数据点，看不到季度内的日/周级别回撤。如果换成日线数据，0回撤会大幅减少</li>
             </ul>
 
-            <p style="margin-top:12px;"><strong>关键结论：</strong>随机森林策略的回撤模式为"0→跌→0→跌"，2021Q4出现5-7%的真实回撤。决策树策略由于偏向小盘股，在整个测试期回撤极小（最大仅-0.38%），体现了小盘股策略在A股该时期的稳定性。<strong>"0回撤"不等于"没风险"</strong>——本季度数据点只能反映季度末时点的状态，无法反映季度内的波动。</p>
+            <p style="margin-top:12px;"><strong>关键结论：</strong>随机森林策略的回撤模式为"0→跌→0→跌"，2021Q4（首个收益季度）出现5-7%的真实回撤。决策树策略由于偏向小盘股，在整个回测期回撤极小（最大仅-0.38%），体现了小盘股策略在A股该时期的稳定性。<strong>"0回撤"不等于"没风险"</strong>——季度数据点只能反映季度末时点的状态，无法反映季度内的波动。</p>
 
             <div style="background:#fff; padding:12px 16px; border-radius:8px; margin-top:12px; border-left:4px solid #dc2626; font-size:13px; color:#991b1b;">
                 <strong>提示：</strong>本数据集为季度频率（每季度末一个数据点），回撤曲线只能反映季度末时点的状态。如需观察更精细的回撤，需使用日线或周线数据。
@@ -874,7 +874,7 @@ function renderAllCumReturn() {
         },
         legend: { bottom: 5 },
         grid: { left: 85, right: 30, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: as['决策树'].dates.map(d => ({ '2021-09-30':'2021Q4', '2021-12-31':'2022Q1', '2022-03-31':'2022Q2', '2022-06-30':'2022Q3' }[d] || d)), axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: {
             type: 'value',
             name: '累计收益率(%)',
@@ -966,7 +966,7 @@ function renderDrawdown() {
         tooltip: { trigger: 'axis' },
         legend: { bottom: 5 },
         grid: { left: 80, right: 20, top: 20, bottom: 75 },
-        xAxis: { type: 'category', data: as['决策树'].dates, axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
+        xAxis: { type: 'category', data: as['决策树'].dates.map(d => ({ '2021-09-30':'2021Q4', '2021-12-31':'2022Q1', '2022-03-31':'2022Q2', '2022-06-30':'2022Q3' }[d] || d)), axisLabel: { rotate: 45, fontSize: 10, hideOverlap: true } },
         yAxis: { type: 'value', name: '回撤(%)', nameLocation: 'middle', nameGap: 50 },
         series: series
     });
