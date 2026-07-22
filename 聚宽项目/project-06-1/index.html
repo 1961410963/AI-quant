@@ -121,12 +121,12 @@ def trade(context):
 <caption>各版本改进对照</caption>
 <thead><tr><th>版本</th><th>改进项</th><th>选股逻辑</th><th>风控</th></tr></thead>
 <tbody>
-<tr><td><strong>原策略</strong></td><td>—</td><td>3 只 · 20~30 亿 · 纯市值 · 5 天</td><td>无</td></tr>
-<tr><td><strong>V1</strong></td><td>扩大池子 · 增加持股 · 加 ROE 与负债率过滤 · 排除 ST · 止损</td><td>5 只 · 10~50 亿 · 纯市值 · 5 天</td><td>-15% 止损</td></tr>
-<tr><td><strong>V2</strong></td><td>进一步放宽止损 · 每日轮动</td><td>8 只 · 10~50 亿 · 纯市值 · 每天</td><td>-10% 止损</td></tr>
-<tr><td><strong>V3</strong></td><td>综合打分选股 · 止损止盈</td><td>8 只 · 综合打分 · 每天</td><td>-10% 止损 · +30% 止盈</td></tr>
+<tr><td><strong>原策略</strong></td><td>—</td><td>3 只 · 20~30 亿 · <strong>市值从小到大选</strong> · 5 天</td><td>无</td></tr>
+<tr><td><strong>V1</strong></td><td>扩大池子 · 增加持股 · 加 ROE 与负债率过滤 · 排除 ST · 止损</td><td>5 只 · 10~50 亿 · <strong>市值从小到大选</strong> · 5 天</td><td>-15% 止损</td></tr>
+<tr><td><strong>V2</strong></td><td>进一步放宽止损 · 每日轮动</td><td>8 只 · 10~50 亿 · <strong>市值从小到大选</strong> · 每天</td><td>-10% 止损</td></tr>
+<tr><td><strong>V3</strong></td><td>综合打分选股 · 止损止盈</td><td>8 只 · 综合打分（市值50%+ROE25%+低波动25%）· 每天</td><td>-10% 止损 · +30% 止盈</td></tr>
 <tr><td><strong>V4 完整版</strong></td><td>在V3基础上加止损后补位 · 仓位20%上限</td><td>8 只 · 综合打分 · 每天</td><td>-10% 止损 · +30% 止盈 · 止损后补位</td></tr>
-<tr><td><strong>V4 最终版</strong></td><td><strong>回退简化，保留最有效改进</strong></td><td><strong>8 只 · 10~50 亿 · 纯市值 · 每天 · ROE+负债率过滤</strong></td><td><strong>无止损止盈（每日轮动即风控）</strong></td></tr>
+<tr><td><strong>V4 最终版</strong></td><td><strong>回退简化，保留最有效改进</strong></td><td><strong>8 只 · 10~50 亿 · 市值从小到大选 · 每天 · ROE+负债率过滤</strong></td><td><strong>无止损止盈（每日轮动即风控）</strong></td></tr>
 </tbody>
 </table>
 </div>
