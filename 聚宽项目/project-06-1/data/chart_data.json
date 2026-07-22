@@ -1,0 +1,7266 @@
+{
+  "original": [
+    {
+      "date": "2021-07-21",
+      "benchmark": 0.69,
+      "strategy": 0.31,
+      "excess": -0.38
+    },
+    {
+      "date": "2021-07-23",
+      "benchmark": -0.39,
+      "strategy": 3.07,
+      "excess": 3.47
+    },
+    {
+      "date": "2021-07-27",
+      "benchmark": -7.0,
+      "strategy": 0.84,
+      "excess": 8.43
+    },
+    {
+      "date": "2021-07-29",
+      "benchmark": -5.06,
+      "strategy": -1.18,
+      "excess": 4.09
+    },
+    {
+      "date": "2021-08-02",
+      "benchmark": -3.43,
+      "strategy": 1.75,
+      "excess": 5.36
+    },
+    {
+      "date": "2021-08-04",
+      "benchmark": -2.55,
+      "strategy": 5.21,
+      "excess": 7.96
+    },
+    {
+      "date": "2021-08-06",
+      "benchmark": -3.67,
+      "strategy": 3.63,
+      "excess": 7.58
+    },
+    {
+      "date": "2021-08-10",
+      "benchmark": -1.29,
+      "strategy": 5.46,
+      "excess": 6.84
+    },
+    {
+      "date": "2021-08-12",
+      "benchmark": -2.65,
+      "strategy": 6.04,
+      "excess": 8.93
+    },
+    {
+      "date": "2021-08-16",
+      "benchmark": -3.29,
+      "strategy": 6.31,
+      "excess": 9.93
+    },
+    {
+      "date": "2021-08-18",
+      "benchmark": -4.2,
+      "strategy": 6.99,
+      "excess": 11.68
+    },
+    {
+      "date": "2021-08-20",
+      "benchmark": -6.65,
+      "strategy": 4.82,
+      "excess": 12.29
+    },
+    {
+      "date": "2021-08-24",
+      "benchmark": -4.32,
+      "strategy": 8.18,
+      "excess": 13.06
+    },
+    {
+      "date": "2021-08-26",
+      "benchmark": -6.02,
+      "strategy": 4.05,
+      "excess": 10.72
+    },
+    {
+      "date": "2021-08-30",
+      "benchmark": -5.79,
+      "strategy": 3.44,
+      "excess": 9.8
+    },
+    {
+      "date": "2021-09-01",
+      "benchmark": -4.69,
+      "strategy": 3.05,
+      "excess": 8.12
+    },
+    {
+      "date": "2021-09-03",
+      "benchmark": -5.21,
+      "strategy": 4.73,
+      "excess": 10.49
+    },
+    {
+      "date": "2021-09-07",
+      "benchmark": -2.27,
+      "strategy": 7.07,
+      "excess": 9.56
+    },
+    {
+      "date": "2021-09-09",
+      "benchmark": -2.72,
+      "strategy": 9.01,
+      "excess": 12.06
+    },
+    {
+      "date": "2021-09-13",
+      "benchmark": -2.3,
+      "strategy": 7.24,
+      "excess": 9.76
+    },
+    {
+      "date": "2021-09-15",
+      "benchmark": -4.73,
+      "strategy": 8.3,
+      "excess": 13.68
+    },
+    {
+      "date": "2021-09-17",
+      "benchmark": -4.95,
+      "strategy": 6.72,
+      "excess": 12.28
+    },
+    {
+      "date": "2021-09-23",
+      "benchmark": -5.01,
+      "strategy": 7.99,
+      "excess": 13.69
+    },
+    {
+      "date": "2021-09-27",
+      "benchmark": -4.53,
+      "strategy": 2.54,
+      "excess": 7.41
+    },
+    {
+      "date": "2021-09-29",
+      "benchmark": -5.38,
+      "strategy": 1.62,
+      "excess": 7.4
+    },
+    {
+      "date": "2021-10-08",
+      "benchmark": -3.5,
+      "strategy": 3.49,
+      "excess": 7.24
+    },
+    {
+      "date": "2021-10-12",
+      "benchmark": -4.41,
+      "strategy": 2.35,
+      "excess": 7.07
+    },
+    {
+      "date": "2021-10-14",
+      "benchmark": -3.82,
+      "strategy": 4.26,
+      "excess": 8.4
+    },
+    {
+      "date": "2021-10-18",
+      "benchmark": -4.58,
+      "strategy": 2.55,
+      "excess": 7.47
+    },
+    {
+      "date": "2021-10-20",
+      "benchmark": -3.89,
+      "strategy": 2.38,
+      "excess": 6.52
+    },
+    {
+      "date": "2021-10-22",
+      "benchmark": -2.92,
+      "strategy": -0.24,
+      "excess": 2.76
+    },
+    {
+      "date": "2021-10-26",
+      "benchmark": -2.86,
+      "strategy": 0.33,
+      "excess": 3.28
+    },
+    {
+      "date": "2021-10-28",
+      "benchmark": -4.79,
+      "strategy": -3.02,
+      "excess": 1.86
+    },
+    {
+      "date": "2021-11-01",
+      "benchmark": -4.27,
+      "strategy": -0.96,
+      "excess": 3.46
+    },
+    {
+      "date": "2021-11-03",
+      "benchmark": -5.63,
+      "strategy": -2.6,
+      "excess": 3.21
+    },
+    {
+      "date": "2021-11-05",
+      "benchmark": -5.22,
+      "strategy": -2.37,
+      "excess": 3.01
+    },
+    {
+      "date": "2021-11-09",
+      "benchmark": -5.13,
+      "strategy": -2.67,
+      "excess": 2.59
+    },
+    {
+      "date": "2021-11-11",
+      "benchmark": -4.12,
+      "strategy": 0.4,
+      "excess": 4.71
+    },
+    {
+      "date": "2021-11-15",
+      "benchmark": -4.44,
+      "strategy": 2.97,
+      "excess": 7.75
+    },
+    {
+      "date": "2021-11-17",
+      "benchmark": -4.37,
+      "strategy": 7.02,
+      "excess": 11.91
+    },
+    {
+      "date": "2021-11-19",
+      "benchmark": -4.29,
+      "strategy": 5.26,
+      "excess": 9.98
+    },
+    {
+      "date": "2021-11-23",
+      "benchmark": -3.83,
+      "strategy": 4.98,
+      "excess": 9.16
+    },
+    {
+      "date": "2021-11-25",
+      "benchmark": -4.16,
+      "strategy": 5.17,
+      "excess": 9.73
+    },
+    {
+      "date": "2021-11-29",
+      "benchmark": -5.04,
+      "strategy": 0.47,
+      "excess": 5.8
+    },
+    {
+      "date": "2021-12-01",
+      "benchmark": -5.19,
+      "strategy": 7.56,
+      "excess": 13.45
+    },
+    {
+      "date": "2021-12-03",
+      "benchmark": -4.07,
+      "strategy": 6.56,
+      "excess": 11.08
+    },
+    {
+      "date": "2021-12-07",
+      "benchmark": -3.66,
+      "strategy": 3.81,
+      "excess": 7.75
+    },
+    {
+      "date": "2021-12-09",
+      "benchmark": -0.59,
+      "strategy": 3.64,
+      "excess": 4.26
+    },
+    {
+      "date": "2021-12-13",
+      "benchmark": -0.49,
+      "strategy": 2.13,
+      "excess": 2.63
+    },
+    {
+      "date": "2021-12-15",
+      "benchmark": -2.02,
+      "strategy": 6.74,
+      "excess": 8.94
+    },
+    {
+      "date": "2021-12-17",
+      "benchmark": -3.02,
+      "strategy": 10.3,
+      "excess": 13.73
+    },
+    {
+      "date": "2021-12-21",
+      "benchmark": -3.83,
+      "strategy": 13.99,
+      "excess": 18.53
+    },
+    {
+      "date": "2021-12-23",
+      "benchmark": -3.14,
+      "strategy": 15.18,
+      "excess": 18.91
+    },
+    {
+      "date": "2021-12-27",
+      "benchmark": -3.71,
+      "strategy": 15.25,
+      "excess": 19.69
+    },
+    {
+      "date": "2021-12-29",
+      "benchmark": -4.41,
+      "strategy": 16.43,
+      "excess": 21.8
+    },
+    {
+      "date": "2021-12-31",
+      "benchmark": -3.3,
+      "strategy": 23.52,
+      "excess": 27.74
+    },
+    {
+      "date": "2022-01-05",
+      "benchmark": -4.71,
+      "strategy": 27.87,
+      "excess": 34.19
+    },
+    {
+      "date": "2022-01-07",
+      "benchmark": -5.61,
+      "strategy": 24.43,
+      "excess": 31.83
+    },
+    {
+      "date": "2022-01-11",
+      "benchmark": -6.09,
+      "strategy": 24.64,
+      "excess": 32.72
+    },
+    {
+      "date": "2022-01-13",
+      "benchmark": -6.72,
+      "strategy": 27.16,
+      "excess": 36.32
+    },
+    {
+      "date": "2022-01-17",
+      "benchmark": -6.69,
+      "strategy": 32.38,
+      "excess": 41.87
+    },
+    {
+      "date": "2022-01-19",
+      "benchmark": -6.43,
+      "strategy": 30.94,
+      "excess": 39.94
+    },
+    {
+      "date": "2022-01-21",
+      "benchmark": -6.45,
+      "strategy": 26.6,
+      "excess": 35.33
+    },
+    {
+      "date": "2022-01-25",
+      "benchmark": -8.43,
+      "strategy": 20.96,
+      "excess": 32.1
+    },
+    {
+      "date": "2022-01-27",
+      "benchmark": -9.57,
+      "strategy": 19.3,
+      "excess": 31.93
+    },
+    {
+      "date": "2022-02-07",
+      "benchmark": -9.3,
+      "strategy": 29.44,
+      "excess": 42.71
+    },
+    {
+      "date": "2022-02-09",
+      "benchmark": -8.94,
+      "strategy": 33.15,
+      "excess": 46.22
+    },
+    {
+      "date": "2022-02-11",
+      "benchmark": -9.94,
+      "strategy": 31.72,
+      "excess": 46.26
+    },
+    {
+      "date": "2022-02-15",
+      "benchmark": -9.96,
+      "strategy": 30.08,
+      "excess": 44.47
+    },
+    {
+      "date": "2022-02-17",
+      "benchmark": -9.39,
+      "strategy": 30.59,
+      "excess": 44.12
+    },
+    {
+      "date": "2022-02-21",
+      "benchmark": -9.29,
+      "strategy": 32.46,
+      "excess": 46.03
+    },
+    {
+      "date": "2022-02-23",
+      "benchmark": -9.51,
+      "strategy": 31.7,
+      "excess": 45.54
+    },
+    {
+      "date": "2022-02-25",
+      "benchmark": -10.48,
+      "strategy": 29.03,
+      "excess": 44.14
+    },
+    {
+      "date": "2022-03-01",
+      "benchmark": -9.58,
+      "strategy": 28.56,
+      "excess": 42.18
+    },
+    {
+      "date": "2022-03-03",
+      "benchmark": -10.91,
+      "strategy": 29.0,
+      "excess": 44.8
+    },
+    {
+      "date": "2022-03-07",
+      "benchmark": -14.8,
+      "strategy": 27.0,
+      "excess": 49.06
+    },
+    {
+      "date": "2022-03-09",
+      "benchmark": -17.28,
+      "strategy": 22.91,
+      "excess": 48.59
+    },
+    {
+      "date": "2022-03-11",
+      "benchmark": -15.71,
+      "strategy": 24.87,
+      "excess": 48.14
+    },
+    {
+      "date": "2022-03-15",
+      "benchmark": -22.02,
+      "strategy": 23.39,
+      "excess": 58.23
+    },
+    {
+      "date": "2022-03-17",
+      "benchmark": -17.05,
+      "strategy": 28.78,
+      "excess": 55.25
+    },
+    {
+      "date": "2022-03-21",
+      "benchmark": -16.64,
+      "strategy": 29.92,
+      "excess": 55.85
+    },
+    {
+      "date": "2022-03-23",
+      "benchmark": -16.29,
+      "strategy": 31.4,
+      "excess": 56.97
+    },
+    {
+      "date": "2022-03-25",
+      "benchmark": -18.29,
+      "strategy": 29.36,
+      "excess": 58.32
+    },
+    {
+      "date": "2022-03-29",
+      "benchmark": -19.08,
+      "strategy": 24.87,
+      "excess": 54.31
+    },
+    {
+      "date": "2022-03-31",
+      "benchmark": -17.35,
+      "strategy": 26.7,
+      "excess": 53.3
+    },
+    {
+      "date": "2022-04-06",
+      "benchmark": -16.54,
+      "strategy": 24.85,
+      "excess": 49.59
+    },
+    {
+      "date": "2022-04-08",
+      "benchmark": -17.19,
+      "strategy": 23.91,
+      "excess": 49.63
+    },
+    {
+      "date": "2022-04-12",
+      "benchmark": -18.18,
+      "strategy": 28.55,
+      "excess": 57.11
+    },
+    {
+      "date": "2022-04-14",
+      "benchmark": -17.96,
+      "strategy": 24.47,
+      "excess": 51.72
+    },
+    {
+      "date": "2022-04-18",
+      "benchmark": -18.45,
+      "strategy": 20.89,
+      "excess": 48.24
+    },
+    {
+      "date": "2022-04-20",
+      "benchmark": -20.32,
+      "strategy": 17.89,
+      "excess": 47.95
+    },
+    {
+      "date": "2022-04-22",
+      "benchmark": -21.45,
+      "strategy": 14.24,
+      "excess": 45.44
+    },
+    {
+      "date": "2022-04-26",
+      "benchmark": -25.93,
+      "strategy": 1.69,
+      "excess": 37.29
+    },
+    {
+      "date": "2022-04-28",
+      "benchmark": -23.25,
+      "strategy": -1.51,
+      "excess": 28.33
+    },
+    {
+      "date": "2022-05-05",
+      "benchmark": -21.51,
+      "strategy": 1.08,
+      "excess": 28.78
+    },
+    {
+      "date": "2022-05-09",
+      "benchmark": -24.11,
+      "strategy": 3.62,
+      "excess": 36.54
+    },
+    {
+      "date": "2022-05-11",
+      "benchmark": -22.17,
+      "strategy": 6.21,
+      "excess": 36.46
+    },
+    {
+      "date": "2022-05-13",
+      "benchmark": -21.93,
+      "strategy": 8.4,
+      "excess": 38.85
+    },
+    {
+      "date": "2022-05-17",
+      "benchmark": -21.59,
+      "strategy": 8.09,
+      "excess": 37.85
+    },
+    {
+      "date": "2022-05-19",
+      "benchmark": -21.71,
+      "strategy": 11.57,
+      "excess": 42.51
+    },
+    {
+      "date": "2022-05-23",
+      "benchmark": -20.65,
+      "strategy": 15.24,
+      "excess": 45.23
+    },
+    {
+      "date": "2022-05-25",
+      "benchmark": -22.04,
+      "strategy": 11.23,
+      "excess": 42.68
+    },
+    {
+      "date": "2022-05-27",
+      "benchmark": -21.68,
+      "strategy": 12.25,
+      "excess": 43.32
+    },
+    {
+      "date": "2022-05-31",
+      "benchmark": -19.92,
+      "strategy": 14.34,
+      "excess": 42.78
+    },
+    {
+      "date": "2022-06-02",
+      "benchmark": -19.95,
+      "strategy": 14.49,
+      "excess": 43.02
+    },
+    {
+      "date": "2022-06-07",
+      "benchmark": -18.2,
+      "strategy": 15.3,
+      "excess": 40.95
+    },
+    {
+      "date": "2022-06-09",
+      "benchmark": -18.27,
+      "strategy": 11.69,
+      "excess": 36.66
+    },
+    {
+      "date": "2022-06-13",
+      "benchmark": -18.0,
+      "strategy": 14.38,
+      "excess": 39.49
+    },
+    {
+      "date": "2022-06-15",
+      "benchmark": -16.26,
+      "strategy": 13.85,
+      "excess": 35.96
+    },
+    {
+      "date": "2022-06-17",
+      "benchmark": -15.66,
+      "strategy": 15.54,
+      "excess": 36.99
+    },
+    {
+      "date": "2022-06-21",
+      "benchmark": -15.33,
+      "strategy": 17.13,
+      "excess": 38.34
+    },
+    {
+      "date": "2022-06-23",
+      "benchmark": -14.98,
+      "strategy": 20.03,
+      "excess": 41.18
+    },
+    {
+      "date": "2022-06-27",
+      "benchmark": -13.01,
+      "strategy": 31.9,
+      "excess": 51.63
+    },
+    {
+      "date": "2022-06-29",
+      "benchmark": -13.46,
+      "strategy": 38.6,
+      "excess": 60.16
+    },
+    {
+      "date": "2022-07-01",
+      "benchmark": -12.57,
+      "strategy": 39.14,
+      "excess": 59.14
+    },
+    {
+      "date": "2022-07-05",
+      "benchmark": -12.12,
+      "strategy": 33.28,
+      "excess": 51.66
+    },
+    {
+      "date": "2022-07-07",
+      "benchmark": -13.03,
+      "strategy": 30.39,
+      "excess": 49.93
+    },
+    {
+      "date": "2022-07-11",
+      "benchmark": -14.77,
+      "strategy": 30.46,
+      "excess": 53.07
+    },
+    {
+      "date": "2022-07-13",
+      "benchmark": -15.41,
+      "strategy": 28.14,
+      "excess": 51.48
+    },
+    {
+      "date": "2022-07-15",
+      "benchmark": -16.84,
+      "strategy": 25.1,
+      "excess": 50.43
+    },
+    {
+      "date": "2022-07-19",
+      "benchmark": -16.43,
+      "strategy": 28.37,
+      "excess": 53.61
+    },
+    {
+      "date": "2022-07-21",
+      "benchmark": -17.09,
+      "strategy": 28.91,
+      "excess": 55.48
+    },
+    {
+      "date": "2022-07-25",
+      "benchmark": -17.54,
+      "strategy": 31.37,
+      "excess": 59.31
+    },
+    {
+      "date": "2022-07-27",
+      "benchmark": -17.3,
+      "strategy": 31.65,
+      "excess": 59.19
+    },
+    {
+      "date": "2022-07-29",
+      "benchmark": -18.38,
+      "strategy": 31.76,
+      "excess": 61.43
+    },
+    {
+      "date": "2022-08-02",
+      "benchmark": -19.61,
+      "strategy": 24.87,
+      "excess": 55.33
+    },
+    {
+      "date": "2022-08-04",
+      "benchmark": -19.72,
+      "strategy": 26.48,
+      "excess": 57.55
+    },
+    {
+      "date": "2022-08-08",
+      "benchmark": -18.81,
+      "strategy": 28.48,
+      "excess": 58.25
+    },
+    {
+      "date": "2022-08-10",
+      "benchmark": -19.56,
+      "strategy": 28.94,
+      "excess": 60.29
+    },
+    {
+      "date": "2022-08-12",
+      "benchmark": -17.97,
+      "strategy": 29.4,
+      "excess": 57.75
+    },
+    {
+      "date": "2022-08-16",
+      "benchmark": -18.23,
+      "strategy": 34.14,
+      "excess": 64.05
+    },
+    {
+      "date": "2022-08-18",
+      "benchmark": -18.18,
+      "strategy": 35.53,
+      "excess": 65.64
+    },
+    {
+      "date": "2022-08-22",
+      "benchmark": -18.16,
+      "strategy": 35.97,
+      "excess": 66.14
+    },
+    {
+      "date": "2022-08-24",
+      "benchmark": -20.09,
+      "strategy": 32.71,
+      "excess": 66.07
+    },
+    {
+      "date": "2022-08-26",
+      "benchmark": -19.6,
+      "strategy": 31.85,
+      "excess": 63.99
+    },
+    {
+      "date": "2022-08-30",
+      "benchmark": -20.22,
+      "strategy": 30.43,
+      "excess": 63.49
+    },
+    {
+      "date": "2022-09-01",
+      "benchmark": -20.85,
+      "strategy": 26.17,
+      "excess": 59.41
+    },
+    {
+      "date": "2022-09-05",
+      "benchmark": -21.4,
+      "strategy": 34.46,
+      "excess": 71.07
+    },
+    {
+      "date": "2022-09-07",
+      "benchmark": -20.63,
+      "strategy": 37.11,
+      "excess": 72.75
+    },
+    {
+      "date": "2022-09-09",
+      "benchmark": -19.87,
+      "strategy": 34.77,
+      "excess": 68.19
+    },
+    {
+      "date": "2022-09-14",
+      "benchmark": -20.43,
+      "strategy": 36.37,
+      "excess": 71.38
+    },
+    {
+      "date": "2022-09-16",
+      "benchmark": -23.02,
+      "strategy": 28.14,
+      "excess": 66.46
+    },
+    {
+      "date": "2022-09-20",
+      "benchmark": -23.02,
+      "strategy": 25.67,
+      "excess": 63.25
+    },
+    {
+      "date": "2022-09-22",
+      "benchmark": -24.26,
+      "strategy": 25.23,
+      "excess": 65.34
+    },
+    {
+      "date": "2022-09-26",
+      "benchmark": -24.9,
+      "strategy": 20.97,
+      "excess": 61.08
+    },
+    {
+      "date": "2022-09-28",
+      "benchmark": -25.06,
+      "strategy": 21.73,
+      "excess": 62.44
+    },
+    {
+      "date": "2022-09-30",
+      "benchmark": -25.53,
+      "strategy": 18.32,
+      "excess": 58.88
+    },
+    {
+      "date": "2022-10-11",
+      "benchmark": -27.04,
+      "strategy": 17.71,
+      "excess": 61.33
+    },
+    {
+      "date": "2022-10-13",
+      "benchmark": -26.55,
+      "strategy": 19.38,
+      "excess": 62.53
+    },
+    {
+      "date": "2022-10-17",
+      "benchmark": -24.71,
+      "strategy": 22.07,
+      "excess": 62.13
+    },
+    {
+      "date": "2022-10-19",
+      "benchmark": -26.08,
+      "strategy": 21.34,
+      "excess": 64.15
+    },
+    {
+      "date": "2022-10-21",
+      "benchmark": -26.74,
+      "strategy": 22.03,
+      "excess": 66.57
+    },
+    {
+      "date": "2022-10-25",
+      "benchmark": -29.0,
+      "strategy": 22.76,
+      "excess": 72.9
+    },
+    {
+      "date": "2022-10-27",
+      "benchmark": -28.93,
+      "strategy": 25.23,
+      "excess": 76.21
+    },
+    {
+      "date": "2022-10-31",
+      "benchmark": -31.32,
+      "strategy": 23.05,
+      "excess": 79.16
+    },
+    {
+      "date": "2022-11-02",
+      "benchmark": -28.01,
+      "strategy": 24.62,
+      "excess": 73.11
+    },
+    {
+      "date": "2022-11-04",
+      "benchmark": -26.26,
+      "strategy": 27.12,
+      "excess": 72.39
+    },
+    {
+      "date": "2022-11-08",
+      "benchmark": -26.61,
+      "strategy": 27.91,
+      "excess": 74.29
+    },
+    {
+      "date": "2022-11-10",
+      "benchmark": -27.86,
+      "strategy": 28.43,
+      "excess": 78.03
+    },
+    {
+      "date": "2022-11-14",
+      "benchmark": -25.74,
+      "strategy": 26.71,
+      "excess": 70.63
+    },
+    {
+      "date": "2022-11-16",
+      "benchmark": -24.95,
+      "strategy": 28.72,
+      "excess": 71.51
+    },
+    {
+      "date": "2022-11-18",
+      "benchmark": -25.59,
+      "strategy": 27.71,
+      "excess": 71.63
+    },
+    {
+      "date": "2022-11-22",
+      "benchmark": -26.22,
+      "strategy": 26.6,
+      "excess": 71.59
+    },
+    {
+      "date": "2022-11-24",
+      "benchmark": -26.47,
+      "strategy": 25.39,
+      "excess": 70.53
+    },
+    {
+      "date": "2022-11-28",
+      "benchmark": -26.93,
+      "strategy": 24.53,
+      "excess": 70.43
+    },
+    {
+      "date": "2022-11-30",
+      "benchmark": -24.58,
+      "strategy": 25.1,
+      "excess": 65.87
+    },
+    {
+      "date": "2022-12-02",
+      "benchmark": -24.23,
+      "strategy": 27.72,
+      "excess": 68.56
+    },
+    {
+      "date": "2022-12-06",
+      "benchmark": -22.33,
+      "strategy": 30.65,
+      "excess": 68.21
+    },
+    {
+      "date": "2022-12-08",
+      "benchmark": -22.51,
+      "strategy": 33.37,
+      "excess": 72.11
+    },
+    {
+      "date": "2022-12-12",
+      "benchmark": -22.62,
+      "strategy": 32.97,
+      "excess": 71.84
+    },
+    {
+      "date": "2022-12-14",
+      "benchmark": -22.59,
+      "strategy": 29.78,
+      "excess": 67.65
+    },
+    {
+      "date": "2022-12-16",
+      "benchmark": -22.6,
+      "strategy": 29.23,
+      "excess": 66.96
+    },
+    {
+      "date": "2022-12-20",
+      "benchmark": -25.05,
+      "strategy": 26.72,
+      "excess": 69.07
+    },
+    {
+      "date": "2022-12-22",
+      "benchmark": -24.92,
+      "strategy": 21.79,
+      "excess": 62.21
+    },
+    {
+      "date": "2022-12-26",
+      "benchmark": -24.77,
+      "strategy": 23.31,
+      "excess": 63.91
+    },
+    {
+      "date": "2022-12-28",
+      "benchmark": -24.23,
+      "strategy": 18.82,
+      "excess": 56.82
+    },
+    {
+      "date": "2022-12-30",
+      "benchmark": -24.22,
+      "strategy": 18.78,
+      "excess": 56.74
+    },
+    {
+      "date": "2023-01-04",
+      "benchmark": -23.8,
+      "strategy": 21.61,
+      "excess": 59.59
+    },
+    {
+      "date": "2023-01-06",
+      "benchmark": -22.08,
+      "strategy": 21.41,
+      "excess": 55.81
+    },
+    {
+      "date": "2023-01-10",
+      "benchmark": -21.36,
+      "strategy": 20.96,
+      "excess": 53.81
+    },
+    {
+      "date": "2023-01-12",
+      "benchmark": -21.36,
+      "strategy": 23.97,
+      "excess": 57.64
+    },
+    {
+      "date": "2023-01-16",
+      "benchmark": -19.01,
+      "strategy": 25.24,
+      "excess": 54.64
+    },
+    {
+      "date": "2023-01-18",
+      "benchmark": -19.16,
+      "strategy": 25.56,
+      "excess": 55.32
+    },
+    {
+      "date": "2023-01-20",
+      "benchmark": -18.15,
+      "strategy": 27.04,
+      "excess": 55.21
+    },
+    {
+      "date": "2023-01-31",
+      "benchmark": -18.64,
+      "strategy": 33.06,
+      "excess": 63.54
+    },
+    {
+      "date": "2023-02-02",
+      "benchmark": -18.16,
+      "strategy": 36.22,
+      "excess": 66.45
+    },
+    {
+      "date": "2023-02-06",
+      "benchmark": -20.01,
+      "strategy": 38.99,
+      "excess": 73.76
+    },
+    {
+      "date": "2023-02-08",
+      "benchmark": -20.22,
+      "strategy": 40.42,
+      "excess": 76.01
+    },
+    {
+      "date": "2023-02-10",
+      "benchmark": -19.63,
+      "strategy": 39.55,
+      "excess": 73.63
+    },
+    {
+      "date": "2023-02-14",
+      "benchmark": -18.86,
+      "strategy": 38.53,
+      "excess": 70.73
+    },
+    {
+      "date": "2023-02-16",
+      "benchmark": -19.88,
+      "strategy": 38.75,
+      "excess": 73.18
+    },
+    {
+      "date": "2023-02-20",
+      "benchmark": -19.09,
+      "strategy": 38.08,
+      "excess": 70.66
+    },
+    {
+      "date": "2023-02-22",
+      "benchmark": -19.61,
+      "strategy": 38.65,
+      "excess": 72.47
+    },
+    {
+      "date": "2023-02-24",
+      "benchmark": -20.51,
+      "strategy": 37.52,
+      "excess": 73.0
+    },
+    {
+      "date": "2023-02-28",
+      "benchmark": -20.35,
+      "strategy": 36.95,
+      "excess": 71.94
+    },
+    {
+      "date": "2023-03-02",
+      "benchmark": -19.4,
+      "strategy": 36.77,
+      "excess": 69.69
+    },
+    {
+      "date": "2023-03-06",
+      "benchmark": -19.57,
+      "strategy": 34.5,
+      "excess": 67.23
+    },
+    {
+      "date": "2023-03-08",
+      "benchmark": -21.04,
+      "strategy": 33.22,
+      "excess": 68.72
+    },
+    {
+      "date": "2023-03-10",
+      "benchmark": -22.35,
+      "strategy": 31.81,
+      "excess": 69.75
+    },
+    {
+      "date": "2023-03-14",
+      "benchmark": -22.01,
+      "strategy": 28.97,
+      "excess": 65.37
+    },
+    {
+      "date": "2023-03-16",
+      "benchmark": -22.9,
+      "strategy": 28.07,
+      "excess": 66.11
+    },
+    {
+      "date": "2023-03-20",
+      "benchmark": -22.9,
+      "strategy": 29.29,
+      "excess": 67.69
+    },
+    {
+      "date": "2023-03-22",
+      "benchmark": -21.72,
+      "strategy": 33.46,
+      "excess": 70.49
+    },
+    {
+      "date": "2023-03-24",
+      "benchmark": -21.18,
+      "strategy": 31.69,
+      "excess": 67.08
+    },
+    {
+      "date": "2023-03-28",
+      "benchmark": -21.72,
+      "strategy": 29.71,
+      "excess": 65.7
+    },
+    {
+      "date": "2023-03-30",
+      "benchmark": -20.95,
+      "strategy": 28.72,
+      "excess": 62.83
+    },
+    {
+      "date": "2023-04-03",
+      "benchmark": -19.93,
+      "strategy": 32.6,
+      "excess": 65.61
+    },
+    {
+      "date": "2023-04-06",
+      "benchmark": -19.82,
+      "strategy": 28.93,
+      "excess": 60.8
+    },
+    {
+      "date": "2023-04-10",
+      "benchmark": -19.66,
+      "strategy": 24.39,
+      "excess": 54.83
+    },
+    {
+      "date": "2023-04-12",
+      "benchmark": -19.8,
+      "strategy": 26.22,
+      "excess": 57.38
+    },
+    {
+      "date": "2023-04-14",
+      "benchmark": -19.91,
+      "strategy": 26.0,
+      "excess": 57.32
+    },
+    {
+      "date": "2023-04-18",
+      "benchmark": -18.54,
+      "strategy": 22.44,
+      "excess": 50.31
+    },
+    {
+      "date": "2023-04-20",
+      "benchmark": -19.49,
+      "strategy": 21.71,
+      "excess": 51.17
+    },
+    {
+      "date": "2023-04-24",
+      "benchmark": -22.05,
+      "strategy": 18.41,
+      "excess": 51.91
+    },
+    {
+      "date": "2023-04-26",
+      "benchmark": -22.5,
+      "strategy": 15.2,
+      "excess": 48.65
+    },
+    {
+      "date": "2023-04-28",
+      "benchmark": -21.14,
+      "strategy": 20.39,
+      "excess": 52.66
+    },
+    {
+      "date": "2023-05-05",
+      "benchmark": -21.38,
+      "strategy": 22.34,
+      "excess": 55.61
+    },
+    {
+      "date": "2023-05-09",
+      "benchmark": -21.16,
+      "strategy": 20.1,
+      "excess": 52.33
+    },
+    {
+      "date": "2023-05-11",
+      "benchmark": -21.89,
+      "strategy": 23.41,
+      "excess": 58.0
+    },
+    {
+      "date": "2023-05-15",
+      "benchmark": -21.73,
+      "strategy": 23.2,
+      "excess": 57.4
+    },
+    {
+      "date": "2023-05-17",
+      "benchmark": -22.49,
+      "strategy": 22.77,
+      "excess": 58.39
+    },
+    {
+      "date": "2023-05-19",
+      "benchmark": -22.79,
+      "strategy": 23.06,
+      "excess": 59.38
+    },
+    {
+      "date": "2023-05-23",
+      "benchmark": -23.41,
+      "strategy": 22.84,
+      "excess": 60.39
+    },
+    {
+      "date": "2023-05-25",
+      "benchmark": -24.63,
+      "strategy": 24.58,
+      "excess": 65.29
+    },
+    {
+      "date": "2023-05-29",
+      "benchmark": -24.96,
+      "strategy": 22.79,
+      "excess": 63.63
+    },
+    {
+      "date": "2023-05-31",
+      "benchmark": -25.65,
+      "strategy": 22.38,
+      "excess": 64.6
+    },
+    {
+      "date": "2023-06-02",
+      "benchmark": -24.41,
+      "strategy": 22.77,
+      "excess": 62.42
+    },
+    {
+      "date": "2023-06-06",
+      "benchmark": -25.46,
+      "strategy": 23.85,
+      "excess": 66.15
+    },
+    {
+      "date": "2023-06-08",
+      "benchmark": -25.23,
+      "strategy": 23.46,
+      "excess": 65.12
+    },
+    {
+      "date": "2023-06-12",
+      "benchmark": -24.75,
+      "strategy": 22.64,
+      "excess": 62.98
+    },
+    {
+      "date": "2023-06-14",
+      "benchmark": -24.37,
+      "strategy": 25.36,
+      "excess": 65.75
+    },
+    {
+      "date": "2023-06-16",
+      "benchmark": -22.42,
+      "strategy": 24.54,
+      "excess": 60.53
+    },
+    {
+      "date": "2023-06-20",
+      "benchmark": -23.19,
+      "strategy": 22.72,
+      "excess": 59.77
+    },
+    {
+      "date": "2023-06-26",
+      "benchmark": -25.43,
+      "strategy": 19.81,
+      "excess": 60.67
+    },
+    {
+      "date": "2023-06-28",
+      "benchmark": -24.82,
+      "strategy": 23.95,
+      "excess": 64.87
+    },
+    {
+      "date": "2023-06-30",
+      "benchmark": -24.79,
+      "strategy": 26.35,
+      "excess": 68.0
+    },
+    {
+      "date": "2023-07-04",
+      "benchmark": -23.68,
+      "strategy": 26.31,
+      "excess": 65.5
+    },
+    {
+      "date": "2023-07-06",
+      "benchmark": -24.78,
+      "strategy": 26.39,
+      "excess": 68.03
+    },
+    {
+      "date": "2023-07-10",
+      "benchmark": -24.75,
+      "strategy": 27.15,
+      "excess": 68.97
+    },
+    {
+      "date": "2023-07-12",
+      "benchmark": -24.77,
+      "strategy": 26.58,
+      "excess": 68.26
+    },
+    {
+      "date": "2023-07-14",
+      "benchmark": -23.68,
+      "strategy": 30.45,
+      "excess": 70.93
+    },
+    {
+      "date": "2023-07-18",
+      "benchmark": -24.55,
+      "strategy": 33.18,
+      "excess": 76.51
+    },
+    {
+      "date": "2023-07-20",
+      "benchmark": -25.16,
+      "strategy": 34.45,
+      "excess": 79.65
+    },
+    {
+      "date": "2023-07-24",
+      "benchmark": -25.52,
+      "strategy": 35.8,
+      "excess": 82.33
+    },
+    {
+      "date": "2023-07-26",
+      "benchmark": -23.53,
+      "strategy": 37.03,
+      "excess": 79.19
+    },
+    {
+      "date": "2023-07-28",
+      "benchmark": -21.85,
+      "strategy": 34.99,
+      "excess": 72.73
+    },
+    {
+      "date": "2023-08-01",
+      "benchmark": -21.75,
+      "strategy": 35.49,
+      "excess": 73.15
+    },
+    {
+      "date": "2023-08-03",
+      "benchmark": -21.61,
+      "strategy": 33.8,
+      "excess": 70.69
+    },
+    {
+      "date": "2023-08-07",
+      "benchmark": -21.9,
+      "strategy": 31.56,
+      "excess": 68.45
+    },
+    {
+      "date": "2023-08-09",
+      "benchmark": -22.34,
+      "strategy": 30.15,
+      "excess": 67.59
+    },
+    {
+      "date": "2023-08-11",
+      "benchmark": -23.97,
+      "strategy": 29.01,
+      "excess": 69.68
+    },
+    {
+      "date": "2023-08-15",
+      "benchmark": -24.71,
+      "strategy": 31.61,
+      "excess": 74.8
+    },
+    {
+      "date": "2023-08-17",
+      "benchmark": -25.01,
+      "strategy": 32.5,
+      "excess": 76.69
+    },
+    {
+      "date": "2023-08-21",
+      "benchmark": -27.0,
+      "strategy": 27.98,
+      "excess": 75.32
+    },
+    {
+      "date": "2023-08-23",
+      "benchmark": -27.64,
+      "strategy": 27.27,
+      "excess": 75.88
+    },
+    {
+      "date": "2023-08-25",
+      "benchmark": -27.4,
+      "strategy": 18.79,
+      "excess": 63.62
+    },
+    {
+      "date": "2023-08-29",
+      "benchmark": -25.81,
+      "strategy": 30.66,
+      "excess": 76.12
+    },
+    {
+      "date": "2023-08-31",
+      "benchmark": -26.3,
+      "strategy": 31.62,
+      "excess": 78.59
+    },
+    {
+      "date": "2023-09-04",
+      "benchmark": -24.66,
+      "strategy": 33.82,
+      "excess": 77.62
+    },
+    {
+      "date": "2023-09-06",
+      "benchmark": -25.39,
+      "strategy": 33.4,
+      "excess": 78.8
+    },
+    {
+      "date": "2023-09-08",
+      "benchmark": -26.8,
+      "strategy": 31.0,
+      "excess": 78.96
+    },
+    {
+      "date": "2023-09-12",
+      "benchmark": -26.39,
+      "strategy": 31.3,
+      "excess": 78.37
+    },
+    {
+      "date": "2023-09-14",
+      "benchmark": -26.92,
+      "strategy": 29.83,
+      "excess": 77.65
+    },
+    {
+      "date": "2023-09-18",
+      "benchmark": -27.04,
+      "strategy": 31.49,
+      "excess": 80.22
+    },
+    {
+      "date": "2023-09-20",
+      "benchmark": -27.47,
+      "strategy": 30.34,
+      "excess": 79.7
+    },
+    {
+      "date": "2023-09-22",
+      "benchmark": -26.82,
+      "strategy": 31.94,
+      "excess": 80.3
+    },
+    {
+      "date": "2023-09-26",
+      "benchmark": -27.72,
+      "strategy": 31.85,
+      "excess": 82.42
+    },
+    {
+      "date": "2023-09-28",
+      "benchmark": -27.78,
+      "strategy": 34.39,
+      "excess": 86.08
+    },
+    {
+      "date": "2023-10-10",
+      "benchmark": -28.42,
+      "strategy": 31.14,
+      "excess": 83.21
+    },
+    {
+      "date": "2023-10-12",
+      "benchmark": -27.53,
+      "strategy": 31.57,
+      "excess": 81.55
+    },
+    {
+      "date": "2023-10-16",
+      "benchmark": -29.02,
+      "strategy": 33.04,
+      "excess": 87.43
+    },
+    {
+      "date": "2023-10-18",
+      "benchmark": -29.33,
+      "strategy": 28.96,
+      "excess": 82.48
+    },
+    {
+      "date": "2023-10-20",
+      "benchmark": -31.29,
+      "strategy": 27.02,
+      "excess": 84.86
+    },
+    {
+      "date": "2023-10-24",
+      "benchmark": -31.75,
+      "strategy": 27.47,
+      "excess": 86.77
+    },
+    {
+      "date": "2023-10-26",
+      "benchmark": -31.22,
+      "strategy": 28.57,
+      "excess": 86.93
+    },
+    {
+      "date": "2023-10-30",
+      "benchmark": -29.85,
+      "strategy": 32.0,
+      "excess": 88.17
+    },
+    {
+      "date": "2023-11-01",
+      "benchmark": -30.1,
+      "strategy": 34.66,
+      "excess": 92.65
+    },
+    {
+      "date": "2023-11-03",
+      "benchmark": -29.85,
+      "strategy": 34.63,
+      "excess": 91.92
+    },
+    {
+      "date": "2023-11-07",
+      "benchmark": -29.15,
+      "strategy": 35.5,
+      "excess": 91.25
+    },
+    {
+      "date": "2023-11-09",
+      "benchmark": -29.28,
+      "strategy": 34.34,
+      "excess": 89.96
+    },
+    {
+      "date": "2023-11-13",
+      "benchmark": -29.94,
+      "strategy": 38.93,
+      "excess": 98.3
+    },
+    {
+      "date": "2023-11-15",
+      "benchmark": -29.39,
+      "strategy": 38.07,
+      "excess": 95.54
+    },
+    {
+      "date": "2023-11-17",
+      "benchmark": -30.16,
+      "strategy": 37.33,
+      "excess": 96.64
+    },
+    {
+      "date": "2023-11-21",
+      "benchmark": -29.91,
+      "strategy": 38.6,
+      "excess": 97.75
+    },
+    {
+      "date": "2023-11-23",
+      "benchmark": -30.29,
+      "strategy": 38.32,
+      "excess": 98.42
+    },
+    {
+      "date": "2023-11-27",
+      "benchmark": -31.26,
+      "strategy": 37.66,
+      "excess": 100.26
+    },
+    {
+      "date": "2023-11-29",
+      "benchmark": -31.72,
+      "strategy": 43.52,
+      "excess": 110.19
+    },
+    {
+      "date": "2023-12-01",
+      "benchmark": -31.83,
+      "strategy": 39.26,
+      "excess": 104.28
+    },
+    {
+      "date": "2023-12-05",
+      "benchmark": -33.56,
+      "strategy": 39.39,
+      "excess": 109.8
+    },
+    {
+      "date": "2023-12-07",
+      "benchmark": -33.62,
+      "strategy": 40.43,
+      "excess": 111.55
+    },
+    {
+      "date": "2023-12-11",
+      "benchmark": -33.07,
+      "strategy": 38.04,
+      "excess": 106.25
+    },
+    {
+      "date": "2023-12-13",
+      "benchmark": -34.05,
+      "strategy": 38.09,
+      "excess": 109.39
+    },
+    {
+      "date": "2023-12-15",
+      "benchmark": -34.59,
+      "strategy": 39.99,
+      "excess": 114.02
+    },
+    {
+      "date": "2023-12-19",
+      "benchmark": -34.74,
+      "strategy": 39.16,
+      "excess": 113.24
+    },
+    {
+      "date": "2023-12-21",
+      "benchmark": -34.8,
+      "strategy": 40.14,
+      "excess": 114.94
+    },
+    {
+      "date": "2023-12-25",
+      "benchmark": -34.48,
+      "strategy": 34.7,
+      "excess": 105.59
+    },
+    {
+      "date": "2023-12-27",
+      "benchmark": -34.7,
+      "strategy": 32.05,
+      "excess": 102.22
+    },
+    {
+      "date": "2023-12-29",
+      "benchmark": -32.84,
+      "strategy": 37.33,
+      "excess": 104.48
+    },
+    {
+      "date": "2024-01-03",
+      "benchmark": -33.88,
+      "strategy": 42.47,
+      "excess": 115.47
+    },
+    {
+      "date": "2024-01-05",
+      "benchmark": -34.84,
+      "strategy": 38.02,
+      "excess": 111.82
+    },
+    {
+      "date": "2024-01-09",
+      "benchmark": -35.55,
+      "strategy": 35.18,
+      "excess": 109.74
+    },
+    {
+      "date": "2024-01-11",
+      "benchmark": -35.49,
+      "strategy": 34.73,
+      "excess": 108.85
+    },
+    {
+      "date": "2024-01-15",
+      "benchmark": -35.78,
+      "strategy": 33.92,
+      "excess": 108.53
+    },
+    {
+      "date": "2024-01-17",
+      "benchmark": -36.8,
+      "strategy": 33.9,
+      "excess": 111.87
+    },
+    {
+      "date": "2024-01-19",
+      "benchmark": -36.0,
+      "strategy": 33.55,
+      "excess": 108.67
+    },
+    {
+      "date": "2024-01-23",
+      "benchmark": -36.74,
+      "strategy": 24.51,
+      "excess": 96.82
+    },
+    {
+      "date": "2024-01-25",
+      "benchmark": -34.57,
+      "strategy": 35.9,
+      "excess": 107.7
+    },
+    {
+      "date": "2024-01-29",
+      "benchmark": -35.33,
+      "strategy": 32.78,
+      "excess": 105.32
+    },
+    {
+      "date": "2024-01-31",
+      "benchmark": -37.06,
+      "strategy": 24.39,
+      "excess": 97.63
+    },
+    {
+      "date": "2024-02-02",
+      "benchmark": -37.76,
+      "strategy": 14.32,
+      "excess": 83.68
+    },
+    {
+      "date": "2024-02-06",
+      "benchmark": -35.18,
+      "strategy": -1.16,
+      "excess": 52.48
+    },
+    {
+      "date": "2024-02-08",
+      "benchmark": -34.14,
+      "strategy": 1.56,
+      "excess": 54.21
+    },
+    {
+      "date": "2024-02-20",
+      "benchmark": -33.24,
+      "strategy": 3.28,
+      "excess": 54.7
+    },
+    {
+      "date": "2024-02-22",
+      "benchmark": -31.75,
+      "strategy": 8.39,
+      "excess": 58.81
+    },
+    {
+      "date": "2024-02-26",
+      "benchmark": -32.41,
+      "strategy": 11.36,
+      "excess": 64.76
+    },
+    {
+      "date": "2024-02-28",
+      "benchmark": -32.47,
+      "strategy": 2.25,
+      "excess": 51.41
+    },
+    {
+      "date": "2024-03-01",
+      "benchmark": -30.75,
+      "strategy": 8.71,
+      "excess": 56.98
+    },
+    {
+      "date": "2024-03-05",
+      "benchmark": -30.21,
+      "strategy": 6.89,
+      "excess": 53.16
+    },
+    {
+      "date": "2024-03-07",
+      "benchmark": -30.91,
+      "strategy": 8.93,
+      "excess": 57.66
+    },
+    {
+      "date": "2024-03-11",
+      "benchmark": -29.75,
+      "strategy": 9.56,
+      "excess": 55.96
+    },
+    {
+      "date": "2024-03-13",
+      "benchmark": -30.08,
+      "strategy": 10.1,
+      "excess": 57.47
+    },
+    {
+      "date": "2024-03-15",
+      "benchmark": -30.12,
+      "strategy": 12.45,
+      "excess": 60.92
+    },
+    {
+      "date": "2024-03-19",
+      "benchmark": -29.97,
+      "strategy": 16.0,
+      "excess": 65.64
+    },
+    {
+      "date": "2024-03-21",
+      "benchmark": -29.91,
+      "strategy": 17.2,
+      "excess": 67.21
+    },
+    {
+      "date": "2024-03-25",
+      "benchmark": -30.99,
+      "strategy": 13.96,
+      "excess": 65.14
+    },
+    {
+      "date": "2024-03-27",
+      "benchmark": -31.44,
+      "strategy": 9.57,
+      "excess": 59.82
+    },
+    {
+      "date": "2024-03-29",
+      "benchmark": -30.76,
+      "strategy": 14.31,
+      "excess": 65.09
+    },
+    {
+      "date": "2024-04-02",
+      "benchmark": -29.91,
+      "strategy": 19.52,
+      "excess": 70.52
+    },
+    {
+      "date": "2024-04-08",
+      "benchmark": -30.78,
+      "strategy": 15.73,
+      "excess": 67.19
+    },
+    {
+      "date": "2024-04-10",
+      "benchmark": -31.4,
+      "strategy": 15.0,
+      "excess": 67.64
+    },
+    {
+      "date": "2024-04-12",
+      "benchmark": -31.97,
+      "strategy": 11.66,
+      "excess": 64.13
+    },
+    {
+      "date": "2024-04-16",
+      "benchmark": -31.28,
+      "strategy": -4.94,
+      "excess": 38.33
+    },
+    {
+      "date": "2024-04-18",
+      "benchmark": -30.13,
+      "strategy": 0.51,
+      "excess": 43.85
+    },
+    {
+      "date": "2024-04-22",
+      "benchmark": -30.89,
+      "strategy": 1.57,
+      "excess": 46.97
+    },
+    {
+      "date": "2024-04-24",
+      "benchmark": -31.07,
+      "strategy": 9.36,
+      "excess": 58.65
+    },
+    {
+      "date": "2024-04-26",
+      "benchmark": -29.84,
+      "strategy": 8.55,
+      "excess": 54.72
+    },
+    {
+      "date": "2024-04-30",
+      "benchmark": -29.45,
+      "strategy": 8.16,
+      "excess": 53.31
+    },
+    {
+      "date": "2024-05-07",
+      "benchmark": -28.38,
+      "strategy": 9.34,
+      "excess": 52.67
+    },
+    {
+      "date": "2024-05-09",
+      "benchmark": -28.27,
+      "strategy": 10.43,
+      "excess": 53.95
+    },
+    {
+      "date": "2024-05-13",
+      "benchmark": -28.27,
+      "strategy": 7.3,
+      "excess": 49.59
+    },
+    {
+      "date": "2024-05-15",
+      "benchmark": -29.03,
+      "strategy": 6.55,
+      "excess": 50.13
+    },
+    {
+      "date": "2024-05-17",
+      "benchmark": -28.01,
+      "strategy": 7.92,
+      "excess": 49.91
+    },
+    {
+      "date": "2024-05-21",
+      "benchmark": -28.05,
+      "strategy": 6.04,
+      "excess": 47.38
+    },
+    {
+      "date": "2024-05-23",
+      "benchmark": -28.72,
+      "strategy": 4.86,
+      "excess": 47.11
+    },
+    {
+      "date": "2024-05-27",
+      "benchmark": -28.84,
+      "strategy": 0.97,
+      "excess": 41.89
+    },
+    {
+      "date": "2024-05-29",
+      "benchmark": -29.27,
+      "strategy": -0.57,
+      "excess": 40.58
+    },
+    {
+      "date": "2024-05-31",
+      "benchmark": -29.93,
+      "strategy": -0.85,
+      "excess": 41.5
+    },
+    {
+      "date": "2024-06-04",
+      "benchmark": -29.23,
+      "strategy": 10.4,
+      "excess": 56.0
+    },
+    {
+      "date": "2024-06-06",
+      "benchmark": -29.69,
+      "strategy": 2.81,
+      "excess": 46.22
+    },
+    {
+      "date": "2024-06-11",
+      "benchmark": -30.65,
+      "strategy": 4.86,
+      "excess": 51.2
+    },
+    {
+      "date": "2024-06-13",
+      "benchmark": -30.98,
+      "strategy": 9.69,
+      "excess": 58.92
+    },
+    {
+      "date": "2024-06-17",
+      "benchmark": -30.78,
+      "strategy": 9.0,
+      "excess": 57.47
+    },
+    {
+      "date": "2024-06-19",
+      "benchmark": -30.93,
+      "strategy": 11.86,
+      "excess": 61.95
+    },
+    {
+      "date": "2024-06-21",
+      "benchmark": -31.58,
+      "strategy": 15.87,
+      "excess": 69.35
+    },
+    {
+      "date": "2024-06-25",
+      "benchmark": -32.32,
+      "strategy": 15.22,
+      "excess": 70.24
+    },
+    {
+      "date": "2024-06-27",
+      "benchmark": -32.39,
+      "strategy": 12.28,
+      "excess": 66.07
+    },
+    {
+      "date": "2024-07-01",
+      "benchmark": -31.92,
+      "strategy": 16.14,
+      "excess": 70.59
+    },
+    {
+      "date": "2024-07-03",
+      "benchmark": -32.21,
+      "strategy": 10.48,
+      "excess": 62.97
+    },
+    {
+      "date": "2024-07-05",
+      "benchmark": -32.84,
+      "strategy": 7.01,
+      "excess": 59.34
+    },
+    {
+      "date": "2024-07-09",
+      "benchmark": -32.67,
+      "strategy": 9.19,
+      "excess": 62.17
+    },
+    {
+      "date": "2024-07-11",
+      "benchmark": -32.12,
+      "strategy": 7.24,
+      "excess": 57.98
+    },
+    {
+      "date": "2024-07-15",
+      "benchmark": -31.96,
+      "strategy": 4.75,
+      "excess": 53.95
+    },
+    {
+      "date": "2024-07-17",
+      "benchmark": -31.46,
+      "strategy": 3.99,
+      "excess": 51.72
+    },
+    {
+      "date": "2024-07-19",
+      "benchmark": -30.73,
+      "strategy": 5.62,
+      "excess": 52.48
+    },
+    {
+      "date": "2024-07-23",
+      "benchmark": -32.67,
+      "strategy": 5.54,
+      "excess": 56.75
+    },
+    {
+      "date": "2024-07-25",
+      "benchmark": -33.46,
+      "strategy": 5.78,
+      "excess": 58.97
+    },
+    {
+      "date": "2024-07-29",
+      "benchmark": -33.63,
+      "strategy": 7.4,
+      "excess": 61.82
+    },
+    {
+      "date": "2024-07-31",
+      "benchmark": -32.63,
+      "strategy": 11.69,
+      "excess": 65.79
+    },
+    {
+      "date": "2024-08-02",
+      "benchmark": -33.76,
+      "strategy": 11.28,
+      "excess": 68.0
+    },
+    {
+      "date": "2024-08-06",
+      "benchmark": -34.57,
+      "strategy": 7.8,
+      "excess": 64.76
+    },
+    {
+      "date": "2024-08-08",
+      "benchmark": -34.57,
+      "strategy": 5.22,
+      "excess": 60.81
+    },
+    {
+      "date": "2024-08-12",
+      "benchmark": -34.9,
+      "strategy": 4.45,
+      "excess": 60.45
+    },
+    {
+      "date": "2024-08-14",
+      "benchmark": -35.23,
+      "strategy": 5.58,
+      "excess": 63.01
+    },
+    {
+      "date": "2024-08-16",
+      "benchmark": -34.51,
+      "strategy": 4.74,
+      "excess": 59.93
+    },
+    {
+      "date": "2024-08-20",
+      "benchmark": -34.77,
+      "strategy": 3.17,
+      "excess": 58.16
+    },
+    {
+      "date": "2024-08-22",
+      "benchmark": -35.15,
+      "strategy": 1.39,
+      "excess": 56.35
+    },
+    {
+      "date": "2024-08-26",
+      "benchmark": -34.93,
+      "strategy": 1.38,
+      "excess": 55.8
+    },
+    {
+      "date": "2024-08-28",
+      "benchmark": -35.67,
+      "strategy": 0.19,
+      "excess": 55.74
+    },
+    {
+      "date": "2024-08-30",
+      "benchmark": -34.99,
+      "strategy": 2.44,
+      "excess": 57.58
+    },
+    {
+      "date": "2024-09-03",
+      "benchmark": -35.93,
+      "strategy": 2.13,
+      "excess": 59.4
+    },
+    {
+      "date": "2024-09-05",
+      "benchmark": -36.23,
+      "strategy": -0.83,
+      "excess": 55.51
+    },
+    {
+      "date": "2024-09-09",
+      "benchmark": -37.5,
+      "strategy": -3.14,
+      "excess": 54.98
+    },
+    {
+      "date": "2024-09-11",
+      "benchmark": -37.64,
+      "strategy": -2.7,
+      "excess": 56.03
+    },
+    {
+      "date": "2024-09-13",
+      "benchmark": -38.16,
+      "strategy": -9.08,
+      "excess": 47.02
+    },
+    {
+      "date": "2024-09-19",
+      "benchmark": -37.44,
+      "strategy": -9.35,
+      "excess": 44.9
+    },
+    {
+      "date": "2024-09-23",
+      "benchmark": -37.12,
+      "strategy": -9.27,
+      "excess": 44.29
+    },
+    {
+      "date": "2024-09-25",
+      "benchmark": -33.42,
+      "strategy": -7.02,
+      "excess": 39.65
+    },
+    {
+      "date": "2024-09-27",
+      "benchmark": -27.51,
+      "strategy": -2.77,
+      "excess": 34.13
+    },
+    {
+      "date": "2024-10-08",
+      "benchmark": -16.69,
+      "strategy": 18.51,
+      "excess": 42.25
+    },
+    {
+      "date": "2024-10-10",
+      "benchmark": -21.75,
+      "strategy": 7.63,
+      "excess": 37.55
+    },
+    {
+      "date": "2024-10-14",
+      "benchmark": -22.46,
+      "strategy": 4.94,
+      "excess": 35.34
+    },
+    {
+      "date": "2024-10-16",
+      "benchmark": -25.0,
+      "strategy": 4.11,
+      "excess": 38.81
+    },
+    {
+      "date": "2024-10-18",
+      "benchmark": -23.17,
+      "strategy": 6.64,
+      "excess": 38.8
+    },
+    {
+      "date": "2024-10-22",
+      "benchmark": -22.53,
+      "strategy": 6.94,
+      "excess": 38.04
+    },
+    {
+      "date": "2024-10-24",
+      "benchmark": -23.1,
+      "strategy": 10.45,
+      "excess": 43.63
+    },
+    {
+      "date": "2024-10-28",
+      "benchmark": -22.41,
+      "strategy": 16.04,
+      "excess": 49.56
+    },
+    {
+      "date": "2024-10-30",
+      "benchmark": -23.87,
+      "strategy": 11.68,
+      "excess": 46.7
+    },
+    {
+      "date": "2024-11-01",
+      "benchmark": -23.86,
+      "strategy": 13.0,
+      "excess": 48.41
+    },
+    {
+      "date": "2024-11-05",
+      "benchmark": -20.83,
+      "strategy": 18.61,
+      "excess": 49.82
+    },
+    {
+      "date": "2024-11-07",
+      "benchmark": -18.85,
+      "strategy": 27.73,
+      "excess": 57.4
+    },
+    {
+      "date": "2024-11-11",
+      "benchmark": -19.14,
+      "strategy": 27.03,
+      "excess": 57.1
+    },
+    {
+      "date": "2024-11-13",
+      "benchmark": -19.54,
+      "strategy": 28.1,
+      "excess": 59.21
+    },
+    {
+      "date": "2024-11-15",
+      "benchmark": -22.32,
+      "strategy": 23.43,
+      "excess": 58.9
+    },
+    {
+      "date": "2024-11-19",
+      "benchmark": -22.16,
+      "strategy": 21.83,
+      "excess": 56.51
+    },
+    {
+      "date": "2024-11-21",
+      "benchmark": -21.92,
+      "strategy": 26.38,
+      "excess": 61.86
+    },
+    {
+      "date": "2024-11-25",
+      "benchmark": -24.68,
+      "strategy": 25.43,
+      "excess": 66.53
+    },
+    {
+      "date": "2024-11-27",
+      "benchmark": -23.53,
+      "strategy": 25.8,
+      "excess": 64.51
+    },
+    {
+      "date": "2024-11-29",
+      "benchmark": -23.34,
+      "strategy": 28.06,
+      "excess": 67.05
+    },
+    {
+      "date": "2024-12-03",
+      "benchmark": -22.65,
+      "strategy": 29.51,
+      "excess": 67.43
+    },
+    {
+      "date": "2024-12-05",
+      "benchmark": -23.24,
+      "strategy": 29.72,
+      "excess": 68.99
+    },
+    {
+      "date": "2024-12-09",
+      "benchmark": -22.36,
+      "strategy": 32.81,
+      "excess": 71.06
+    },
+    {
+      "date": "2024-12-11",
+      "benchmark": -21.93,
+      "strategy": 35.62,
+      "excess": 73.72
+    },
+    {
+      "date": "2024-12-13",
+      "benchmark": -23.01,
+      "strategy": 35.07,
+      "excess": 75.44
+    },
+    {
+      "date": "2024-12-17",
+      "benchmark": -23.23,
+      "strategy": 25.61,
+      "excess": 63.62
+    },
+    {
+      "date": "2024-12-19",
+      "benchmark": -22.77,
+      "strategy": 23.87,
+      "excess": 60.39
+    },
+    {
+      "date": "2024-12-23",
+      "benchmark": -23.01,
+      "strategy": 17.1,
+      "excess": 52.1
+    },
+    {
+      "date": "2024-12-25",
+      "benchmark": -21.99,
+      "strategy": 9.92,
+      "excess": 40.91
+    },
+    {
+      "date": "2024-12-27",
+      "benchmark": -22.08,
+      "strategy": 12.14,
+      "excess": 43.92
+    },
+    {
+      "date": "2024-12-31",
+      "benchmark": -22.98,
+      "strategy": 13.51,
+      "excess": 47.38
+    },
+    {
+      "date": "2025-01-03",
+      "benchmark": -26.11,
+      "strategy": 14.92,
+      "excess": 55.53
+    },
+    {
+      "date": "2025-01-07",
+      "benchmark": -25.7,
+      "strategy": 14.47,
+      "excess": 54.06
+    },
+    {
+      "date": "2025-01-09",
+      "benchmark": -26.02,
+      "strategy": 15.19,
+      "excess": 55.7
+    },
+    {
+      "date": "2025-01-13",
+      "benchmark": -27.14,
+      "strategy": 12.85,
+      "excess": 54.89
+    },
+    {
+      "date": "2025-01-15",
+      "benchmark": -25.7,
+      "strategy": 19.74,
+      "excess": 61.16
+    },
+    {
+      "date": "2025-01-17",
+      "benchmark": -25.38,
+      "strategy": 17.35,
+      "excess": 57.26
+    },
+    {
+      "date": "2025-01-21",
+      "benchmark": -24.98,
+      "strategy": 20.38,
+      "excess": 60.46
+    },
+    {
+      "date": "2025-01-23",
+      "benchmark": -25.55,
+      "strategy": 12.74,
+      "excess": 51.43
+    },
+    {
+      "date": "2025-01-27",
+      "benchmark": -25.29,
+      "strategy": 16.77,
+      "excess": 56.3
+    },
+    {
+      "date": "2025-02-06",
+      "benchmark": -24.78,
+      "strategy": 19.36,
+      "excess": 58.68
+    },
+    {
+      "date": "2025-02-10",
+      "benchmark": -23.64,
+      "strategy": 22.8,
+      "excess": 60.82
+    },
+    {
+      "date": "2025-02-12",
+      "benchmark": -23.28,
+      "strategy": 20.88,
+      "excess": 57.56
+    },
+    {
+      "date": "2025-02-14",
+      "benchmark": -22.9,
+      "strategy": 20.04,
+      "excess": 55.69
+    },
+    {
+      "date": "2025-02-18",
+      "benchmark": -23.41,
+      "strategy": 19.13,
+      "excess": 55.54
+    },
+    {
+      "date": "2025-02-20",
+      "benchmark": -23.1,
+      "strategy": 19.16,
+      "excess": 54.95
+    },
+    {
+      "date": "2025-02-24",
+      "benchmark": -22.3,
+      "strategy": 17.6,
+      "excess": 51.35
+    },
+    {
+      "date": "2025-02-26",
+      "benchmark": -22.49,
+      "strategy": 18.18,
+      "excess": 52.47
+    },
+    {
+      "date": "2025-02-28",
+      "benchmark": -23.86,
+      "strategy": 13.96,
+      "excess": 49.67
+    },
+    {
+      "date": "2025-03-04",
+      "benchmark": -23.95,
+      "strategy": 16.39,
+      "excess": 53.04
+    },
+    {
+      "date": "2025-03-06",
+      "benchmark": -22.56,
+      "strategy": 16.1,
+      "excess": 49.92
+    },
+    {
+      "date": "2025-03-10",
+      "benchmark": -23.1,
+      "strategy": 18.53,
+      "excess": 54.14
+    },
+    {
+      "date": "2025-03-12",
+      "benchmark": -23.13,
+      "strategy": 25.76,
+      "excess": 63.6
+    },
+    {
+      "date": "2025-03-14",
+      "benchmark": -21.58,
+      "strategy": 28.87,
+      "excess": 64.33
+    },
+    {
+      "date": "2025-03-18",
+      "benchmark": -21.56,
+      "strategy": 32.46,
+      "excess": 68.87
+    },
+    {
+      "date": "2025-03-20",
+      "benchmark": -22.2,
+      "strategy": 33.47,
+      "excess": 71.56
+    },
+    {
+      "date": "2025-03-24",
+      "benchmark": -22.98,
+      "strategy": 31.71,
+      "excess": 71.01
+    },
+    {
+      "date": "2025-03-26",
+      "benchmark": -23.29,
+      "strategy": 31.85,
+      "excess": 71.88
+    },
+    {
+      "date": "2025-03-28",
+      "benchmark": -23.37,
+      "strategy": 29.24,
+      "excess": 68.65
+    },
+    {
+      "date": "2025-04-01",
+      "benchmark": -23.91,
+      "strategy": 31.05,
+      "excess": 72.23
+    },
+    {
+      "date": "2025-04-03",
+      "benchmark": -24.42,
+      "strategy": 30.53,
+      "excess": 72.7
+    },
+    {
+      "date": "2025-04-08",
+      "benchmark": -28.54,
+      "strategy": 18.54,
+      "excess": 65.88
+    },
+    {
+      "date": "2025-04-10",
+      "benchmark": -26.89,
+      "strategy": 23.88,
+      "excess": 69.44
+    },
+    {
+      "date": "2025-04-14",
+      "benchmark": -26.42,
+      "strategy": 28.73,
+      "excess": 74.95
+    },
+    {
+      "date": "2025-04-16",
+      "benchmark": -26.15,
+      "strategy": 25.13,
+      "excess": 69.44
+    },
+    {
+      "date": "2025-04-18",
+      "benchmark": -26.16,
+      "strategy": 25.8,
+      "excess": 70.37
+    },
+    {
+      "date": "2025-04-22",
+      "benchmark": -25.94,
+      "strategy": 26.9,
+      "excess": 71.35
+    },
+    {
+      "date": "2025-04-24",
+      "benchmark": -25.93,
+      "strategy": 26.1,
+      "excess": 70.24
+    },
+    {
+      "date": "2025-04-28",
+      "benchmark": -25.98,
+      "strategy": 24.42,
+      "excess": 68.09
+    },
+    {
+      "date": "2025-04-30",
+      "benchmark": -26.2,
+      "strategy": 25.09,
+      "excess": 69.5
+    },
+    {
+      "date": "2025-05-07",
+      "benchmark": -25.0,
+      "strategy": 27.66,
+      "excess": 70.21
+    },
+    {
+      "date": "2025-05-09",
+      "benchmark": -24.72,
+      "strategy": 28.96,
+      "excess": 71.31
+    },
+    {
+      "date": "2025-05-13",
+      "benchmark": -23.74,
+      "strategy": 28.33,
+      "excess": 68.28
+    },
+    {
+      "date": "2025-05-15",
+      "benchmark": -23.52,
+      "strategy": 27.13,
+      "excess": 66.23
+    },
+    {
+      "date": "2025-05-19",
+      "benchmark": -24.11,
+      "strategy": 30.0,
+      "excess": 71.3
+    },
+    {
+      "date": "2025-05-21",
+      "benchmark": -23.34,
+      "strategy": 33.03,
+      "excess": 73.53
+    },
+    {
+      "date": "2025-05-23",
+      "benchmark": -24.01,
+      "strategy": 30.51,
+      "excess": 71.75
+    },
+    {
+      "date": "2025-05-27",
+      "benchmark": -24.85,
+      "strategy": 31.28,
+      "excess": 74.69
+    },
+    {
+      "date": "2025-05-29",
+      "benchmark": -24.47,
+      "strategy": 32.95,
+      "excess": 76.02
+    },
+    {
+      "date": "2025-06-03",
+      "benchmark": -24.6,
+      "strategy": 35.26,
+      "excess": 79.39
+    },
+    {
+      "date": "2025-06-05",
+      "benchmark": -24.1,
+      "strategy": 37.0,
+      "excess": 80.5
+    },
+    {
+      "date": "2025-06-09",
+      "benchmark": -23.95,
+      "strategy": 40.47,
+      "excess": 84.71
+    },
+    {
+      "date": "2025-06-11",
+      "benchmark": -23.77,
+      "strategy": 49.76,
+      "excess": 96.46
+    },
+    {
+      "date": "2025-06-13",
+      "benchmark": -24.37,
+      "strategy": 46.29,
+      "excess": 93.43
+    },
+    {
+      "date": "2025-06-17",
+      "benchmark": -24.24,
+      "strategy": 52.78,
+      "excess": 101.66
+    },
+    {
+      "date": "2025-06-19",
+      "benchmark": -24.78,
+      "strategy": 55.18,
+      "excess": 106.3
+    },
+    {
+      "date": "2025-06-23",
+      "benchmark": -24.49,
+      "strategy": 54.12,
+      "excess": 104.11
+    },
+    {
+      "date": "2025-06-25",
+      "benchmark": -22.49,
+      "strategy": 58.02,
+      "excess": 103.87
+    },
+    {
+      "date": "2025-06-27",
+      "benchmark": -23.24,
+      "strategy": 63.53,
+      "excess": 113.04
+    },
+    {
+      "date": "2025-07-01",
+      "benchmark": -22.83,
+      "strategy": 66.39,
+      "excess": 115.61
+    },
+    {
+      "date": "2025-07-03",
+      "benchmark": -22.33,
+      "strategy": 65.14,
+      "excess": 112.62
+    },
+    {
+      "date": "2025-07-07",
+      "benchmark": -22.39,
+      "strategy": 68.85,
+      "excess": 117.56
+    },
+    {
+      "date": "2025-07-09",
+      "benchmark": -21.87,
+      "strategy": 72.19,
+      "excess": 120.39
+    },
+    {
+      "date": "2025-07-11",
+      "benchmark": -21.42,
+      "strategy": 67.66,
+      "excess": 113.36
+    },
+    {
+      "date": "2025-07-15",
+      "benchmark": -21.33,
+      "strategy": 66.83,
+      "excess": 112.06
+    },
+    {
+      "date": "2025-07-17",
+      "benchmark": -21.03,
+      "strategy": 66.92,
+      "excess": 111.37
+    },
+    {
+      "date": "2025-07-21",
+      "benchmark": -20.03,
+      "strategy": 69.83,
+      "excess": 112.37
+    },
+    {
+      "date": "2025-07-23",
+      "benchmark": -19.36,
+      "strategy": 61.01,
+      "excess": 99.67
+    },
+    {
+      "date": "2025-07-25",
+      "benchmark": -19.22,
+      "strategy": 63.82,
+      "excess": 102.8
+    },
+    {
+      "date": "2025-07-29",
+      "benchmark": -18.73,
+      "strategy": 59.32,
+      "excess": 96.04
+    },
+    {
+      "date": "2025-07-31",
+      "benchmark": -20.23,
+      "strategy": 60.47,
+      "excess": 101.17
+    },
+    {
+      "date": "2025-08-04",
+      "benchmark": -20.32,
+      "strategy": 68.08,
+      "excess": 110.94
+    },
+    {
+      "date": "2025-08-06",
+      "benchmark": -19.49,
+      "strategy": 70.22,
+      "excess": 111.43
+    },
+    {
+      "date": "2025-08-08",
+      "benchmark": -19.65,
+      "strategy": 76.71,
+      "excess": 119.93
+    },
+    {
+      "date": "2025-08-12",
+      "benchmark": -18.89,
+      "strategy": 74.69,
+      "excess": 115.37
+    },
+    {
+      "date": "2025-08-14",
+      "benchmark": -18.31,
+      "strategy": 67.63,
+      "excess": 105.2
+    },
+    {
+      "date": "2025-08-18",
+      "benchmark": -17.02,
+      "strategy": 68.43,
+      "excess": 102.98
+    },
+    {
+      "date": "2025-08-20",
+      "benchmark": -16.39,
+      "strategy": 71.45,
+      "excess": 105.06
+    },
+    {
+      "date": "2025-08-22",
+      "benchmark": -14.31,
+      "strategy": 70.04,
+      "excess": 98.44
+    },
+    {
+      "date": "2025-08-26",
+      "benchmark": -12.85,
+      "strategy": 70.53,
+      "excess": 95.67
+    },
+    {
+      "date": "2025-08-28",
+      "benchmark": -12.63,
+      "strategy": 64.59,
+      "excess": 88.38
+    },
+    {
+      "date": "2025-09-01",
+      "benchmark": -11.46,
+      "strategy": 64.95,
+      "excess": 86.3
+    },
+    {
+      "date": "2025-09-03",
+      "benchmark": -12.71,
+      "strategy": 62.36,
+      "excess": 86.0
+    },
+    {
+      "date": "2025-09-05",
+      "benchmark": -12.7,
+      "strategy": 61.06,
+      "excess": 84.49
+    },
+    {
+      "date": "2025-09-09",
+      "benchmark": -13.17,
+      "strategy": 61.71,
+      "excess": 86.24
+    },
+    {
+      "date": "2025-09-11",
+      "benchmark": -10.98,
+      "strategy": 63.5,
+      "excess": 83.67
+    },
+    {
+      "date": "2025-09-15",
+      "benchmark": -11.27,
+      "strategy": 63.55,
+      "excess": 84.32
+    },
+    {
+      "date": "2025-09-17",
+      "benchmark": -10.92,
+      "strategy": 65.21,
+      "excess": 85.46
+    },
+    {
+      "date": "2025-09-19",
+      "benchmark": -11.88,
+      "strategy": 62.64,
+      "excess": 84.57
+    },
+    {
+      "date": "2025-09-23",
+      "benchmark": -11.53,
+      "strategy": 61.05,
+      "excess": 82.04
+    },
+    {
+      "date": "2025-09-25",
+      "benchmark": -10.09,
+      "strategy": 66.39,
+      "excess": 85.06
+    },
+    {
+      "date": "2025-09-29",
+      "benchmark": -9.57,
+      "strategy": 64.5,
+      "excess": 81.91
+    },
+    {
+      "date": "2025-10-09",
+      "benchmark": -7.82,
+      "strategy": 63.11,
+      "excess": 76.95
+    },
+    {
+      "date": "2025-10-13",
+      "benchmark": -10.08,
+      "strategy": 63.38,
+      "excess": 81.69
+    },
+    {
+      "date": "2025-10-15",
+      "benchmark": -9.84,
+      "strategy": 64.46,
+      "excess": 82.41
+    },
+    {
+      "date": "2025-10-17",
+      "benchmark": -11.64,
+      "strategy": 62.85,
+      "excess": 84.3
+    },
+    {
+      "date": "2025-10-21",
+      "benchmark": -9.81,
+      "strategy": 78.23,
+      "excess": 97.62
+    },
+    {
+      "date": "2025-10-23",
+      "benchmark": -9.84,
+      "strategy": 87.83,
+      "excess": 108.33
+    },
+    {
+      "date": "2025-10-27",
+      "benchmark": -7.69,
+      "strategy": 89.48,
+      "excess": 105.26
+    },
+    {
+      "date": "2025-10-29",
+      "benchmark": -7.07,
+      "strategy": 93.75,
+      "excess": 108.49
+    },
+    {
+      "date": "2025-10-31",
+      "benchmark": -9.17,
+      "strategy": 92.23,
+      "excess": 111.64
+    },
+    {
+      "date": "2025-11-04",
+      "benchmark": -9.6,
+      "strategy": 96.96,
+      "excess": 117.88
+    },
+    {
+      "date": "2025-11-06",
+      "benchmark": -8.13,
+      "strategy": 101.03,
+      "excess": 118.82
+    },
+    {
+      "date": "2025-11-10",
+      "benchmark": -8.1,
+      "strategy": 103.94,
+      "excess": 121.92
+    },
+    {
+      "date": "2025-11-12",
+      "benchmark": -9.06,
+      "strategy": 103.45,
+      "excess": 123.72
+    },
+    {
+      "date": "2025-11-14",
+      "benchmark": -9.41,
+      "strategy": 103.92,
+      "excess": 125.1
+    },
+    {
+      "date": "2025-11-18",
+      "benchmark": -10.59,
+      "strategy": 101.03,
+      "excess": 124.84
+    },
+    {
+      "date": "2025-11-20",
+      "benchmark": -10.65,
+      "strategy": 89.87,
+      "excess": 112.5
+    },
+    {
+      "date": "2025-11-24",
+      "benchmark": -12.94,
+      "strategy": 78.13,
+      "excess": 104.61
+    },
+    {
+      "date": "2025-11-26",
+      "benchmark": -11.57,
+      "strategy": 78.73,
+      "excess": 102.11
+    },
+    {
+      "date": "2025-11-28",
+      "benchmark": -11.4,
+      "strategy": 78.45,
+      "excess": 101.41
+    },
+    {
+      "date": "2025-12-02",
+      "benchmark": -10.86,
+      "strategy": 78.04,
+      "excess": 99.73
+    },
+    {
+      "date": "2025-12-04",
+      "benchmark": -11.01,
+      "strategy": 72.96,
+      "excess": 94.36
+    },
+    {
+      "date": "2025-12-08",
+      "benchmark": -9.54,
+      "strategy": 74.83,
+      "excess": 93.27
+    },
+    {
+      "date": "2025-12-10",
+      "benchmark": -10.12,
+      "strategy": 71.01,
+      "excess": 90.26
+    },
+    {
+      "date": "2025-12-12",
+      "benchmark": -10.34,
+      "strategy": 63.91,
+      "excess": 82.81
+    },
+    {
+      "date": "2025-12-16",
+      "benchmark": -11.97,
+      "strategy": 61.87,
+      "excess": 83.88
+    },
+    {
+      "date": "2025-12-18",
+      "benchmark": -10.89,
+      "strategy": 68.19,
+      "excess": 88.74
+    },
+    {
+      "date": "2025-12-22",
+      "benchmark": -9.74,
+      "strategy": 72.24,
+      "excess": 90.83
+    },
+    {
+      "date": "2025-12-24",
+      "benchmark": -9.3,
+      "strategy": 70.33,
+      "excess": 87.79
+    },
+    {
+      "date": "2025-12-26",
+      "benchmark": -8.84,
+      "strategy": 70.54,
+      "excess": 87.08
+    },
+    {
+      "date": "2025-12-30",
+      "benchmark": -8.96,
+      "strategy": 69.15,
+      "excess": 85.8
+    },
+    {
+      "date": "2026-01-05",
+      "benchmark": -7.66,
+      "strategy": 70.26,
+      "excess": 84.38
+    },
+    {
+      "date": "2026-01-07",
+      "benchmark": -6.5,
+      "strategy": 69.09,
+      "excess": 80.84
+    },
+    {
+      "date": "2026-01-09",
+      "benchmark": -6.85,
+      "strategy": 72.14,
+      "excess": 84.8
+    },
+    {
+      "date": "2026-01-13",
+      "benchmark": -6.81,
+      "strategy": 73.3,
+      "excess": 85.96
+    },
+    {
+      "date": "2026-01-15",
+      "benchmark": -7.0,
+      "strategy": 73.3,
+      "excess": 86.34
+    },
+    {
+      "date": "2026-01-19",
+      "benchmark": -7.33,
+      "strategy": 73.93,
+      "excess": 87.69
+    },
+    {
+      "date": "2026-01-21",
+      "benchmark": -7.55,
+      "strategy": 76.9,
+      "excess": 91.35
+    },
+    {
+      "date": "2026-01-23",
+      "benchmark": -7.96,
+      "strategy": 77.85,
+      "excess": 93.23
+    },
+    {
+      "date": "2026-01-27",
+      "benchmark": -7.89,
+      "strategy": 81.22,
+      "excess": 96.74
+    },
+    {
+      "date": "2026-01-29",
+      "benchmark": -6.95,
+      "strategy": 77.97,
+      "excess": 91.26
+    },
+    {
+      "date": "2026-02-02",
+      "benchmark": -9.85,
+      "strategy": 83.39,
+      "excess": 103.43
+    },
+    {
+      "date": "2026-02-04",
+      "benchmark": -8.03,
+      "strategy": 88.63,
+      "excess": 105.1
+    },
+    {
+      "date": "2026-02-06",
+      "benchmark": -9.11,
+      "strategy": 91.36,
+      "excess": 110.54
+    },
+    {
+      "date": "2026-02-10",
+      "benchmark": -7.53,
+      "strategy": 91.64,
+      "excess": 107.25
+    },
+    {
+      "date": "2026-02-12",
+      "benchmark": -7.62,
+      "strategy": 90.67,
+      "excess": 106.4
+    },
+    {
+      "date": "2026-02-24",
+      "benchmark": -7.86,
+      "strategy": 93.15,
+      "excess": 109.63
+    },
+    {
+      "date": "2026-02-26",
+      "benchmark": -7.48,
+      "strategy": 99.89,
+      "excess": 116.05
+    },
+    {
+      "date": "2026-03-02",
+      "benchmark": -7.44,
+      "strategy": 99.59,
+      "excess": 115.63
+    },
+    {
+      "date": "2026-03-04",
+      "benchmark": -9.91,
+      "strategy": 94.07,
+      "excess": 115.42
+    },
+    {
+      "date": "2026-03-06",
+      "benchmark": -8.78,
+      "strategy": 99.23,
+      "excess": 118.41
+    },
+    {
+      "date": "2026-03-10",
+      "benchmark": -8.5,
+      "strategy": 102.17,
+      "excess": 120.95
+    },
+    {
+      "date": "2026-03-12",
+      "benchmark": -8.25,
+      "strategy": 104.17,
+      "excess": 122.53
+    },
+    {
+      "date": "2026-03-16",
+      "benchmark": -8.56,
+      "strategy": 107.23,
+      "excess": 126.63
+    },
+    {
+      "date": "2026-03-18",
+      "benchmark": -8.82,
+      "strategy": 104.17,
+      "excess": 123.92
+    },
+    {
+      "date": "2026-03-20",
+      "benchmark": -10.61,
+      "strategy": 95.5,
+      "excess": 118.7
+    },
+    {
+      "date": "2026-03-24",
+      "benchmark": -12.41,
+      "strategy": 90.58,
+      "excess": 117.58
+    },
+    {
+      "date": "2026-03-26",
+      "benchmark": -12.36,
+      "strategy": 93.31,
+      "excess": 120.57
+    },
+    {
+      "date": "2026-03-30",
+      "benchmark": -12.08,
+      "strategy": 94.57,
+      "excess": 121.3
+    },
+    {
+      "date": "2026-04-01",
+      "benchmark": -11.41,
+      "strategy": 98.13,
+      "excess": 123.65
+    },
+    {
+      "date": "2026-04-03",
+      "benchmark": -13.08,
+      "strategy": 91.57,
+      "excess": 120.4
+    },
+    {
+      "date": "2026-04-08",
+      "benchmark": -10.05,
+      "strategy": 99.48,
+      "excess": 121.77
+    },
+    {
+      "date": "2026-04-10",
+      "benchmark": -9.25,
+      "strategy": 98.26,
+      "excess": 118.47
+    },
+    {
+      "date": "2026-04-14",
+      "benchmark": -7.98,
+      "strategy": 100.67,
+      "excess": 118.07
+    },
+    {
+      "date": "2026-04-16",
+      "benchmark": -7.29,
+      "strategy": 102.42,
+      "excess": 118.34
+    },
+    {
+      "date": "2026-04-20",
+      "benchmark": -6.88,
+      "strategy": 101.76,
+      "excess": 116.67
+    },
+    {
+      "date": "2026-04-22",
+      "benchmark": -6.06,
+      "strategy": 100.04,
+      "excess": 112.94
+    },
+    {
+      "date": "2026-04-24",
+      "benchmark": -6.65,
+      "strategy": 97.85,
+      "excess": 111.94
+    },
+    {
+      "date": "2026-04-28",
+      "benchmark": -6.87,
+      "strategy": 105.84,
+      "excess": 121.02
+    },
+    {
+      "date": "2026-04-30",
+      "benchmark": -5.9,
+      "strategy": 114.57,
+      "excess": 128.02
+    },
+    {
+      "date": "2026-05-07",
+      "benchmark": -4.08,
+      "strategy": 110.69,
+      "excess": 119.65
+    },
+    {
+      "date": "2026-05-11",
+      "benchmark": -3.08,
+      "strategy": 110.45,
+      "excess": 117.14
+    },
+    {
+      "date": "2026-05-13",
+      "benchmark": -2.17,
+      "strategy": 118.64,
+      "excess": 123.49
+    },
+    {
+      "date": "2026-05-15",
+      "benchmark": -4.88,
+      "strategy": 115.93,
+      "excess": 127.01
+    },
+    {
+      "date": "2026-05-19",
+      "benchmark": -5.01,
+      "strategy": 121.4,
+      "excess": 133.08
+    },
+    {
+      "date": "2026-05-21",
+      "benchmark": -6.38,
+      "strategy": 110.61,
+      "excess": 124.96
+    },
+    {
+      "date": "2026-05-25",
+      "benchmark": -3.67,
+      "strategy": 108.8,
+      "excess": 116.75
+    },
+    {
+      "date": "2026-05-27",
+      "benchmark": -3.93,
+      "strategy": 99.03,
+      "excess": 107.17
+    },
+    {
+      "date": "2026-05-29",
+      "benchmark": -4.24,
+      "strategy": 90.66,
+      "excess": 99.1
+    },
+    {
+      "date": "2026-06-02",
+      "benchmark": -3.81,
+      "strategy": 91.18,
+      "excess": 98.75
+    },
+    {
+      "date": "2026-06-04",
+      "benchmark": -4.0,
+      "strategy": 85.78,
+      "excess": 93.52
+    },
+    {
+      "date": "2026-06-08",
+      "benchmark": -7.74,
+      "strategy": 82.9,
+      "excess": 98.24
+    },
+    {
+      "date": "2026-06-10",
+      "benchmark": -7.05,
+      "strategy": 81.71,
+      "excess": 95.49
+    },
+    {
+      "date": "2026-06-12",
+      "benchmark": -6.49,
+      "strategy": 82.33,
+      "excess": 94.98
+    },
+    {
+      "date": "2026-06-16",
+      "benchmark": -4.4,
+      "strategy": 84.72,
+      "excess": 93.22
+    },
+    {
+      "date": "2026-06-18",
+      "benchmark": -3.28,
+      "strategy": 78.14,
+      "excess": 84.18
+    },
+    {
+      "date": "2026-06-23",
+      "benchmark": -3.71,
+      "strategy": 81.88,
+      "excess": 88.89
+    },
+    {
+      "date": "2026-06-25",
+      "benchmark": -1.74,
+      "strategy": 70.77,
+      "excess": 73.79
+    },
+    {
+      "date": "2026-06-29",
+      "benchmark": -3.56,
+      "strategy": 68.56,
+      "excess": 74.78
+    },
+    {
+      "date": "2026-07-01",
+      "benchmark": -2.94,
+      "strategy": 76.62,
+      "excess": 81.97
+    },
+    {
+      "date": "2026-07-03",
+      "benchmark": -5.22,
+      "strategy": 81.17,
+      "excess": 91.15
+    },
+    {
+      "date": "2026-07-07",
+      "benchmark": -6.2,
+      "strategy": 70.74,
+      "excess": 82.03
+    },
+    {
+      "date": "2026-07-09",
+      "benchmark": -4.55,
+      "strategy": 66.8,
+      "excess": 74.75
+    },
+    {
+      "date": "2026-07-13",
+      "benchmark": -8.1,
+      "strategy": 66.16,
+      "excess": 80.81
+    },
+    {
+      "date": "2026-07-15",
+      "benchmark": -6.31,
+      "strategy": 74.6,
+      "excess": 86.36
+    },
+    {
+      "date": "2026-07-17",
+      "benchmark": -11.35,
+      "strategy": 69.2,
+      "excess": 90.86
+    }
+  ],
+  "v4": [
+    {
+      "date": "2021-07-21",
+      "benchmark": 0.69,
+      "strategy": 0.21,
+      "excess": -0.48
+    },
+    {
+      "date": "2021-07-23",
+      "benchmark": -0.39,
+      "strategy": -1.67,
+      "excess": -1.29
+    },
+    {
+      "date": "2021-07-27",
+      "benchmark": -7.0,
+      "strategy": -5.4,
+      "excess": 1.72
+    },
+    {
+      "date": "2021-07-29",
+      "benchmark": -5.06,
+      "strategy": -5.51,
+      "excess": -0.47
+    },
+    {
+      "date": "2021-08-02",
+      "benchmark": -3.43,
+      "strategy": -2.67,
+      "excess": 0.79
+    },
+    {
+      "date": "2021-08-04",
+      "benchmark": -2.55,
+      "strategy": -3.03,
+      "excess": -0.49
+    },
+    {
+      "date": "2021-08-06",
+      "benchmark": -3.67,
+      "strategy": -3.6,
+      "excess": 0.07
+    },
+    {
+      "date": "2021-08-10",
+      "benchmark": -1.29,
+      "strategy": -0.75,
+      "excess": 0.55
+    },
+    {
+      "date": "2021-08-12",
+      "benchmark": -2.65,
+      "strategy": 0.0,
+      "excess": 2.72
+    },
+    {
+      "date": "2021-08-16",
+      "benchmark": -3.29,
+      "strategy": 1.52,
+      "excess": 4.97
+    },
+    {
+      "date": "2021-08-18",
+      "benchmark": -4.2,
+      "strategy": -0.64,
+      "excess": 3.72
+    },
+    {
+      "date": "2021-08-20",
+      "benchmark": -6.65,
+      "strategy": -0.79,
+      "excess": 6.28
+    },
+    {
+      "date": "2021-08-24",
+      "benchmark": -4.32,
+      "strategy": 2.96,
+      "excess": 7.61
+    },
+    {
+      "date": "2021-08-26",
+      "benchmark": -6.02,
+      "strategy": 5.39,
+      "excess": 12.14
+    },
+    {
+      "date": "2021-08-30",
+      "benchmark": -5.79,
+      "strategy": 6.39,
+      "excess": 12.93
+    },
+    {
+      "date": "2021-09-01",
+      "benchmark": -4.69,
+      "strategy": 5.8,
+      "excess": 11.01
+    },
+    {
+      "date": "2021-09-03",
+      "benchmark": -5.21,
+      "strategy": 6.73,
+      "excess": 12.6
+    },
+    {
+      "date": "2021-09-07",
+      "benchmark": -2.27,
+      "strategy": 10.77,
+      "excess": 13.34
+    },
+    {
+      "date": "2021-09-09",
+      "benchmark": -2.72,
+      "strategy": 11.42,
+      "excess": 14.54
+    },
+    {
+      "date": "2021-09-13",
+      "benchmark": -2.3,
+      "strategy": 11.44,
+      "excess": 14.06
+    },
+    {
+      "date": "2021-09-15",
+      "benchmark": -4.73,
+      "strategy": 11.23,
+      "excess": 16.75
+    },
+    {
+      "date": "2021-09-17",
+      "benchmark": -4.95,
+      "strategy": 11.17,
+      "excess": 16.96
+    },
+    {
+      "date": "2021-09-23",
+      "benchmark": -5.01,
+      "strategy": 12.44,
+      "excess": 18.37
+    },
+    {
+      "date": "2021-09-27",
+      "benchmark": -4.53,
+      "strategy": 6.37,
+      "excess": 11.42
+    },
+    {
+      "date": "2021-09-29",
+      "benchmark": -5.38,
+      "strategy": 6.43,
+      "excess": 12.48
+    },
+    {
+      "date": "2021-10-08",
+      "benchmark": -3.5,
+      "strategy": 12.05,
+      "excess": 16.11
+    },
+    {
+      "date": "2021-10-12",
+      "benchmark": -4.41,
+      "strategy": 10.06,
+      "excess": 15.14
+    },
+    {
+      "date": "2021-10-14",
+      "benchmark": -3.82,
+      "strategy": 12.37,
+      "excess": 16.83
+    },
+    {
+      "date": "2021-10-18",
+      "benchmark": -4.58,
+      "strategy": 12.54,
+      "excess": 17.94
+    },
+    {
+      "date": "2021-10-20",
+      "benchmark": -3.89,
+      "strategy": 10.96,
+      "excess": 15.45
+    },
+    {
+      "date": "2021-10-22",
+      "benchmark": -2.92,
+      "strategy": 8.64,
+      "excess": 11.91
+    },
+    {
+      "date": "2021-10-26",
+      "benchmark": -2.86,
+      "strategy": 6.17,
+      "excess": 9.3
+    },
+    {
+      "date": "2021-10-28",
+      "benchmark": -4.79,
+      "strategy": 2.26,
+      "excess": 7.4
+    },
+    {
+      "date": "2021-11-01",
+      "benchmark": -4.27,
+      "strategy": 6.21,
+      "excess": 10.95
+    },
+    {
+      "date": "2021-11-03",
+      "benchmark": -5.63,
+      "strategy": 6.34,
+      "excess": 12.68
+    },
+    {
+      "date": "2021-11-05",
+      "benchmark": -5.22,
+      "strategy": 8.08,
+      "excess": 14.03
+    },
+    {
+      "date": "2021-11-09",
+      "benchmark": -5.13,
+      "strategy": 9.19,
+      "excess": 15.09
+    },
+    {
+      "date": "2021-11-11",
+      "benchmark": -4.12,
+      "strategy": 9.11,
+      "excess": 13.8
+    },
+    {
+      "date": "2021-11-15",
+      "benchmark": -4.44,
+      "strategy": 11.33,
+      "excess": 16.5
+    },
+    {
+      "date": "2021-11-17",
+      "benchmark": -4.37,
+      "strategy": 11.55,
+      "excess": 16.65
+    },
+    {
+      "date": "2021-11-19",
+      "benchmark": -4.29,
+      "strategy": 10.41,
+      "excess": 15.36
+    },
+    {
+      "date": "2021-11-23",
+      "benchmark": -3.83,
+      "strategy": 10.09,
+      "excess": 14.47
+    },
+    {
+      "date": "2021-11-25",
+      "benchmark": -4.16,
+      "strategy": 13.06,
+      "excess": 17.97
+    },
+    {
+      "date": "2021-11-29",
+      "benchmark": -5.04,
+      "strategy": 11.96,
+      "excess": 17.9
+    },
+    {
+      "date": "2021-12-01",
+      "benchmark": -5.19,
+      "strategy": 16.34,
+      "excess": 22.71
+    },
+    {
+      "date": "2021-12-03",
+      "benchmark": -4.07,
+      "strategy": 13.97,
+      "excess": 18.81
+    },
+    {
+      "date": "2021-12-07",
+      "benchmark": -3.66,
+      "strategy": 10.54,
+      "excess": 14.74
+    },
+    {
+      "date": "2021-12-09",
+      "benchmark": -0.59,
+      "strategy": 12.82,
+      "excess": 13.49
+    },
+    {
+      "date": "2021-12-13",
+      "benchmark": -0.49,
+      "strategy": 12.84,
+      "excess": 13.4
+    },
+    {
+      "date": "2021-12-15",
+      "benchmark": -2.02,
+      "strategy": 13.51,
+      "excess": 15.85
+    },
+    {
+      "date": "2021-12-17",
+      "benchmark": -3.02,
+      "strategy": 14.35,
+      "excess": 17.91
+    },
+    {
+      "date": "2021-12-21",
+      "benchmark": -3.83,
+      "strategy": 17.39,
+      "excess": 22.07
+    },
+    {
+      "date": "2021-12-23",
+      "benchmark": -3.14,
+      "strategy": 15.64,
+      "excess": 19.39
+    },
+    {
+      "date": "2021-12-27",
+      "benchmark": -3.71,
+      "strategy": 13.09,
+      "excess": 17.45
+    },
+    {
+      "date": "2021-12-29",
+      "benchmark": -4.41,
+      "strategy": 15.01,
+      "excess": 20.32
+    },
+    {
+      "date": "2021-12-31",
+      "benchmark": -3.3,
+      "strategy": 17.21,
+      "excess": 21.21
+    },
+    {
+      "date": "2022-01-05",
+      "benchmark": -4.71,
+      "strategy": 19.25,
+      "excess": 25.14
+    },
+    {
+      "date": "2022-01-07",
+      "benchmark": -5.61,
+      "strategy": 18.62,
+      "excess": 25.67
+    },
+    {
+      "date": "2022-01-11",
+      "benchmark": -6.09,
+      "strategy": 19.2,
+      "excess": 26.93
+    },
+    {
+      "date": "2022-01-13",
+      "benchmark": -6.72,
+      "strategy": 21.6,
+      "excess": 30.36
+    },
+    {
+      "date": "2022-01-17",
+      "benchmark": -6.69,
+      "strategy": 19.86,
+      "excess": 28.45
+    },
+    {
+      "date": "2022-01-19",
+      "benchmark": -6.43,
+      "strategy": 17.95,
+      "excess": 26.06
+    },
+    {
+      "date": "2022-01-21",
+      "benchmark": -6.45,
+      "strategy": 13.91,
+      "excess": 21.76
+    },
+    {
+      "date": "2022-01-25",
+      "benchmark": -8.43,
+      "strategy": 7.41,
+      "excess": 17.3
+    },
+    {
+      "date": "2022-01-27",
+      "benchmark": -9.57,
+      "strategy": 5.73,
+      "excess": 16.92
+    },
+    {
+      "date": "2022-02-07",
+      "benchmark": -9.3,
+      "strategy": 12.88,
+      "excess": 24.45
+    },
+    {
+      "date": "2022-02-09",
+      "benchmark": -8.94,
+      "strategy": 16.15,
+      "excess": 27.55
+    },
+    {
+      "date": "2022-02-11",
+      "benchmark": -9.94,
+      "strategy": 13.57,
+      "excess": 26.1
+    },
+    {
+      "date": "2022-02-15",
+      "benchmark": -9.96,
+      "strategy": 15.69,
+      "excess": 28.49
+    },
+    {
+      "date": "2022-02-17",
+      "benchmark": -9.39,
+      "strategy": 18.53,
+      "excess": 30.81
+    },
+    {
+      "date": "2022-02-21",
+      "benchmark": -9.29,
+      "strategy": 20.81,
+      "excess": 33.18
+    },
+    {
+      "date": "2022-02-23",
+      "benchmark": -9.51,
+      "strategy": 19.72,
+      "excess": 32.3
+    },
+    {
+      "date": "2022-02-25",
+      "benchmark": -10.48,
+      "strategy": 16.85,
+      "excess": 30.53
+    },
+    {
+      "date": "2022-03-01",
+      "benchmark": -9.58,
+      "strategy": 19.79,
+      "excess": 32.48
+    },
+    {
+      "date": "2022-03-03",
+      "benchmark": -10.91,
+      "strategy": 21.19,
+      "excess": 36.03
+    },
+    {
+      "date": "2022-03-07",
+      "benchmark": -14.8,
+      "strategy": 19.17,
+      "excess": 39.87
+    },
+    {
+      "date": "2022-03-09",
+      "benchmark": -17.28,
+      "strategy": 15.96,
+      "excess": 40.18
+    },
+    {
+      "date": "2022-03-11",
+      "benchmark": -15.71,
+      "strategy": 18.65,
+      "excess": 40.76
+    },
+    {
+      "date": "2022-03-15",
+      "benchmark": -22.02,
+      "strategy": 9.09,
+      "excess": 39.89
+    },
+    {
+      "date": "2022-03-17",
+      "benchmark": -17.05,
+      "strategy": 13.65,
+      "excess": 37.01
+    },
+    {
+      "date": "2022-03-21",
+      "benchmark": -16.64,
+      "strategy": 18.06,
+      "excess": 41.63
+    },
+    {
+      "date": "2022-03-23",
+      "benchmark": -16.29,
+      "strategy": 18.17,
+      "excess": 41.17
+    },
+    {
+      "date": "2022-03-25",
+      "benchmark": -18.29,
+      "strategy": 18.32,
+      "excess": 44.8
+    },
+    {
+      "date": "2022-03-29",
+      "benchmark": -19.08,
+      "strategy": 15.59,
+      "excess": 42.84
+    },
+    {
+      "date": "2022-03-31",
+      "benchmark": -17.35,
+      "strategy": 18.04,
+      "excess": 42.82
+    },
+    {
+      "date": "2022-04-06",
+      "benchmark": -16.54,
+      "strategy": 18.12,
+      "excess": 41.53
+    },
+    {
+      "date": "2022-04-08",
+      "benchmark": -17.19,
+      "strategy": 14.53,
+      "excess": 38.3
+    },
+    {
+      "date": "2022-04-12",
+      "benchmark": -18.18,
+      "strategy": 15.78,
+      "excess": 41.51
+    },
+    {
+      "date": "2022-04-14",
+      "benchmark": -17.96,
+      "strategy": 14.74,
+      "excess": 39.86
+    },
+    {
+      "date": "2022-04-18",
+      "benchmark": -18.45,
+      "strategy": 12.29,
+      "excess": 37.69
+    },
+    {
+      "date": "2022-04-20",
+      "benchmark": -20.32,
+      "strategy": 12.91,
+      "excess": 41.7
+    },
+    {
+      "date": "2022-04-22",
+      "benchmark": -21.45,
+      "strategy": 9.56,
+      "excess": 39.48
+    },
+    {
+      "date": "2022-04-26",
+      "benchmark": -25.93,
+      "strategy": 1.95,
+      "excess": 37.64
+    },
+    {
+      "date": "2022-04-28",
+      "benchmark": -23.25,
+      "strategy": 0.4,
+      "excess": 30.81
+    },
+    {
+      "date": "2022-05-05",
+      "benchmark": -21.51,
+      "strategy": 6.68,
+      "excess": 35.92
+    },
+    {
+      "date": "2022-05-09",
+      "benchmark": -24.11,
+      "strategy": 12.06,
+      "excess": 47.66
+    },
+    {
+      "date": "2022-05-11",
+      "benchmark": -22.17,
+      "strategy": 17.99,
+      "excess": 51.6
+    },
+    {
+      "date": "2022-05-13",
+      "benchmark": -21.93,
+      "strategy": 18.28,
+      "excess": 51.51
+    },
+    {
+      "date": "2022-05-17",
+      "benchmark": -21.59,
+      "strategy": 16.75,
+      "excess": 48.9
+    },
+    {
+      "date": "2022-05-19",
+      "benchmark": -21.71,
+      "strategy": 18.53,
+      "excess": 51.4
+    },
+    {
+      "date": "2022-05-23",
+      "benchmark": -20.65,
+      "strategy": 21.38,
+      "excess": 52.97
+    },
+    {
+      "date": "2022-05-25",
+      "benchmark": -22.04,
+      "strategy": 17.07,
+      "excess": 50.17
+    },
+    {
+      "date": "2022-05-27",
+      "benchmark": -21.68,
+      "strategy": 19.71,
+      "excess": 52.85
+    },
+    {
+      "date": "2022-05-31",
+      "benchmark": -19.92,
+      "strategy": 21.07,
+      "excess": 51.19
+    },
+    {
+      "date": "2022-06-02",
+      "benchmark": -19.95,
+      "strategy": 19.73,
+      "excess": 49.57
+    },
+    {
+      "date": "2022-06-07",
+      "benchmark": -18.2,
+      "strategy": 22.05,
+      "excess": 49.21
+    },
+    {
+      "date": "2022-06-09",
+      "benchmark": -18.27,
+      "strategy": 23.3,
+      "excess": 50.86
+    },
+    {
+      "date": "2022-06-13",
+      "benchmark": -18.0,
+      "strategy": 26.05,
+      "excess": 53.72
+    },
+    {
+      "date": "2022-06-15",
+      "benchmark": -16.26,
+      "strategy": 24.9,
+      "excess": 49.15
+    },
+    {
+      "date": "2022-06-17",
+      "benchmark": -15.66,
+      "strategy": 24.8,
+      "excess": 47.97
+    },
+    {
+      "date": "2022-06-21",
+      "benchmark": -15.33,
+      "strategy": 27.12,
+      "excess": 50.14
+    },
+    {
+      "date": "2022-06-23",
+      "benchmark": -14.98,
+      "strategy": 24.75,
+      "excess": 46.73
+    },
+    {
+      "date": "2022-06-27",
+      "benchmark": -13.01,
+      "strategy": 25.21,
+      "excess": 43.94
+    },
+    {
+      "date": "2022-06-29",
+      "benchmark": -13.46,
+      "strategy": 27.02,
+      "excess": 46.78
+    },
+    {
+      "date": "2022-07-01",
+      "benchmark": -12.57,
+      "strategy": 26.79,
+      "excess": 45.02
+    },
+    {
+      "date": "2022-07-05",
+      "benchmark": -12.12,
+      "strategy": 27.85,
+      "excess": 45.48
+    },
+    {
+      "date": "2022-07-07",
+      "benchmark": -13.03,
+      "strategy": 25.8,
+      "excess": 44.65
+    },
+    {
+      "date": "2022-07-11",
+      "benchmark": -14.77,
+      "strategy": 29.63,
+      "excess": 52.09
+    },
+    {
+      "date": "2022-07-13",
+      "benchmark": -15.41,
+      "strategy": 30.95,
+      "excess": 54.81
+    },
+    {
+      "date": "2022-07-15",
+      "benchmark": -16.84,
+      "strategy": 26.77,
+      "excess": 52.44
+    },
+    {
+      "date": "2022-07-19",
+      "benchmark": -16.43,
+      "strategy": 34.46,
+      "excess": 60.9
+    },
+    {
+      "date": "2022-07-21",
+      "benchmark": -17.09,
+      "strategy": 34.16,
+      "excess": 61.81
+    },
+    {
+      "date": "2022-07-25",
+      "benchmark": -17.54,
+      "strategy": 36.33,
+      "excess": 65.33
+    },
+    {
+      "date": "2022-07-27",
+      "benchmark": -17.3,
+      "strategy": 39.43,
+      "excess": 68.6
+    },
+    {
+      "date": "2022-07-29",
+      "benchmark": -18.38,
+      "strategy": 38.3,
+      "excess": 69.44
+    },
+    {
+      "date": "2022-08-02",
+      "benchmark": -19.61,
+      "strategy": 30.99,
+      "excess": 62.94
+    },
+    {
+      "date": "2022-08-04",
+      "benchmark": -19.72,
+      "strategy": 33.13,
+      "excess": 65.83
+    },
+    {
+      "date": "2022-08-08",
+      "benchmark": -18.81,
+      "strategy": 35.72,
+      "excess": 67.16
+    },
+    {
+      "date": "2022-08-10",
+      "benchmark": -19.56,
+      "strategy": 38.04,
+      "excess": 71.61
+    },
+    {
+      "date": "2022-08-12",
+      "benchmark": -17.97,
+      "strategy": 42.46,
+      "excess": 73.67
+    },
+    {
+      "date": "2022-08-16",
+      "benchmark": -18.23,
+      "strategy": 46.04,
+      "excess": 78.6
+    },
+    {
+      "date": "2022-08-18",
+      "benchmark": -18.18,
+      "strategy": 44.35,
+      "excess": 76.42
+    },
+    {
+      "date": "2022-08-22",
+      "benchmark": -18.16,
+      "strategy": 45.39,
+      "excess": 77.65
+    },
+    {
+      "date": "2022-08-24",
+      "benchmark": -20.09,
+      "strategy": 43.67,
+      "excess": 79.79
+    },
+    {
+      "date": "2022-08-26",
+      "benchmark": -19.6,
+      "strategy": 43.37,
+      "excess": 78.32
+    },
+    {
+      "date": "2022-08-30",
+      "benchmark": -20.22,
+      "strategy": 44.82,
+      "excess": 81.52
+    },
+    {
+      "date": "2022-09-01",
+      "benchmark": -20.85,
+      "strategy": 39.78,
+      "excess": 76.6
+    },
+    {
+      "date": "2022-09-05",
+      "benchmark": -21.4,
+      "strategy": 43.71,
+      "excess": 82.84
+    },
+    {
+      "date": "2022-09-07",
+      "benchmark": -20.63,
+      "strategy": 44.83,
+      "excess": 82.47
+    },
+    {
+      "date": "2022-09-09",
+      "benchmark": -19.87,
+      "strategy": 43.22,
+      "excess": 78.73
+    },
+    {
+      "date": "2022-09-14",
+      "benchmark": -20.43,
+      "strategy": 47.47,
+      "excess": 85.33
+    },
+    {
+      "date": "2022-09-16",
+      "benchmark": -23.02,
+      "strategy": 40.24,
+      "excess": 82.18
+    },
+    {
+      "date": "2022-09-20",
+      "benchmark": -23.02,
+      "strategy": 42.04,
+      "excess": 84.52
+    },
+    {
+      "date": "2022-09-22",
+      "benchmark": -24.26,
+      "strategy": 47.23,
+      "excess": 94.39
+    },
+    {
+      "date": "2022-09-26",
+      "benchmark": -24.9,
+      "strategy": 44.22,
+      "excess": 92.04
+    },
+    {
+      "date": "2022-09-28",
+      "benchmark": -25.06,
+      "strategy": 45.49,
+      "excess": 94.14
+    },
+    {
+      "date": "2022-09-30",
+      "benchmark": -25.53,
+      "strategy": 38.61,
+      "excess": 86.13
+    },
+    {
+      "date": "2022-10-11",
+      "benchmark": -27.04,
+      "strategy": 37.92,
+      "excess": 89.04
+    },
+    {
+      "date": "2022-10-13",
+      "benchmark": -26.55,
+      "strategy": 40.44,
+      "excess": 91.2
+    },
+    {
+      "date": "2022-10-17",
+      "benchmark": -24.71,
+      "strategy": 47.73,
+      "excess": 96.21
+    },
+    {
+      "date": "2022-10-19",
+      "benchmark": -26.08,
+      "strategy": 48.16,
+      "excess": 100.43
+    },
+    {
+      "date": "2022-10-21",
+      "benchmark": -26.74,
+      "strategy": 44.8,
+      "excess": 97.65
+    },
+    {
+      "date": "2022-10-25",
+      "benchmark": -29.0,
+      "strategy": 40.68,
+      "excess": 98.14
+    },
+    {
+      "date": "2022-10-27",
+      "benchmark": -28.93,
+      "strategy": 42.39,
+      "excess": 100.35
+    },
+    {
+      "date": "2022-10-31",
+      "benchmark": -31.32,
+      "strategy": 41.1,
+      "excess": 105.45
+    },
+    {
+      "date": "2022-11-02",
+      "benchmark": -28.01,
+      "strategy": 44.48,
+      "excess": 100.69
+    },
+    {
+      "date": "2022-11-04",
+      "benchmark": -26.26,
+      "strategy": 44.87,
+      "excess": 96.46
+    },
+    {
+      "date": "2022-11-08",
+      "benchmark": -26.61,
+      "strategy": 46.22,
+      "excess": 99.24
+    },
+    {
+      "date": "2022-11-10",
+      "benchmark": -27.86,
+      "strategy": 51.43,
+      "excess": 109.91
+    },
+    {
+      "date": "2022-11-14",
+      "benchmark": -25.74,
+      "strategy": 57.86,
+      "excess": 112.58
+    },
+    {
+      "date": "2022-11-16",
+      "benchmark": -24.95,
+      "strategy": 63.71,
+      "excess": 118.13
+    },
+    {
+      "date": "2022-11-18",
+      "benchmark": -25.59,
+      "strategy": 62.66,
+      "excess": 118.6
+    },
+    {
+      "date": "2022-11-22",
+      "benchmark": -26.22,
+      "strategy": 67.25,
+      "excess": 126.69
+    },
+    {
+      "date": "2022-11-24",
+      "benchmark": -26.47,
+      "strategy": 65.97,
+      "excess": 125.72
+    },
+    {
+      "date": "2022-11-28",
+      "benchmark": -26.93,
+      "strategy": 65.91,
+      "excess": 127.06
+    },
+    {
+      "date": "2022-11-30",
+      "benchmark": -24.58,
+      "strategy": 68.98,
+      "excess": 124.05
+    },
+    {
+      "date": "2022-12-02",
+      "benchmark": -24.23,
+      "strategy": 69.3,
+      "excess": 123.44
+    },
+    {
+      "date": "2022-12-06",
+      "benchmark": -22.33,
+      "strategy": 69.01,
+      "excess": 117.6
+    },
+    {
+      "date": "2022-12-08",
+      "benchmark": -22.51,
+      "strategy": 67.99,
+      "excess": 116.79
+    },
+    {
+      "date": "2022-12-12",
+      "benchmark": -22.62,
+      "strategy": 65.51,
+      "excess": 113.89
+    },
+    {
+      "date": "2022-12-14",
+      "benchmark": -22.59,
+      "strategy": 67.25,
+      "excess": 116.06
+    },
+    {
+      "date": "2022-12-16",
+      "benchmark": -22.6,
+      "strategy": 64.06,
+      "excess": 111.96
+    },
+    {
+      "date": "2022-12-20",
+      "benchmark": -25.05,
+      "strategy": 63.08,
+      "excess": 117.59
+    },
+    {
+      "date": "2022-12-22",
+      "benchmark": -24.92,
+      "strategy": 60.97,
+      "excess": 114.4
+    },
+    {
+      "date": "2022-12-26",
+      "benchmark": -24.77,
+      "strategy": 68.7,
+      "excess": 124.25
+    },
+    {
+      "date": "2022-12-28",
+      "benchmark": -24.23,
+      "strategy": 65.04,
+      "excess": 117.82
+    },
+    {
+      "date": "2022-12-30",
+      "benchmark": -24.22,
+      "strategy": 65.5,
+      "excess": 118.4
+    },
+    {
+      "date": "2023-01-04",
+      "benchmark": -23.8,
+      "strategy": 74.67,
+      "excess": 129.23
+    },
+    {
+      "date": "2023-01-06",
+      "benchmark": -22.08,
+      "strategy": 72.96,
+      "excess": 121.97
+    },
+    {
+      "date": "2023-01-10",
+      "benchmark": -21.36,
+      "strategy": 72.25,
+      "excess": 119.04
+    },
+    {
+      "date": "2023-01-12",
+      "benchmark": -21.36,
+      "strategy": 73.03,
+      "excess": 120.03
+    },
+    {
+      "date": "2023-01-16",
+      "benchmark": -19.01,
+      "strategy": 74.16,
+      "excess": 115.04
+    },
+    {
+      "date": "2023-01-18",
+      "benchmark": -19.16,
+      "strategy": 75.39,
+      "excess": 116.96
+    },
+    {
+      "date": "2023-01-20",
+      "benchmark": -18.15,
+      "strategy": 79.72,
+      "excess": 119.57
+    },
+    {
+      "date": "2023-01-31",
+      "benchmark": -18.64,
+      "strategy": 83.13,
+      "excess": 125.09
+    },
+    {
+      "date": "2023-02-02",
+      "benchmark": -18.16,
+      "strategy": 87.35,
+      "excess": 128.92
+    },
+    {
+      "date": "2023-02-06",
+      "benchmark": -20.01,
+      "strategy": 87.42,
+      "excess": 134.3
+    },
+    {
+      "date": "2023-02-08",
+      "benchmark": -20.22,
+      "strategy": 87.19,
+      "excess": 134.63
+    },
+    {
+      "date": "2023-02-10",
+      "benchmark": -19.63,
+      "strategy": 90.89,
+      "excess": 137.51
+    },
+    {
+      "date": "2023-02-14",
+      "benchmark": -18.86,
+      "strategy": 93.2,
+      "excess": 138.11
+    },
+    {
+      "date": "2023-02-16",
+      "benchmark": -19.88,
+      "strategy": 88.4,
+      "excess": 135.15
+    },
+    {
+      "date": "2023-02-20",
+      "benchmark": -19.09,
+      "strategy": 89.09,
+      "excess": 133.7
+    },
+    {
+      "date": "2023-02-22",
+      "benchmark": -19.61,
+      "strategy": 91.87,
+      "excess": 138.67
+    },
+    {
+      "date": "2023-02-24",
+      "benchmark": -20.51,
+      "strategy": 91.9,
+      "excess": 141.41
+    },
+    {
+      "date": "2023-02-28",
+      "benchmark": -20.35,
+      "strategy": 92.17,
+      "excess": 141.27
+    },
+    {
+      "date": "2023-03-02",
+      "benchmark": -19.4,
+      "strategy": 93.83,
+      "excess": 140.48
+    },
+    {
+      "date": "2023-03-06",
+      "benchmark": -19.57,
+      "strategy": 92.79,
+      "excess": 139.7
+    },
+    {
+      "date": "2023-03-08",
+      "benchmark": -21.04,
+      "strategy": 92.04,
+      "excess": 143.21
+    },
+    {
+      "date": "2023-03-10",
+      "benchmark": -22.35,
+      "strategy": 90.68,
+      "excess": 145.56
+    },
+    {
+      "date": "2023-03-14",
+      "benchmark": -22.01,
+      "strategy": 87.57,
+      "excess": 140.51
+    },
+    {
+      "date": "2023-03-16",
+      "benchmark": -22.9,
+      "strategy": 87.09,
+      "excess": 142.66
+    },
+    {
+      "date": "2023-03-20",
+      "benchmark": -22.9,
+      "strategy": 88.08,
+      "excess": 143.94
+    },
+    {
+      "date": "2023-03-22",
+      "benchmark": -21.72,
+      "strategy": 95.38,
+      "excess": 149.59
+    },
+    {
+      "date": "2023-03-24",
+      "benchmark": -21.18,
+      "strategy": 94.55,
+      "excess": 146.83
+    },
+    {
+      "date": "2023-03-28",
+      "benchmark": -21.72,
+      "strategy": 91.05,
+      "excess": 144.06
+    },
+    {
+      "date": "2023-03-30",
+      "benchmark": -20.95,
+      "strategy": 85.15,
+      "excess": 134.22
+    },
+    {
+      "date": "2023-04-03",
+      "benchmark": -19.93,
+      "strategy": 88.85,
+      "excess": 135.86
+    },
+    {
+      "date": "2023-04-06",
+      "benchmark": -19.82,
+      "strategy": 82.9,
+      "excess": 128.11
+    },
+    {
+      "date": "2023-04-10",
+      "benchmark": -19.66,
+      "strategy": 82.1,
+      "excess": 126.66
+    },
+    {
+      "date": "2023-04-12",
+      "benchmark": -19.8,
+      "strategy": 84.89,
+      "excess": 130.54
+    },
+    {
+      "date": "2023-04-14",
+      "benchmark": -19.91,
+      "strategy": 85.88,
+      "excess": 132.09
+    },
+    {
+      "date": "2023-04-18",
+      "benchmark": -18.54,
+      "strategy": 82.12,
+      "excess": 123.57
+    },
+    {
+      "date": "2023-04-20",
+      "benchmark": -19.49,
+      "strategy": 78.86,
+      "excess": 122.16
+    },
+    {
+      "date": "2023-04-24",
+      "benchmark": -22.05,
+      "strategy": 75.95,
+      "excess": 125.72
+    },
+    {
+      "date": "2023-04-26",
+      "benchmark": -22.5,
+      "strategy": 72.84,
+      "excess": 123.02
+    },
+    {
+      "date": "2023-04-28",
+      "benchmark": -21.14,
+      "strategy": 83.91,
+      "excess": 133.21
+    },
+    {
+      "date": "2023-05-05",
+      "benchmark": -21.38,
+      "strategy": 88.31,
+      "excess": 139.52
+    },
+    {
+      "date": "2023-05-09",
+      "benchmark": -21.16,
+      "strategy": 85.54,
+      "excess": 135.34
+    },
+    {
+      "date": "2023-05-11",
+      "benchmark": -21.89,
+      "strategy": 87.93,
+      "excess": 140.6
+    },
+    {
+      "date": "2023-05-15",
+      "benchmark": -21.73,
+      "strategy": 91.28,
+      "excess": 144.38
+    },
+    {
+      "date": "2023-05-17",
+      "benchmark": -22.49,
+      "strategy": 91.98,
+      "excess": 147.68
+    },
+    {
+      "date": "2023-05-19",
+      "benchmark": -22.79,
+      "strategy": 90.48,
+      "excess": 146.7
+    },
+    {
+      "date": "2023-05-23",
+      "benchmark": -23.41,
+      "strategy": 92.72,
+      "excess": 151.63
+    },
+    {
+      "date": "2023-05-25",
+      "benchmark": -24.63,
+      "strategy": 92.45,
+      "excess": 155.34
+    },
+    {
+      "date": "2023-05-29",
+      "benchmark": -24.96,
+      "strategy": 90.07,
+      "excess": 153.29
+    },
+    {
+      "date": "2023-05-31",
+      "benchmark": -25.65,
+      "strategy": 88.96,
+      "excess": 154.15
+    },
+    {
+      "date": "2023-06-02",
+      "benchmark": -24.41,
+      "strategy": 92.78,
+      "excess": 155.03
+    },
+    {
+      "date": "2023-06-06",
+      "benchmark": -25.46,
+      "strategy": 92.94,
+      "excess": 158.84
+    },
+    {
+      "date": "2023-06-08",
+      "benchmark": -25.23,
+      "strategy": 99.29,
+      "excess": 166.54
+    },
+    {
+      "date": "2023-06-12",
+      "benchmark": -24.75,
+      "strategy": 99.07,
+      "excess": 164.54
+    },
+    {
+      "date": "2023-06-14",
+      "benchmark": -24.37,
+      "strategy": 98.81,
+      "excess": 162.87
+    },
+    {
+      "date": "2023-06-16",
+      "benchmark": -22.42,
+      "strategy": 100.18,
+      "excess": 158.03
+    },
+    {
+      "date": "2023-06-20",
+      "benchmark": -23.19,
+      "strategy": 97.23,
+      "excess": 156.78
+    },
+    {
+      "date": "2023-06-26",
+      "benchmark": -25.43,
+      "strategy": 95.02,
+      "excess": 161.53
+    },
+    {
+      "date": "2023-06-28",
+      "benchmark": -24.82,
+      "strategy": 101.25,
+      "excess": 167.69
+    },
+    {
+      "date": "2023-06-30",
+      "benchmark": -24.79,
+      "strategy": 102.76,
+      "excess": 169.59
+    },
+    {
+      "date": "2023-07-04",
+      "benchmark": -23.68,
+      "strategy": 101.93,
+      "excess": 164.58
+    },
+    {
+      "date": "2023-07-06",
+      "benchmark": -24.78,
+      "strategy": 103.88,
+      "excess": 171.04
+    },
+    {
+      "date": "2023-07-10",
+      "benchmark": -24.75,
+      "strategy": 109.56,
+      "excess": 178.49
+    },
+    {
+      "date": "2023-07-12",
+      "benchmark": -24.77,
+      "strategy": 109.07,
+      "excess": 177.91
+    },
+    {
+      "date": "2023-07-14",
+      "benchmark": -23.68,
+      "strategy": 114.52,
+      "excess": 181.08
+    },
+    {
+      "date": "2023-07-18",
+      "benchmark": -24.55,
+      "strategy": 113.72,
+      "excess": 183.26
+    },
+    {
+      "date": "2023-07-20",
+      "benchmark": -25.16,
+      "strategy": 112.24,
+      "excess": 183.59
+    },
+    {
+      "date": "2023-07-24",
+      "benchmark": -25.52,
+      "strategy": 113.82,
+      "excess": 187.08
+    },
+    {
+      "date": "2023-07-26",
+      "benchmark": -23.53,
+      "strategy": 116.3,
+      "excess": 182.86
+    },
+    {
+      "date": "2023-07-28",
+      "benchmark": -21.85,
+      "strategy": 113.72,
+      "excess": 173.47
+    },
+    {
+      "date": "2023-08-01",
+      "benchmark": -21.75,
+      "strategy": 117.0,
+      "excess": 177.32
+    },
+    {
+      "date": "2023-08-03",
+      "benchmark": -21.61,
+      "strategy": 114.62,
+      "excess": 173.78
+    },
+    {
+      "date": "2023-08-07",
+      "benchmark": -21.9,
+      "strategy": 110.8,
+      "excess": 169.91
+    },
+    {
+      "date": "2023-08-09",
+      "benchmark": -22.34,
+      "strategy": 110.66,
+      "excess": 171.26
+    },
+    {
+      "date": "2023-08-11",
+      "benchmark": -23.97,
+      "strategy": 110.25,
+      "excess": 176.54
+    },
+    {
+      "date": "2023-08-15",
+      "benchmark": -24.71,
+      "strategy": 109.93,
+      "excess": 178.83
+    },
+    {
+      "date": "2023-08-17",
+      "benchmark": -25.01,
+      "strategy": 112.67,
+      "excess": 183.6
+    },
+    {
+      "date": "2023-08-21",
+      "benchmark": -27.0,
+      "strategy": 111.11,
+      "excess": 189.19
+    },
+    {
+      "date": "2023-08-23",
+      "benchmark": -27.64,
+      "strategy": 108.31,
+      "excess": 187.88
+    },
+    {
+      "date": "2023-08-25",
+      "benchmark": -27.4,
+      "strategy": 105.02,
+      "excess": 182.4
+    },
+    {
+      "date": "2023-08-29",
+      "benchmark": -25.81,
+      "strategy": 117.99,
+      "excess": 193.83
+    },
+    {
+      "date": "2023-08-31",
+      "benchmark": -26.3,
+      "strategy": 120.4,
+      "excess": 199.05
+    },
+    {
+      "date": "2023-09-04",
+      "benchmark": -24.66,
+      "strategy": 125.97,
+      "excess": 199.93
+    },
+    {
+      "date": "2023-09-06",
+      "benchmark": -25.39,
+      "strategy": 124.69,
+      "excess": 201.15
+    },
+    {
+      "date": "2023-09-08",
+      "benchmark": -26.8,
+      "strategy": 121.05,
+      "excess": 201.98
+    },
+    {
+      "date": "2023-09-12",
+      "benchmark": -26.39,
+      "strategy": 119.17,
+      "excess": 197.74
+    },
+    {
+      "date": "2023-09-14",
+      "benchmark": -26.92,
+      "strategy": 115.61,
+      "excess": 195.03
+    },
+    {
+      "date": "2023-09-18",
+      "benchmark": -27.04,
+      "strategy": 119.68,
+      "excess": 201.1
+    },
+    {
+      "date": "2023-09-20",
+      "benchmark": -27.47,
+      "strategy": 116.24,
+      "excess": 198.14
+    },
+    {
+      "date": "2023-09-22",
+      "benchmark": -26.82,
+      "strategy": 118.53,
+      "excess": 198.62
+    },
+    {
+      "date": "2023-09-26",
+      "benchmark": -27.72,
+      "strategy": 117.09,
+      "excess": 200.35
+    },
+    {
+      "date": "2023-09-28",
+      "benchmark": -27.78,
+      "strategy": 120.49,
+      "excess": 205.3
+    },
+    {
+      "date": "2023-10-10",
+      "benchmark": -28.42,
+      "strategy": 122.29,
+      "excess": 210.55
+    },
+    {
+      "date": "2023-10-12",
+      "benchmark": -27.53,
+      "strategy": 120.2,
+      "excess": 203.85
+    },
+    {
+      "date": "2023-10-16",
+      "benchmark": -29.02,
+      "strategy": 115.29,
+      "excess": 203.31
+    },
+    {
+      "date": "2023-10-18",
+      "benchmark": -29.33,
+      "strategy": 111.83,
+      "excess": 199.75
+    },
+    {
+      "date": "2023-10-20",
+      "benchmark": -31.29,
+      "strategy": 110.93,
+      "excess": 206.99
+    },
+    {
+      "date": "2023-10-24",
+      "benchmark": -31.75,
+      "strategy": 114.41,
+      "excess": 214.15
+    },
+    {
+      "date": "2023-10-26",
+      "benchmark": -31.22,
+      "strategy": 116.04,
+      "excess": 214.1
+    },
+    {
+      "date": "2023-10-30",
+      "benchmark": -29.85,
+      "strategy": 119.71,
+      "excess": 213.2
+    },
+    {
+      "date": "2023-11-01",
+      "benchmark": -30.1,
+      "strategy": 119.92,
+      "excess": 214.62
+    },
+    {
+      "date": "2023-11-03",
+      "benchmark": -29.85,
+      "strategy": 120.92,
+      "excess": 214.93
+    },
+    {
+      "date": "2023-11-07",
+      "benchmark": -29.15,
+      "strategy": 126.63,
+      "excess": 219.87
+    },
+    {
+      "date": "2023-11-09",
+      "benchmark": -29.28,
+      "strategy": 127.96,
+      "excess": 222.34
+    },
+    {
+      "date": "2023-11-13",
+      "benchmark": -29.94,
+      "strategy": 131.26,
+      "excess": 230.09
+    },
+    {
+      "date": "2023-11-15",
+      "benchmark": -29.39,
+      "strategy": 130.47,
+      "excess": 226.4
+    },
+    {
+      "date": "2023-11-17",
+      "benchmark": -30.16,
+      "strategy": 130.49,
+      "excess": 230.03
+    },
+    {
+      "date": "2023-11-21",
+      "benchmark": -29.91,
+      "strategy": 131.98,
+      "excess": 230.97
+    },
+    {
+      "date": "2023-11-23",
+      "benchmark": -30.29,
+      "strategy": 133.45,
+      "excess": 234.89
+    },
+    {
+      "date": "2023-11-27",
+      "benchmark": -31.26,
+      "strategy": 129.69,
+      "excess": 234.14
+    },
+    {
+      "date": "2023-11-29",
+      "benchmark": -31.72,
+      "strategy": 129.47,
+      "excess": 236.07
+    },
+    {
+      "date": "2023-12-01",
+      "benchmark": -31.83,
+      "strategy": 129.8,
+      "excess": 237.1
+    },
+    {
+      "date": "2023-12-05",
+      "benchmark": -33.56,
+      "strategy": 127.17,
+      "excess": 241.92
+    },
+    {
+      "date": "2023-12-07",
+      "benchmark": -33.62,
+      "strategy": 129.13,
+      "excess": 245.18
+    },
+    {
+      "date": "2023-12-11",
+      "benchmark": -33.07,
+      "strategy": 125.01,
+      "excess": 236.19
+    },
+    {
+      "date": "2023-12-13",
+      "benchmark": -34.05,
+      "strategy": 125.09,
+      "excess": 241.3
+    },
+    {
+      "date": "2023-12-15",
+      "benchmark": -34.59,
+      "strategy": 125.65,
+      "excess": 244.98
+    },
+    {
+      "date": "2023-12-19",
+      "benchmark": -34.74,
+      "strategy": 124.84,
+      "excess": 244.53
+    },
+    {
+      "date": "2023-12-21",
+      "benchmark": -34.8,
+      "strategy": 124.97,
+      "excess": 245.05
+    },
+    {
+      "date": "2023-12-25",
+      "benchmark": -34.48,
+      "strategy": 117.97,
+      "excess": 232.68
+    },
+    {
+      "date": "2023-12-27",
+      "benchmark": -34.7,
+      "strategy": 118.94,
+      "excess": 235.28
+    },
+    {
+      "date": "2023-12-29",
+      "benchmark": -32.84,
+      "strategy": 126.51,
+      "excess": 237.27
+    },
+    {
+      "date": "2024-01-03",
+      "benchmark": -33.88,
+      "strategy": 124.96,
+      "excess": 240.23
+    },
+    {
+      "date": "2024-01-05",
+      "benchmark": -34.84,
+      "strategy": 120.65,
+      "excess": 238.63
+    },
+    {
+      "date": "2024-01-09",
+      "benchmark": -35.55,
+      "strategy": 119.57,
+      "excess": 240.68
+    },
+    {
+      "date": "2024-01-11",
+      "benchmark": -35.49,
+      "strategy": 121.09,
+      "excess": 242.72
+    },
+    {
+      "date": "2024-01-15",
+      "benchmark": -35.78,
+      "strategy": 120.58,
+      "excess": 243.48
+    },
+    {
+      "date": "2024-01-17",
+      "benchmark": -36.8,
+      "strategy": 119.48,
+      "excess": 247.28
+    },
+    {
+      "date": "2024-01-19",
+      "benchmark": -36.0,
+      "strategy": 116.74,
+      "excess": 238.66
+    },
+    {
+      "date": "2024-01-23",
+      "benchmark": -36.74,
+      "strategy": 97.13,
+      "excess": 211.62
+    },
+    {
+      "date": "2024-01-25",
+      "benchmark": -34.57,
+      "strategy": 109.68,
+      "excess": 220.46
+    },
+    {
+      "date": "2024-01-29",
+      "benchmark": -35.33,
+      "strategy": 102.22,
+      "excess": 212.7
+    },
+    {
+      "date": "2024-01-31",
+      "benchmark": -37.06,
+      "strategy": 83.81,
+      "excess": 192.04
+    },
+    {
+      "date": "2024-02-02",
+      "benchmark": -37.76,
+      "strategy": 73.41,
+      "excess": 178.62
+    },
+    {
+      "date": "2024-02-06",
+      "benchmark": -35.18,
+      "strategy": 53.39,
+      "excess": 136.64
+    },
+    {
+      "date": "2024-02-08",
+      "benchmark": -34.14,
+      "strategy": 54.45,
+      "excess": 134.51
+    },
+    {
+      "date": "2024-02-20",
+      "benchmark": -33.24,
+      "strategy": 68.88,
+      "excess": 152.97
+    },
+    {
+      "date": "2024-02-22",
+      "benchmark": -31.75,
+      "strategy": 78.39,
+      "excess": 161.38
+    },
+    {
+      "date": "2024-02-26",
+      "benchmark": -32.41,
+      "strategy": 90.39,
+      "excess": 181.68
+    },
+    {
+      "date": "2024-02-28",
+      "benchmark": -32.47,
+      "strategy": 81.07,
+      "excess": 168.13
+    },
+    {
+      "date": "2024-03-01",
+      "benchmark": -30.75,
+      "strategy": 88.65,
+      "excess": 172.42
+    },
+    {
+      "date": "2024-03-05",
+      "benchmark": -30.21,
+      "strategy": 86.44,
+      "excess": 167.14
+    },
+    {
+      "date": "2024-03-07",
+      "benchmark": -30.91,
+      "strategy": 92.92,
+      "excess": 179.23
+    },
+    {
+      "date": "2024-03-11",
+      "benchmark": -29.75,
+      "strategy": 96.71,
+      "excess": 180.01
+    },
+    {
+      "date": "2024-03-13",
+      "benchmark": -30.08,
+      "strategy": 101.5,
+      "excess": 188.19
+    },
+    {
+      "date": "2024-03-15",
+      "benchmark": -30.12,
+      "strategy": 104.85,
+      "excess": 193.15
+    },
+    {
+      "date": "2024-03-19",
+      "benchmark": -29.97,
+      "strategy": 109.53,
+      "excess": 199.2
+    },
+    {
+      "date": "2024-03-21",
+      "benchmark": -29.91,
+      "strategy": 112.26,
+      "excess": 202.84
+    },
+    {
+      "date": "2024-03-25",
+      "benchmark": -30.99,
+      "strategy": 103.07,
+      "excess": 194.26
+    },
+    {
+      "date": "2024-03-27",
+      "benchmark": -31.44,
+      "strategy": 102.25,
+      "excess": 195.0
+    },
+    {
+      "date": "2024-03-29",
+      "benchmark": -30.76,
+      "strategy": 107.9,
+      "excess": 200.26
+    },
+    {
+      "date": "2024-04-02",
+      "benchmark": -29.91,
+      "strategy": 118.23,
+      "excess": 211.36
+    },
+    {
+      "date": "2024-04-08",
+      "benchmark": -30.78,
+      "strategy": 115.58,
+      "excess": 211.44
+    },
+    {
+      "date": "2024-04-10",
+      "benchmark": -31.4,
+      "strategy": 111.84,
+      "excess": 208.8
+    },
+    {
+      "date": "2024-04-12",
+      "benchmark": -31.97,
+      "strategy": 110.01,
+      "excess": 208.7
+    },
+    {
+      "date": "2024-04-16",
+      "benchmark": -31.28,
+      "strategy": 86.49,
+      "excess": 171.38
+    },
+    {
+      "date": "2024-04-18",
+      "benchmark": -30.13,
+      "strategy": 97.75,
+      "excess": 183.03
+    },
+    {
+      "date": "2024-04-22",
+      "benchmark": -30.89,
+      "strategy": 94.66,
+      "excess": 181.67
+    },
+    {
+      "date": "2024-04-24",
+      "benchmark": -31.07,
+      "strategy": 100.91,
+      "excess": 191.47
+    },
+    {
+      "date": "2024-04-26",
+      "benchmark": -29.84,
+      "strategy": 102.15,
+      "excess": 188.13
+    },
+    {
+      "date": "2024-04-30",
+      "benchmark": -29.45,
+      "strategy": 102.43,
+      "excess": 186.93
+    },
+    {
+      "date": "2024-05-07",
+      "benchmark": -28.38,
+      "strategy": 110.16,
+      "excess": 193.44
+    },
+    {
+      "date": "2024-05-09",
+      "benchmark": -28.27,
+      "strategy": 112.15,
+      "excess": 195.76
+    },
+    {
+      "date": "2024-05-13",
+      "benchmark": -28.27,
+      "strategy": 109.74,
+      "excess": 192.4
+    },
+    {
+      "date": "2024-05-15",
+      "benchmark": -29.03,
+      "strategy": 110.9,
+      "excess": 197.17
+    },
+    {
+      "date": "2024-05-17",
+      "benchmark": -28.01,
+      "strategy": 112.93,
+      "excess": 195.78
+    },
+    {
+      "date": "2024-05-21",
+      "benchmark": -28.05,
+      "strategy": 112.53,
+      "excess": 195.39
+    },
+    {
+      "date": "2024-05-23",
+      "benchmark": -28.72,
+      "strategy": 107.85,
+      "excess": 191.6
+    },
+    {
+      "date": "2024-05-27",
+      "benchmark": -28.84,
+      "strategy": 112.16,
+      "excess": 198.15
+    },
+    {
+      "date": "2024-05-29",
+      "benchmark": -29.27,
+      "strategy": 109.28,
+      "excess": 195.89
+    },
+    {
+      "date": "2024-05-31",
+      "benchmark": -29.93,
+      "strategy": 107.77,
+      "excess": 196.52
+    },
+    {
+      "date": "2024-06-04",
+      "benchmark": -29.23,
+      "strategy": 103.51,
+      "excess": 187.57
+    },
+    {
+      "date": "2024-06-06",
+      "benchmark": -29.69,
+      "strategy": 89.11,
+      "excess": 168.97
+    },
+    {
+      "date": "2024-06-11",
+      "benchmark": -30.65,
+      "strategy": 93.66,
+      "excess": 179.25
+    },
+    {
+      "date": "2024-06-13",
+      "benchmark": -30.98,
+      "strategy": 97.6,
+      "excess": 186.29
+    },
+    {
+      "date": "2024-06-17",
+      "benchmark": -30.78,
+      "strategy": 95.08,
+      "excess": 181.83
+    },
+    {
+      "date": "2024-06-19",
+      "benchmark": -30.93,
+      "strategy": 96.27,
+      "excess": 184.16
+    },
+    {
+      "date": "2024-06-21",
+      "benchmark": -31.58,
+      "strategy": 91.5,
+      "excess": 179.89
+    },
+    {
+      "date": "2024-06-25",
+      "benchmark": -32.32,
+      "strategy": 85.8,
+      "excess": 174.53
+    },
+    {
+      "date": "2024-06-27",
+      "benchmark": -32.39,
+      "strategy": 87.85,
+      "excess": 177.84
+    },
+    {
+      "date": "2024-07-01",
+      "benchmark": -31.92,
+      "strategy": 90.52,
+      "excess": 179.85
+    },
+    {
+      "date": "2024-07-03",
+      "benchmark": -32.21,
+      "strategy": 89.65,
+      "excess": 179.76
+    },
+    {
+      "date": "2024-07-05",
+      "benchmark": -32.84,
+      "strategy": 85.14,
+      "excess": 175.67
+    },
+    {
+      "date": "2024-07-09",
+      "benchmark": -32.67,
+      "strategy": 81.88,
+      "excess": 170.13
+    },
+    {
+      "date": "2024-07-11",
+      "benchmark": -32.12,
+      "strategy": 87.25,
+      "excess": 175.85
+    },
+    {
+      "date": "2024-07-15",
+      "benchmark": -31.96,
+      "strategy": 81.07,
+      "excess": 166.12
+    },
+    {
+      "date": "2024-07-17",
+      "benchmark": -31.46,
+      "strategy": 78.27,
+      "excess": 160.1
+    },
+    {
+      "date": "2024-07-19",
+      "benchmark": -30.73,
+      "strategy": 78.59,
+      "excess": 157.82
+    },
+    {
+      "date": "2024-07-23",
+      "benchmark": -32.67,
+      "strategy": 75.61,
+      "excess": 160.82
+    },
+    {
+      "date": "2024-07-25",
+      "benchmark": -33.46,
+      "strategy": 74.16,
+      "excess": 161.74
+    },
+    {
+      "date": "2024-07-29",
+      "benchmark": -33.63,
+      "strategy": 76.26,
+      "excess": 165.57
+    },
+    {
+      "date": "2024-07-31",
+      "benchmark": -32.63,
+      "strategy": 82.61,
+      "excess": 171.06
+    },
+    {
+      "date": "2024-08-02",
+      "benchmark": -33.76,
+      "strategy": 80.1,
+      "excess": 171.89
+    },
+    {
+      "date": "2024-08-06",
+      "benchmark": -34.57,
+      "strategy": 83.96,
+      "excess": 181.16
+    },
+    {
+      "date": "2024-08-08",
+      "benchmark": -34.57,
+      "strategy": 83.1,
+      "excess": 179.84
+    },
+    {
+      "date": "2024-08-12",
+      "benchmark": -34.9,
+      "strategy": 80.18,
+      "excess": 176.77
+    },
+    {
+      "date": "2024-08-14",
+      "benchmark": -35.23,
+      "strategy": 80.32,
+      "excess": 178.4
+    },
+    {
+      "date": "2024-08-16",
+      "benchmark": -34.51,
+      "strategy": 78.46,
+      "excess": 172.5
+    },
+    {
+      "date": "2024-08-20",
+      "benchmark": -34.77,
+      "strategy": 73.96,
+      "excess": 166.69
+    },
+    {
+      "date": "2024-08-22",
+      "benchmark": -35.15,
+      "strategy": 75.42,
+      "excess": 170.5
+    },
+    {
+      "date": "2024-08-26",
+      "benchmark": -34.93,
+      "strategy": 74.56,
+      "excess": 168.26
+    },
+    {
+      "date": "2024-08-28",
+      "benchmark": -35.67,
+      "strategy": 74.24,
+      "excess": 170.85
+    },
+    {
+      "date": "2024-08-30",
+      "benchmark": -34.99,
+      "strategy": 82.19,
+      "excess": 180.25
+    },
+    {
+      "date": "2024-09-03",
+      "benchmark": -35.93,
+      "strategy": 80.18,
+      "excess": 181.22
+    },
+    {
+      "date": "2024-09-05",
+      "benchmark": -36.23,
+      "strategy": 80.75,
+      "excess": 183.44
+    },
+    {
+      "date": "2024-09-09",
+      "benchmark": -37.5,
+      "strategy": 76.57,
+      "excess": 182.51
+    },
+    {
+      "date": "2024-09-11",
+      "benchmark": -37.64,
+      "strategy": 76.48,
+      "excess": 183.0
+    },
+    {
+      "date": "2024-09-13",
+      "benchmark": -38.16,
+      "strategy": 74.17,
+      "excess": 181.65
+    },
+    {
+      "date": "2024-09-19",
+      "benchmark": -37.44,
+      "strategy": 77.32,
+      "excess": 183.44
+    },
+    {
+      "date": "2024-09-23",
+      "benchmark": -37.12,
+      "strategy": 77.48,
+      "excess": 182.25
+    },
+    {
+      "date": "2024-09-25",
+      "benchmark": -33.42,
+      "strategy": 85.21,
+      "excess": 178.18
+    },
+    {
+      "date": "2024-09-27",
+      "benchmark": -27.51,
+      "strategy": 96.45,
+      "excess": 171.0
+    },
+    {
+      "date": "2024-10-08",
+      "benchmark": -16.69,
+      "strategy": 128.62,
+      "excess": 174.42
+    },
+    {
+      "date": "2024-10-10",
+      "benchmark": -21.75,
+      "strategy": 106.84,
+      "excess": 164.33
+    },
+    {
+      "date": "2024-10-14",
+      "benchmark": -22.46,
+      "strategy": 104.83,
+      "excess": 164.16
+    },
+    {
+      "date": "2024-10-16",
+      "benchmark": -25.0,
+      "strategy": 107.1,
+      "excess": 176.13
+    },
+    {
+      "date": "2024-10-18",
+      "benchmark": -23.17,
+      "strategy": 108.07,
+      "excess": 170.82
+    },
+    {
+      "date": "2024-10-22",
+      "benchmark": -22.53,
+      "strategy": 111.74,
+      "excess": 173.32
+    },
+    {
+      "date": "2024-10-24",
+      "benchmark": -23.1,
+      "strategy": 116.16,
+      "excess": 181.09
+    },
+    {
+      "date": "2024-10-28",
+      "benchmark": -22.41,
+      "strategy": 138.63,
+      "excess": 207.55
+    },
+    {
+      "date": "2024-10-30",
+      "benchmark": -23.87,
+      "strategy": 138.09,
+      "excess": 212.74
+    },
+    {
+      "date": "2024-11-01",
+      "benchmark": -23.86,
+      "strategy": 139.09,
+      "excess": 214.01
+    },
+    {
+      "date": "2024-11-05",
+      "benchmark": -20.83,
+      "strategy": 141.42,
+      "excess": 204.94
+    },
+    {
+      "date": "2024-11-07",
+      "benchmark": -18.85,
+      "strategy": 151.33,
+      "excess": 209.71
+    },
+    {
+      "date": "2024-11-11",
+      "benchmark": -19.14,
+      "strategy": 152.9,
+      "excess": 212.76
+    },
+    {
+      "date": "2024-11-13",
+      "benchmark": -19.54,
+      "strategy": 149.97,
+      "excess": 210.68
+    },
+    {
+      "date": "2024-11-15",
+      "benchmark": -22.32,
+      "strategy": 137.21,
+      "excess": 205.37
+    },
+    {
+      "date": "2024-11-19",
+      "benchmark": -22.16,
+      "strategy": 136.43,
+      "excess": 203.74
+    },
+    {
+      "date": "2024-11-21",
+      "benchmark": -21.92,
+      "strategy": 145.44,
+      "excess": 214.34
+    },
+    {
+      "date": "2024-11-25",
+      "benchmark": -24.68,
+      "strategy": 145.4,
+      "excess": 225.81
+    },
+    {
+      "date": "2024-11-27",
+      "benchmark": -23.53,
+      "strategy": 153.82,
+      "excess": 231.92
+    },
+    {
+      "date": "2024-11-29",
+      "benchmark": -23.34,
+      "strategy": 155.9,
+      "excess": 233.81
+    },
+    {
+      "date": "2024-12-03",
+      "benchmark": -22.65,
+      "strategy": 160.42,
+      "excess": 236.68
+    },
+    {
+      "date": "2024-12-05",
+      "benchmark": -23.24,
+      "strategy": 157.43,
+      "excess": 235.37
+    },
+    {
+      "date": "2024-12-09",
+      "benchmark": -22.36,
+      "strategy": 166.37,
+      "excess": 243.08
+    },
+    {
+      "date": "2024-12-11",
+      "benchmark": -21.93,
+      "strategy": 171.41,
+      "excess": 247.65
+    },
+    {
+      "date": "2024-12-13",
+      "benchmark": -23.01,
+      "strategy": 175.61,
+      "excess": 257.98
+    },
+    {
+      "date": "2024-12-17",
+      "benchmark": -23.23,
+      "strategy": 164.71,
+      "excess": 244.81
+    },
+    {
+      "date": "2024-12-19",
+      "benchmark": -22.77,
+      "strategy": 168.97,
+      "excess": 248.27
+    },
+    {
+      "date": "2024-12-23",
+      "benchmark": -23.01,
+      "strategy": 153.64,
+      "excess": 229.45
+    },
+    {
+      "date": "2024-12-25",
+      "benchmark": -21.99,
+      "strategy": 142.43,
+      "excess": 210.77
+    },
+    {
+      "date": "2024-12-27",
+      "benchmark": -22.08,
+      "strategy": 150.27,
+      "excess": 221.19
+    },
+    {
+      "date": "2024-12-31",
+      "benchmark": -22.98,
+      "strategy": 145.51,
+      "excess": 218.76
+    },
+    {
+      "date": "2025-01-03",
+      "benchmark": -26.11,
+      "strategy": 133.84,
+      "excess": 216.47
+    },
+    {
+      "date": "2025-01-07",
+      "benchmark": -25.7,
+      "strategy": 137.69,
+      "excess": 219.91
+    },
+    {
+      "date": "2025-01-09",
+      "benchmark": -26.02,
+      "strategy": 137.81,
+      "excess": 221.45
+    },
+    {
+      "date": "2025-01-13",
+      "benchmark": -27.14,
+      "strategy": 133.17,
+      "excess": 220.02
+    },
+    {
+      "date": "2025-01-15",
+      "benchmark": -25.7,
+      "strategy": 147.05,
+      "excess": 232.5
+    },
+    {
+      "date": "2025-01-17",
+      "benchmark": -25.38,
+      "strategy": 149.2,
+      "excess": 233.96
+    },
+    {
+      "date": "2025-01-21",
+      "benchmark": -24.98,
+      "strategy": 147.24,
+      "excess": 229.57
+    },
+    {
+      "date": "2025-01-23",
+      "benchmark": -25.55,
+      "strategy": 145.49,
+      "excess": 229.74
+    },
+    {
+      "date": "2025-01-27",
+      "benchmark": -25.29,
+      "strategy": 146.83,
+      "excess": 230.38
+    },
+    {
+      "date": "2025-02-06",
+      "benchmark": -24.78,
+      "strategy": 147.43,
+      "excess": 228.94
+    },
+    {
+      "date": "2025-02-10",
+      "benchmark": -23.64,
+      "strategy": 155.57,
+      "excess": 234.69
+    },
+    {
+      "date": "2025-02-12",
+      "benchmark": -23.28,
+      "strategy": 153.48,
+      "excess": 230.4
+    },
+    {
+      "date": "2025-02-14",
+      "benchmark": -22.9,
+      "strategy": 148.3,
+      "excess": 222.05
+    },
+    {
+      "date": "2025-02-18",
+      "benchmark": -23.41,
+      "strategy": 144.66,
+      "excess": 219.44
+    },
+    {
+      "date": "2025-02-20",
+      "benchmark": -23.1,
+      "strategy": 149.4,
+      "excess": 224.32
+    },
+    {
+      "date": "2025-02-24",
+      "benchmark": -22.3,
+      "strategy": 149.89,
+      "excess": 221.61
+    },
+    {
+      "date": "2025-02-26",
+      "benchmark": -22.49,
+      "strategy": 149.28,
+      "excess": 221.61
+    },
+    {
+      "date": "2025-02-28",
+      "benchmark": -23.86,
+      "strategy": 145.96,
+      "excess": 223.04
+    },
+    {
+      "date": "2025-03-04",
+      "benchmark": -23.95,
+      "strategy": 150.32,
+      "excess": 229.15
+    },
+    {
+      "date": "2025-03-06",
+      "benchmark": -22.56,
+      "strategy": 149.23,
+      "excess": 221.84
+    },
+    {
+      "date": "2025-03-10",
+      "benchmark": -23.1,
+      "strategy": 150.14,
+      "excess": 225.28
+    },
+    {
+      "date": "2025-03-12",
+      "benchmark": -23.13,
+      "strategy": 152.83,
+      "excess": 228.91
+    },
+    {
+      "date": "2025-03-14",
+      "benchmark": -21.58,
+      "strategy": 156.83,
+      "excess": 227.51
+    },
+    {
+      "date": "2025-03-18",
+      "benchmark": -21.56,
+      "strategy": 159.08,
+      "excess": 230.29
+    },
+    {
+      "date": "2025-03-20",
+      "benchmark": -22.2,
+      "strategy": 156.99,
+      "excess": 230.32
+    },
+    {
+      "date": "2025-03-24",
+      "benchmark": -22.98,
+      "strategy": 145.08,
+      "excess": 218.2
+    },
+    {
+      "date": "2025-03-26",
+      "benchmark": -23.29,
+      "strategy": 150.37,
+      "excess": 226.39
+    },
+    {
+      "date": "2025-03-28",
+      "benchmark": -23.37,
+      "strategy": 149.61,
+      "excess": 225.73
+    },
+    {
+      "date": "2025-04-01",
+      "benchmark": -23.91,
+      "strategy": 153.76,
+      "excess": 233.5
+    },
+    {
+      "date": "2025-04-03",
+      "benchmark": -24.42,
+      "strategy": 152.45,
+      "excess": 234.02
+    },
+    {
+      "date": "2025-04-08",
+      "benchmark": -28.54,
+      "strategy": 125.9,
+      "excess": 216.12
+    },
+    {
+      "date": "2025-04-10",
+      "benchmark": -26.89,
+      "strategy": 135.68,
+      "excess": 222.36
+    },
+    {
+      "date": "2025-04-14",
+      "benchmark": -26.42,
+      "strategy": 142.71,
+      "excess": 229.86
+    },
+    {
+      "date": "2025-04-16",
+      "benchmark": -26.15,
+      "strategy": 139.24,
+      "excess": 223.95
+    },
+    {
+      "date": "2025-04-18",
+      "benchmark": -26.16,
+      "strategy": 148.93,
+      "excess": 237.12
+    },
+    {
+      "date": "2025-04-22",
+      "benchmark": -25.94,
+      "strategy": 140.62,
+      "excess": 224.9
+    },
+    {
+      "date": "2025-04-24",
+      "benchmark": -25.93,
+      "strategy": 141.31,
+      "excess": 225.79
+    },
+    {
+      "date": "2025-04-28",
+      "benchmark": -25.98,
+      "strategy": 134.31,
+      "excess": 216.55
+    },
+    {
+      "date": "2025-04-30",
+      "benchmark": -26.2,
+      "strategy": 139.92,
+      "excess": 225.09
+    },
+    {
+      "date": "2025-05-07",
+      "benchmark": -25.0,
+      "strategy": 145.86,
+      "excess": 227.81
+    },
+    {
+      "date": "2025-05-09",
+      "benchmark": -24.72,
+      "strategy": 147.27,
+      "excess": 228.47
+    },
+    {
+      "date": "2025-05-13",
+      "benchmark": -23.74,
+      "strategy": 145.84,
+      "excess": 222.37
+    },
+    {
+      "date": "2025-05-15",
+      "benchmark": -23.52,
+      "strategy": 145.96,
+      "excess": 221.6
+    },
+    {
+      "date": "2025-05-19",
+      "benchmark": -24.11,
+      "strategy": 150.28,
+      "excess": 229.79
+    },
+    {
+      "date": "2025-05-21",
+      "benchmark": -23.34,
+      "strategy": 155.23,
+      "excess": 232.94
+    },
+    {
+      "date": "2025-05-23",
+      "benchmark": -24.01,
+      "strategy": 150.85,
+      "excess": 230.11
+    },
+    {
+      "date": "2025-05-27",
+      "benchmark": -24.85,
+      "strategy": 154.78,
+      "excess": 239.03
+    },
+    {
+      "date": "2025-05-29",
+      "benchmark": -24.47,
+      "strategy": 158.36,
+      "excess": 242.06
+    },
+    {
+      "date": "2025-06-03",
+      "benchmark": -24.6,
+      "strategy": 155.22,
+      "excess": 238.49
+    },
+    {
+      "date": "2025-06-05",
+      "benchmark": -24.1,
+      "strategy": 159.62,
+      "excess": 242.06
+    },
+    {
+      "date": "2025-06-09",
+      "benchmark": -23.95,
+      "strategy": 158.19,
+      "excess": 239.5
+    },
+    {
+      "date": "2025-06-11",
+      "benchmark": -23.77,
+      "strategy": 155.6,
+      "excess": 235.3
+    },
+    {
+      "date": "2025-06-13",
+      "benchmark": -24.37,
+      "strategy": 151.5,
+      "excess": 232.54
+    },
+    {
+      "date": "2025-06-17",
+      "benchmark": -24.24,
+      "strategy": 154.3,
+      "excess": 235.67
+    },
+    {
+      "date": "2025-06-19",
+      "benchmark": -24.78,
+      "strategy": 144.67,
+      "excess": 225.27
+    },
+    {
+      "date": "2025-06-23",
+      "benchmark": -24.49,
+      "strategy": 146.9,
+      "excess": 226.98
+    },
+    {
+      "date": "2025-06-25",
+      "benchmark": -22.49,
+      "strategy": 154.07,
+      "excess": 227.79
+    },
+    {
+      "date": "2025-06-27",
+      "benchmark": -23.24,
+      "strategy": 155.6,
+      "excess": 232.99
+    },
+    {
+      "date": "2025-07-01",
+      "benchmark": -22.83,
+      "strategy": 163.96,
+      "excess": 242.05
+    },
+    {
+      "date": "2025-07-03",
+      "benchmark": -22.33,
+      "strategy": 165.02,
+      "excess": 241.21
+    },
+    {
+      "date": "2025-07-07",
+      "benchmark": -22.39,
+      "strategy": 172.9,
+      "excess": 251.63
+    },
+    {
+      "date": "2025-07-09",
+      "benchmark": -21.87,
+      "strategy": 169.79,
+      "excess": 245.31
+    },
+    {
+      "date": "2025-07-11",
+      "benchmark": -21.42,
+      "strategy": 170.12,
+      "excess": 243.75
+    },
+    {
+      "date": "2025-07-15",
+      "benchmark": -21.33,
+      "strategy": 168.77,
+      "excess": 241.64
+    },
+    {
+      "date": "2025-07-17",
+      "benchmark": -21.03,
+      "strategy": 171.2,
+      "excess": 243.42
+    },
+    {
+      "date": "2025-07-21",
+      "benchmark": -20.03,
+      "strategy": 174.19,
+      "excess": 242.87
+    },
+    {
+      "date": "2025-07-23",
+      "benchmark": -19.36,
+      "strategy": 174.92,
+      "excess": 240.92
+    },
+    {
+      "date": "2025-07-25",
+      "benchmark": -19.22,
+      "strategy": 169.64,
+      "excess": 233.8
+    },
+    {
+      "date": "2025-07-29",
+      "benchmark": -18.73,
+      "strategy": 169.33,
+      "excess": 231.4
+    },
+    {
+      "date": "2025-07-31",
+      "benchmark": -20.23,
+      "strategy": 165.11,
+      "excess": 232.34
+    },
+    {
+      "date": "2025-08-04",
+      "benchmark": -20.32,
+      "strategy": 169.69,
+      "excess": 238.47
+    },
+    {
+      "date": "2025-08-06",
+      "benchmark": -19.49,
+      "strategy": 170.72,
+      "excess": 236.26
+    },
+    {
+      "date": "2025-08-08",
+      "benchmark": -19.65,
+      "strategy": 170.82,
+      "excess": 237.05
+    },
+    {
+      "date": "2025-08-12",
+      "benchmark": -18.89,
+      "strategy": 175.13,
+      "excess": 239.21
+    },
+    {
+      "date": "2025-08-14",
+      "benchmark": -18.31,
+      "strategy": 169.0,
+      "excess": 229.29
+    },
+    {
+      "date": "2025-08-18",
+      "benchmark": -17.02,
+      "strategy": 173.47,
+      "excess": 229.56
+    },
+    {
+      "date": "2025-08-20",
+      "benchmark": -16.39,
+      "strategy": 175.82,
+      "excess": 229.89
+    },
+    {
+      "date": "2025-08-22",
+      "benchmark": -14.31,
+      "strategy": 175.5,
+      "excess": 221.51
+    },
+    {
+      "date": "2025-08-26",
+      "benchmark": -12.85,
+      "strategy": 176.83,
+      "excess": 217.65
+    },
+    {
+      "date": "2025-08-28",
+      "benchmark": -12.63,
+      "strategy": 170.64,
+      "excess": 209.76
+    },
+    {
+      "date": "2025-09-01",
+      "benchmark": -11.46,
+      "strategy": 173.15,
+      "excess": 208.5
+    },
+    {
+      "date": "2025-09-03",
+      "benchmark": -12.71,
+      "strategy": 161.29,
+      "excess": 199.34
+    },
+    {
+      "date": "2025-09-05",
+      "benchmark": -12.7,
+      "strategy": 169.75,
+      "excess": 208.99
+    },
+    {
+      "date": "2025-09-09",
+      "benchmark": -13.17,
+      "strategy": 172.93,
+      "excess": 214.33
+    },
+    {
+      "date": "2025-09-11",
+      "benchmark": -10.98,
+      "strategy": 175.79,
+      "excess": 209.81
+    },
+    {
+      "date": "2025-09-15",
+      "benchmark": -11.27,
+      "strategy": 174.11,
+      "excess": 208.93
+    },
+    {
+      "date": "2025-09-17",
+      "benchmark": -10.92,
+      "strategy": 181.34,
+      "excess": 215.83
+    },
+    {
+      "date": "2025-09-19",
+      "benchmark": -11.88,
+      "strategy": 172.83,
+      "excess": 209.61
+    },
+    {
+      "date": "2025-09-23",
+      "benchmark": -11.53,
+      "strategy": 164.62,
+      "excess": 199.11
+    },
+    {
+      "date": "2025-09-25",
+      "benchmark": -10.09,
+      "strategy": 163.73,
+      "excess": 193.33
+    },
+    {
+      "date": "2025-09-29",
+      "benchmark": -9.57,
+      "strategy": 168.65,
+      "excess": 197.08
+    },
+    {
+      "date": "2025-10-09",
+      "benchmark": -7.82,
+      "strategy": 167.76,
+      "excess": 190.48
+    },
+    {
+      "date": "2025-10-13",
+      "benchmark": -10.08,
+      "strategy": 174.22,
+      "excess": 204.96
+    },
+    {
+      "date": "2025-10-15",
+      "benchmark": -9.84,
+      "strategy": 179.91,
+      "excess": 210.46
+    },
+    {
+      "date": "2025-10-17",
+      "benchmark": -11.64,
+      "strategy": 168.79,
+      "excess": 204.2
+    },
+    {
+      "date": "2025-10-21",
+      "benchmark": -9.81,
+      "strategy": 176.58,
+      "excess": 206.66
+    },
+    {
+      "date": "2025-10-23",
+      "benchmark": -9.84,
+      "strategy": 178.29,
+      "excess": 208.66
+    },
+    {
+      "date": "2025-10-27",
+      "benchmark": -7.69,
+      "strategy": 183.34,
+      "excess": 206.94
+    },
+    {
+      "date": "2025-10-29",
+      "benchmark": -7.07,
+      "strategy": 185.01,
+      "excess": 206.69
+    },
+    {
+      "date": "2025-10-31",
+      "benchmark": -9.17,
+      "strategy": 187.42,
+      "excess": 216.44
+    },
+    {
+      "date": "2025-11-04",
+      "benchmark": -9.6,
+      "strategy": 185.65,
+      "excess": 215.98
+    },
+    {
+      "date": "2025-11-06",
+      "benchmark": -8.13,
+      "strategy": 187.28,
+      "excess": 212.7
+    },
+    {
+      "date": "2025-11-10",
+      "benchmark": -8.1,
+      "strategy": 192.0,
+      "excess": 217.74
+    },
+    {
+      "date": "2025-11-12",
+      "benchmark": -9.06,
+      "strategy": 196.83,
+      "excess": 226.4
+    },
+    {
+      "date": "2025-11-14",
+      "benchmark": -9.41,
+      "strategy": 199.33,
+      "excess": 230.42
+    },
+    {
+      "date": "2025-11-18",
+      "benchmark": -10.59,
+      "strategy": 199.46,
+      "excess": 234.93
+    },
+    {
+      "date": "2025-11-20",
+      "benchmark": -10.65,
+      "strategy": 192.44,
+      "excess": 227.3
+    },
+    {
+      "date": "2025-11-24",
+      "benchmark": -12.94,
+      "strategy": 182.57,
+      "excess": 224.57
+    },
+    {
+      "date": "2025-11-26",
+      "benchmark": -11.57,
+      "strategy": 185.43,
+      "excess": 222.78
+    },
+    {
+      "date": "2025-11-28",
+      "benchmark": -11.4,
+      "strategy": 190.4,
+      "excess": 227.77
+    },
+    {
+      "date": "2025-12-02",
+      "benchmark": -10.86,
+      "strategy": 191.39,
+      "excess": 226.89
+    },
+    {
+      "date": "2025-12-04",
+      "benchmark": -11.01,
+      "strategy": 186.97,
+      "excess": 222.47
+    },
+    {
+      "date": "2025-12-08",
+      "benchmark": -9.54,
+      "strategy": 197.38,
+      "excess": 228.74
+    },
+    {
+      "date": "2025-12-10",
+      "benchmark": -10.12,
+      "strategy": 191.28,
+      "excess": 224.08
+    },
+    {
+      "date": "2025-12-12",
+      "benchmark": -10.34,
+      "strategy": 184.4,
+      "excess": 217.2
+    },
+    {
+      "date": "2025-12-16",
+      "benchmark": -11.97,
+      "strategy": 179.05,
+      "excess": 216.99
+    },
+    {
+      "date": "2025-12-18",
+      "benchmark": -10.89,
+      "strategy": 180.88,
+      "excess": 215.21
+    },
+    {
+      "date": "2025-12-22",
+      "benchmark": -9.74,
+      "strategy": 188.66,
+      "excess": 219.81
+    },
+    {
+      "date": "2025-12-24",
+      "benchmark": -9.3,
+      "strategy": 187.36,
+      "excess": 216.82
+    },
+    {
+      "date": "2025-12-26",
+      "benchmark": -8.84,
+      "strategy": 188.52,
+      "excess": 216.5
+    },
+    {
+      "date": "2025-12-30",
+      "benchmark": -8.96,
+      "strategy": 188.73,
+      "excess": 217.15
+    },
+    {
+      "date": "2026-01-05",
+      "benchmark": -7.66,
+      "strategy": 191.37,
+      "excess": 215.54
+    },
+    {
+      "date": "2026-01-07",
+      "benchmark": -6.5,
+      "strategy": 197.52,
+      "excess": 218.2
+    },
+    {
+      "date": "2026-01-09",
+      "benchmark": -6.85,
+      "strategy": 199.48,
+      "excess": 221.5
+    },
+    {
+      "date": "2026-01-13",
+      "benchmark": -6.81,
+      "strategy": 209.23,
+      "excess": 231.83
+    },
+    {
+      "date": "2026-01-15",
+      "benchmark": -7.0,
+      "strategy": 203.73,
+      "excess": 226.59
+    },
+    {
+      "date": "2026-01-19",
+      "benchmark": -7.33,
+      "strategy": 212.22,
+      "excess": 236.92
+    },
+    {
+      "date": "2026-01-21",
+      "benchmark": -7.55,
+      "strategy": 214.99,
+      "excess": 240.71
+    },
+    {
+      "date": "2026-01-23",
+      "benchmark": -7.96,
+      "strategy": 216.05,
+      "excess": 243.38
+    },
+    {
+      "date": "2026-01-27",
+      "benchmark": -7.89,
+      "strategy": 210.65,
+      "excess": 237.26
+    },
+    {
+      "date": "2026-01-29",
+      "benchmark": -6.95,
+      "strategy": 207.92,
+      "excess": 230.92
+    },
+    {
+      "date": "2026-02-02",
+      "benchmark": -9.85,
+      "strategy": 209.4,
+      "excess": 243.21
+    },
+    {
+      "date": "2026-02-04",
+      "benchmark": -8.03,
+      "strategy": 215.65,
+      "excess": 243.21
+    },
+    {
+      "date": "2026-02-06",
+      "benchmark": -9.11,
+      "strategy": 223.08,
+      "excess": 255.46
+    },
+    {
+      "date": "2026-02-10",
+      "benchmark": -7.53,
+      "strategy": 224.3,
+      "excess": 250.71
+    },
+    {
+      "date": "2026-02-12",
+      "benchmark": -7.62,
+      "strategy": 222.89,
+      "excess": 249.52
+    },
+    {
+      "date": "2026-02-24",
+      "benchmark": -7.86,
+      "strategy": 232.1,
+      "excess": 260.43
+    },
+    {
+      "date": "2026-02-26",
+      "benchmark": -7.48,
+      "strategy": 236.15,
+      "excess": 263.33
+    },
+    {
+      "date": "2026-03-02",
+      "benchmark": -7.44,
+      "strategy": 232.22,
+      "excess": 258.92
+    },
+    {
+      "date": "2026-03-04",
+      "benchmark": -9.91,
+      "strategy": 221.32,
+      "excess": 256.67
+    },
+    {
+      "date": "2026-03-06",
+      "benchmark": -8.78,
+      "strategy": 230.7,
+      "excess": 262.53
+    },
+    {
+      "date": "2026-03-10",
+      "benchmark": -8.5,
+      "strategy": 233.64,
+      "excess": 264.63
+    },
+    {
+      "date": "2026-03-12",
+      "benchmark": -8.25,
+      "strategy": 230.35,
+      "excess": 260.05
+    },
+    {
+      "date": "2026-03-16",
+      "benchmark": -8.56,
+      "strategy": 233.09,
+      "excess": 264.27
+    },
+    {
+      "date": "2026-03-18",
+      "benchmark": -8.82,
+      "strategy": 232.02,
+      "excess": 264.14
+    },
+    {
+      "date": "2026-03-20",
+      "benchmark": -10.61,
+      "strategy": 212.26,
+      "excess": 249.32
+    },
+    {
+      "date": "2026-03-24",
+      "benchmark": -12.41,
+      "strategy": 205.61,
+      "excess": 248.91
+    },
+    {
+      "date": "2026-03-26",
+      "benchmark": -12.36,
+      "strategy": 205.27,
+      "excess": 248.32
+    },
+    {
+      "date": "2026-03-30",
+      "benchmark": -12.08,
+      "strategy": 212.02,
+      "excess": 254.89
+    },
+    {
+      "date": "2026-04-01",
+      "benchmark": -11.41,
+      "strategy": 213.88,
+      "excess": 254.31
+    },
+    {
+      "date": "2026-04-03",
+      "benchmark": -13.08,
+      "strategy": 202.05,
+      "excess": 247.5
+    },
+    {
+      "date": "2026-04-08",
+      "benchmark": -10.05,
+      "strategy": 219.46,
+      "excess": 255.15
+    },
+    {
+      "date": "2026-04-10",
+      "benchmark": -9.25,
+      "strategy": 219.01,
+      "excess": 251.53
+    },
+    {
+      "date": "2026-04-14",
+      "benchmark": -7.98,
+      "strategy": 215.62,
+      "excess": 242.99
+    },
+    {
+      "date": "2026-04-16",
+      "benchmark": -7.29,
+      "strategy": 225.13,
+      "excess": 250.7
+    },
+    {
+      "date": "2026-04-20",
+      "benchmark": -6.88,
+      "strategy": 233.39,
+      "excess": 258.02
+    },
+    {
+      "date": "2026-04-22",
+      "benchmark": -6.06,
+      "strategy": 232.41,
+      "excess": 253.85
+    },
+    {
+      "date": "2026-04-24",
+      "benchmark": -6.65,
+      "strategy": 223.94,
+      "excess": 247.02
+    },
+    {
+      "date": "2026-04-28",
+      "benchmark": -6.87,
+      "strategy": 226.72,
+      "excess": 250.82
+    },
+    {
+      "date": "2026-04-30",
+      "benchmark": -5.9,
+      "strategy": 233.06,
+      "excess": 253.94
+    },
+    {
+      "date": "2026-05-07",
+      "benchmark": -4.08,
+      "strategy": 236.22,
+      "excess": 250.52
+    },
+    {
+      "date": "2026-05-11",
+      "benchmark": -3.08,
+      "strategy": 240.27,
+      "excess": 251.08
+    },
+    {
+      "date": "2026-05-13",
+      "benchmark": -2.17,
+      "strategy": 244.55,
+      "excess": 252.19
+    },
+    {
+      "date": "2026-05-15",
+      "benchmark": -4.88,
+      "strategy": 237.51,
+      "excess": 254.83
+    },
+    {
+      "date": "2026-05-19",
+      "benchmark": -5.01,
+      "strategy": 247.74,
+      "excess": 266.08
+    },
+    {
+      "date": "2026-05-21",
+      "benchmark": -6.38,
+      "strategy": 228.9,
+      "excess": 251.31
+    },
+    {
+      "date": "2026-05-25",
+      "benchmark": -3.67,
+      "strategy": 229.63,
+      "excess": 242.19
+    },
+    {
+      "date": "2026-05-27",
+      "benchmark": -3.93,
+      "strategy": 214.82,
+      "excess": 227.7
+    },
+    {
+      "date": "2026-05-29",
+      "benchmark": -4.24,
+      "strategy": 213.19,
+      "excess": 227.06
+    },
+    {
+      "date": "2026-06-02",
+      "benchmark": -3.81,
+      "strategy": 220.83,
+      "excess": 233.54
+    },
+    {
+      "date": "2026-06-04",
+      "benchmark": -4.0,
+      "strategy": 211.43,
+      "excess": 224.41
+    },
+    {
+      "date": "2026-06-08",
+      "benchmark": -7.74,
+      "strategy": 201.08,
+      "excess": 226.34
+    },
+    {
+      "date": "2026-06-10",
+      "benchmark": -7.05,
+      "strategy": 194.84,
+      "excess": 217.2
+    },
+    {
+      "date": "2026-06-12",
+      "benchmark": -6.49,
+      "strategy": 199.5,
+      "excess": 220.29
+    },
+    {
+      "date": "2026-06-16",
+      "benchmark": -4.4,
+      "strategy": 200.89,
+      "excess": 214.74
+    },
+    {
+      "date": "2026-06-18",
+      "benchmark": -3.28,
+      "strategy": 194.4,
+      "excess": 204.38
+    },
+    {
+      "date": "2026-06-23",
+      "benchmark": -3.71,
+      "strategy": 199.34,
+      "excess": 210.87
+    },
+    {
+      "date": "2026-06-25",
+      "benchmark": -1.74,
+      "strategy": 184.51,
+      "excess": 189.55
+    },
+    {
+      "date": "2026-06-29",
+      "benchmark": -3.56,
+      "strategy": 174.8,
+      "excess": 184.94
+    },
+    {
+      "date": "2026-07-01",
+      "benchmark": -2.94,
+      "strategy": 180.98,
+      "excess": 189.49
+    },
+    {
+      "date": "2026-07-03",
+      "benchmark": -5.22,
+      "strategy": 187.56,
+      "excess": 203.4
+    },
+    {
+      "date": "2026-07-07",
+      "benchmark": -6.2,
+      "strategy": 175.01,
+      "excess": 193.19
+    },
+    {
+      "date": "2026-07-09",
+      "benchmark": -4.55,
+      "strategy": 176.3,
+      "excess": 189.47
+    },
+    {
+      "date": "2026-07-13",
+      "benchmark": -8.1,
+      "strategy": 166.94,
+      "excess": 190.47
+    },
+    {
+      "date": "2026-07-15",
+      "benchmark": -6.31,
+      "strategy": 179.85,
+      "excess": 198.7
+    },
+    {
+      "date": "2026-07-17",
+      "benchmark": -11.35,
+      "strategy": 166.79,
+      "excess": 200.95
+    }
+  ]
+}
