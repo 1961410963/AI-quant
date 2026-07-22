@@ -113,7 +113,7 @@ def trade(context):
 <h2 id="section-optimization">二、优化迭代路径</h2>
 
 <div class="doc-block">
-<p>本次优化共经历 4 轮迭代，每轮在上一版本基础上叠加 1 — 2 项改进，形成清晰的改进链路：</p>
+<p>本次优化共经历 5 轮迭代，每轮在上一版本基础上叠加 1 — 2 项改进，形成清晰的改进链路：</p>
 </div>
 
 <div class="doc-table" id="table-iteration-path">
@@ -123,15 +123,16 @@ def trade(context):
 <tbody>
 <tr><td><strong>原策略</strong></td><td>—</td><td>3 只 · 20~30 亿 · 纯市值 · 5 天</td><td>无</td></tr>
 <tr><td><strong>V1</strong></td><td>扩大池子 · 增加持股 · 加 ROE 与负债率过滤 · 排除 ST · 止损</td><td>5 只 · 10~50 亿 · 纯市值 · 5 天</td><td>-15% 止损</td></tr>
-<tr><td><strong>V2</strong></td><td>进一步放宽止损</td><td>8 只 · 10~50 亿 · 纯市值 · 每天</td><td>-10% 止损</td></tr>
-<tr><td><strong>V3</strong></td><td>综合打分选股 · 止损后补位</td><td>8 只 · 综合打分 · 每天</td><td>-10% 止损 · +30% 止盈</td></tr>
-<tr><td><strong>V4（最终）</strong></td><td><strong>回退简化，保留最有效改进</strong></td><td><strong>8 只 · 10~50 亿 · 纯市值 · 每天 · ROE+负债率过滤</strong></td><td><strong>无止损止盈（轮动即风控）</strong></td></tr>
+<tr><td><strong>V2</strong></td><td>进一步放宽止损 · 每日轮动</td><td>8 只 · 10~50 亿 · 纯市值 · 每天</td><td>-10% 止损</td></tr>
+<tr><td><strong>V3</strong></td><td>综合打分选股 · 止损止盈</td><td>8 只 · 综合打分 · 每天</td><td>-10% 止损 · +30% 止盈</td></tr>
+<tr><td><strong>V4 完整版</strong></td><td>在V3基础上加止损后补位 · 仓位20%上限</td><td>8 只 · 综合打分 · 每天</td><td>-10% 止损 · +30% 止盈 · 止损后补位</td></tr>
+<tr><td><strong>V4 最终版</strong></td><td><strong>回退简化，保留最有效改进</strong></td><td><strong>8 只 · 10~50 亿 · 纯市值 · 每天 · ROE+负债率过滤</strong></td><td><strong>无止损止盈（每日轮动即风控）</strong></td></tr>
 </tbody>
 </table>
 </div>
 
 <div class="doc-callout">
-<p><strong>关键发现：</strong>在 5 年回测中，V4 精简版（纯市值排序 + 质量筛选 + 每日轮动）表现优于加入了综合打分和止损止盈的 V3/V4 完整版。每日轮动机制本身已在不断淘汰差股票，额外风控反而因误触发而损伤收益。</p>
+<p><strong>关键发现：</strong>V4 完整版（综合打分 + -10%止损 + +30%止盈）在 5 年回测中表现反而不如 V4 最终版（纯市值排序 + 质量筛选 + 每日轮动）。每日轮动机制本身已在不断淘汰差股票，额外风控反而因误触发而损伤收益。说明小市值轮动策略中，<strong>简单结构 + 高频轮动</strong>可能比复杂风控更有效。</p>
 </div>
 
 <h3>V4 最终版核心代码</h3>
@@ -213,22 +214,22 @@ def trade(context):
 
 <div class="doc-table" id="table-full-compare">
 <table>
-<caption>沪深 300、原策略与 V4 最终版 5 年回测（2021-07 — 2026-07）核心指标对比</caption>
-<thead><tr><th>指标</th><th>沪深 300</th><th>原策略</th><th>V4 最终版</th><th>变化</th></tr></thead>
+<caption>沪深 300、原策略、V4 完整版与 V4 最终版 5 年回测（2021-07 — 2026-07）核心指标对比</caption>
+<thead><tr><th>指标</th><th>沪深 300</th><th>原策略</th><th>V4 完整版</th><th>V4 最终版</th></tr></thead>
 <tbody>
-<tr><td>累计收益</td><td>-10.00%</td><td>64.56%</td><td><strong>157.42%</strong></td><td>↑ +92.86%</td></tr>
-<tr><td>年化收益</td><td>-2.17%</td><td>10.84%</td><td><strong>21.57%</strong></td><td>↑ +10.73%</td></tr>
-<tr><td>超额收益</td><td>—</td><td>82.83%</td><td><strong>186.01%</strong></td><td>↑ +103.18%</td></tr>
-<tr><td>夏普比率</td><td>-0.12</td><td>0.216</td><td><strong>0.602</strong></td><td>↑ 约 3 倍</td></tr>
-<tr><td>阿尔法</td><td>—</td><td>0.110</td><td><strong>0.224</strong></td><td>↑ 翻倍</td></tr>
-<tr><td>贝塔</td><td>1.000</td><td>0.683</td><td>0.782</td><td>略升</td></tr>
-<tr><td>信息比率</td><td>—</td><td>0.436</td><td><strong>0.916</strong></td><td>↑ 翻倍</td></tr>
-<tr><td>最大回撤</td><td>39.00%</td><td>37.50%</td><td>39.93%</td><td>基本持平</td></tr>
-<tr><td>年化波动率</td><td>17.96%</td><td>31.70%</td><td>29.20%</td><td>略微降低</td></tr>
-<tr><td>胜率</td><td>48.7%</td><td>51.6%</td><td><strong>63.0%</strong></td><td>↑ +11.4%</td></tr>
-<tr><td>盈亏比</td><td>—</td><td>1.200</td><td><strong>1.720</strong></td><td>↑ +0.52</td></tr>
-<tr><td>索提诺比率</td><td>—</td><td>0.294</td><td><strong>0.807</strong></td><td>↑ 近 3 倍</td></tr>
-<tr><td>最大回撤区间</td><td>—</td><td>2023/11 — 2024/09</td><td>2023/11 — 2024/02</td><td>↓ 回撤恢复更快</td></tr>
+<tr><td>累计收益</td><td>-10.00%</td><td>64.56%</td><td>133.45%</td><td><strong>157.42%</strong></td></tr>
+<tr><td>年化收益</td><td>-2.17%</td><td>10.84%</td><td>19.14%</td><td><strong>21.57%</strong></td></tr>
+<tr><td>超额收益</td><td>—</td><td>82.83%</td><td>159.37%</td><td><strong>186.01%</strong></td></tr>
+<tr><td>夏普比率</td><td>-0.12</td><td>0.216</td><td>0.539</td><td><strong>0.602</strong></td></tr>
+<tr><td>阿尔法</td><td>—</td><td>0.110</td><td>0.197</td><td><strong>0.224</strong></td></tr>
+<tr><td>贝塔</td><td>1.000</td><td>0.683</td><td>0.739</td><td>0.782</td></tr>
+<tr><td>信息比率</td><td>—</td><td>0.436</td><td>0.844</td><td><strong>0.916</strong></td></tr>
+<tr><td>最大回撤</td><td>39.00%</td><td><strong>37.50%</strong></td><td>40.13%</td><td>39.93%</td></tr>
+<tr><td>年化波动率</td><td>17.96%</td><td>31.70%</td><td>28.10%</td><td>29.20%</td></tr>
+<tr><td>胜率</td><td>48.7%</td><td>51.6%</td><td>62.1%</td><td><strong>63.0%</strong></td></tr>
+<tr><td>盈亏比</td><td>—</td><td>1.200</td><td>1.334</td><td><strong>1.720</strong></td></tr>
+<tr><td>索提诺比率</td><td>—</td><td>0.294</td><td>0.705</td><td><strong>0.807</strong></td></tr>
+<tr><td>最大回撤区间</td><td>—</td><td>2023/11 — 2024/09</td><td>2023/11 — 2024/02</td><td>2023/11 — 2024/02</td></tr>
 </tbody>
 </table>
 </div>
